@@ -20,6 +20,7 @@ venv/
 # Copyrighted book PDF + verbatim extracts — keep local only
 *.pdf
 research/_raw/
+research/books/**/_raw/
 
 # OS / editor
 .DS_Store
