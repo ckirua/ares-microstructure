@@ -1,6 +1,7 @@
 # Research-tree conventions (root .gitignore also applies).
 # Keep: NOTES / CANDIDATES / EXP_REPORT / EXPERIMENTS / DESK_MEMO /
 # notebooks (not checkpoints) / scripts / lib / config.yaml templates.
+# Ignore: out/ · logs/ · PDFs · _raw/ · checkpoints · caches · poller logs.
 
 # Book PDFs + verbatim extracts
 *.pdf
@@ -15,8 +16,20 @@
 !**/logs/.gitkeep
 paper_live.log
 paper_live.log.*
+v_fade_shadow.log
+v_fade_shadow.log.*
 *.log
 *.pid
+
+# Heavy caches outside out/ (edge_lab / v_shapes / filmonov / paper_throttle)
+*.parquet
+*.pkl
+*.joblib
+*.npy
+*.npz
+*.h5
+*.feather
+*.arrow
 
 # Caches
 **/__pycache__/

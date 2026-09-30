@@ -6,7 +6,7 @@ Data: [`../../DATA_PATHS.md`](../../DATA_PATHS.md). Loop: [`../../LOOP.md`](../.
 
 **Book:** Flora & Renò, *V-shapes* (2020-09-17), 38 PDF pp. SSRN 3554122. Slug: `v_shapes`.
 
-**Program status:** **Widened+hardened** — 20 UTC days · 4 Promote / 5 Hold / 2 Kill.
+**Program status:** **Widened+hardened + feature-reg + paper-throttle** — 20 UTC days · 5 Promote / 10 Hold / 4 Kill.
 
 **Shared lib:** [`../../lib/vstat.py`](../../lib/vstat.py) (kernels, \(T^\pm\), \(V\), MinV, pre-avg/HAC, EGARCH bootstrap) · loaders [`scripts/_data.py`](scripts/_data.py) (HL + Deribit + Kraken).  
 **Do not merge** with [`../../lib/crash.py`](../../lib/crash.py) `vshape_events` (geometric Dugast–Foucault).
@@ -50,8 +50,10 @@ A package is **not** `exp_run`-complete after Pass 1 alone. Tracking path: **`pa
 | `event_case` | §6-style dive on 1–2 crypto stress days | Regime proxy; markout path; Hold auction-loss ID | `exp_run` | [`chapters/event_case/`](chapters/event_case/) |
 | `liq_around_v` | §6.2 liquidity around V (spread, depth, impact) | Incremental liq info vs MinV; resilience; GM \(\mu/\sigma\) monitor only | `exp_run` | [`chapters/liq_around_v/`](chapters/liq_around_v/) |
 | `xvenue_concord` | Multi-venue MinV on ETH/BTC | HL↔Deribit↔Kraken concordance; FEI/Epps around V | `exp_run` | [`chapters/xvenue_concord/`](chapters/xvenue_concord/) |
+| `feature_reg` | Causal V-features × Ridge/OLS/EN under tick/cal/vol clocks | Primary trade-time Hold; calendar Monitor Promote; leakage Kill | `exp_run` | [`applications/feature_reg/`](applications/feature_reg/) |
+| `paper_throttle` | MinV/EGARCH Promote → maker throttle vs always-on | Risk overlay Kill (adverse mo CI>0); Hold as alpha; cal join Hold | `exp_run` | [`applications/paper_throttle/`](applications/paper_throttle/) |
 
-**First vertical slice (still two-pass):** \(V_{\tau,n}\) + EGARCH bands on HL+Deribit+Kraken ETH (complete UTC week) → daily MinV → info joins + concordance vs `crash.vshape_events` / SSM → widen BTC after Promote gate.
+**First vertical slice (still two-pass):** \(V_{\tau,n}\) + EGARCH bands on HL+Deribit+Kraken ETH (complete UTC week) → daily MinV → info joins + concordance vs `crash.vshape_events` / SSM → widen BTC after Promote gate → feature regressions under honest clocks → paper exec-throttle harness.
 
 ---
 
@@ -63,16 +65,23 @@ A package is **not** `exp_run`-complete after Pass 1 alone. Tracking path: **`pa
 | `risk.egarch_minv_bands` | ✓ |  |  |  |  |  |  | bootstrap_sim | EGARCH simulated bootstrap CIs for MinV |
 | `risk.daily_minv_panel` | ✓ |  |  |  |  |  |  | daily_minv | UTC-day MinV vs EGARCH 5% as fragility monitor |
 | `risk.stress_day_minv` | ✓ | ✓ |  |  |  |  |  | event_case | Stress-day MinV narrative reproduced across ≥3 complete days |
+| `info.v_feature_ridge_calendar` |  | ✓ | ✓ |  | ✓ |  |  | feature_reg | Causal V-feats → calendar fwdret Ridge — Monitor only (\(R^2\)≪1) |
 
 **Kill / Hold:**
 - **Kill** `risk.asymptotic_218_360`: paper §3.1: too small for realistic DGP + multiple testing; use EGARCH bootstrap
 - **Kill** `risk.gm_mu_sigma_tradable`: Grossman–Miller mu/sigma monitor only — vanity as tradable
+- **Kill** `info.v_feature_leakage_V_Tp`: contemporaneous \(V/T^+\) right-kernel look-ahead — never live
+- **Kill** `exec.minv_breach_throttle`: paper harness OOS adverse mo30 CI>0 on breach days (n=5); DD CI includes 0 — do not deploy as risk overlay
 - **Hold** `risk.xvenue_minv_concord`: no concordant significant pair in slice
 - **Hold** `info.v_path_continuous`: mean_corr_V=0.021 CI=[-0.006,0.048] n=220 (V-only; CI does not clear Promote bar / thin events)
 - **Hold** `info.post_trough_ret`: post300 mean=0.00020 CI=[-0.00129,0.00169] n=17
 - **Hold** `liq.spread_around_minv`: TOB usable rows=14 days=['2026-09-08', '2026-09-15', '2026-09-25', '2026-09-27', '2026-09-29', '2026-09-30'] sources=['collector', 'warehouse:l2_snapshot_level/warehouse:l2_tob/s3_cache']; Δspread(post-pre) mean=-0.0749 CI=[-0.2234,0.0737] n_sane=8 (Kraken warehouse L2 empty; collector only 0929-30; Deribit L2 multi-day but Δ not Promote-grade)
 - **Hold** `id.auction_loss`: no crypto sovereign auction analogue
-
+- **Hold** `info.v_feature_ridge_tick`: primary trade-clock Ridge \(R^2_\mathrm{te}<0\), IC CI includes 0, sign unstable (n≈245k)
+- **Hold** `info.v_feature_ridge_volume_clock`: volume-clock same OOS collapse as tick
+- **Hold** `info.breach_sign_logistic`: AUC_te≈0.49
+- **Hold** `exec.minv_throttle_cal_join`: parent Kill; calendar deepen does not clear adverse falsifier
+- **Hold** `exec.minv_throttle_as_alpha`: never sized alpha; Δpnl OOS flat; y_tick_20 Hold
 ---
 
 ## Crypto adaptation defaults

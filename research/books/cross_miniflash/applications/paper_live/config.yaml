@@ -1,5 +1,10 @@
 # Paper-live — continuous crash-risk overlay (shadow only).
 # No live order submission. Never mercat/gateway OE.
+#
+# NOT the directional V-fade sleeve. severity_zend |z|≥20 @0.5→3s lives in:
+#   ../edge_lab/v_fade_paper/  (config.yaml v_fade.entry_mode=severity_zend)
+# confirm_r2 is Hold / path-late — do not use it as the executable default.
+# Restart severity shadow there; this unit only runs kill-ladder MM risk.
 
 mode: paper
 class: risk_policy
@@ -71,6 +76,21 @@ size_mult:
 
 markout_horizons_s: [1.0, 5.0]
 recovery_horizon_s: 5.0
+
+# V-fade Promote_shadow defaults (pointer — risk overlay remains ladder;
+# executable alpha sleeve lives in edge_lab/v_fade_paper). When logging
+# equity cumulatives, also stamp these params so the desk can compare.
+v_fade:
+  entry_mode: severity_zend
+  confirm_s: 0.5
+  exit_s: 3.0
+  z_min: 20.0
+  suppress_fire_pause: prior_only
+  adverse_stop_bps: 1.0e9
+  rt_friction_bps: 4.0
+  note: >
+    Promote_shadow path default from v_fade_paper gap_summary (+20.2 bps n=23).
+    paper_live itself is crash-risk ladder overlay (not taker fade PnL alpha).
 
 # Outputs
 out_dir: out

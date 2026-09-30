@@ -46,4 +46,4 @@ Ridge **primary** (α via time-blocked CV); OLS; ElasticNet; logistic breach→s
 
 ## Empirics
 
-See `EXP_REPORT.md` · `CANDIDATES.md` · notebook `feature_reg.ipynb`.
+See `EXP_REPORT.md` · `CANDIDATES.md` · memo notebook `feature_reg.ipynb` (loads `out/feature_reg/`; figs include IC-by-horizon, ridge path, OOS scatter, coefs tick/calendar, train/test split).

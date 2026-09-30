@@ -244,6 +244,8 @@ def analyze_day(
     r1 = np.asarray(ev["recovery_1s"], dtype=np.float64)
     r2 = np.asarray(ev["recovery_2s"], dtype=np.float64)
     mo5 = np.asarray(ev["mo_5s"], dtype=np.float64)
+    zpk = np.asarray(ev.get("z_peak", []), dtype=np.float64)
+    dp = np.asarray(ev.get("dp_pct", []), dtype=np.float64)
     start_i = _start_indices(ts, ts_start)
     end_i = _end_indices(ts, ts_end)
 
@@ -344,6 +346,25 @@ def analyze_day(
             if enter_r1_strict
             else float("nan")
         )
+        # first t where rolling recovery ≥ 0.5 (no min wait)
+        first_r50_t = None
+        t_max = te + int(2.0 * NS)
+        lo = int(np.searchsorted(ts, te, side="right"))
+        hi = int(np.searchsorted(ts, t_max, side="right"))
+        for j in range(lo, hi):
+            t = int(ts[j])
+            rr = _rolling_recovery_at(ts, px, si, ei, d, t)
+            if np.isfinite(rr) and rr >= 0.5:
+                first_r50_t = t
+                break
+        mo_first_r50 = (
+            _fade_mo_bps(ts, px, t_entry=first_r50_t, t_exit=t_exit, side=side)
+            if first_r50_t is not None
+            else float("nan")
+        )
+        z_abs = abs(float(zpk[i])) if i < zpk.size and np.isfinite(zpk[i]) else float("nan")
+        dp_i = float(dp[i]) if i < dp.size and np.isfinite(dp[i]) else float("nan")
+        r05 = _rolling_recovery_at(ts, px, si, ei, d, te + int(0.5 * NS))
 
         rows.append(
             {
@@ -355,8 +376,11 @@ def analyze_day(
                 "side": side,
                 "causal_class": cls,
                 "is_v": cls == "v_recovery",
+                "z_peak_abs": z_abs if np.isfinite(z_abs) else None,
+                "dp_pct": dp_i if np.isfinite(dp_i) else None,
                 "recovery_1s": rr1 if np.isfinite(rr1) else None,
                 "recovery_2s": rr2 if np.isfinite(rr2) else None,
+                "recovery_0_5s": r05 if np.isfinite(r05) else None,
                 "mo_5s_crash": mo if np.isfinite(mo) else None,
                 "lab_net_bps": (-mo - RT_BPS) if np.isfinite(mo) else None,
                 "recovery_by_h": {str(h): float(rec_by_h[h][i]) for h in HORIZONS},
@@ -377,6 +401,10 @@ def analyze_day(
                 "fade_mo_early_rolling": mo_early if np.isfinite(mo_early) else None,
                 "r1_strict_enter": enter_r1_strict,
                 "fade_mo_r1_strict": mo_r1_strict if np.isfinite(mo_r1_strict) else None,
+                "first_r50_delay_s": ((first_r50_t - te) / NS)
+                if first_r50_t is not None
+                else None,
+                "fade_mo_first_r50": mo_first_r50 if np.isfinite(mo_first_r50) else None,
             }
         )
     return rows
@@ -504,10 +532,47 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
     ]
     causal_r1_mos = [float(r["fade_mo_r1_strict"]) for r in causal_r1]
 
+    def _sel_mo(pred, delay: float) -> dict[str, Any]:
+        mos = [
+            float(r["fade_mo_by_entry_delay"][str(delay)])
+            for r in rows
+            if pred(r) and np.isfinite(float(r["fade_mo_by_entry_delay"][str(delay)]))
+        ]
+        return {
+            "n": len(mos),
+            "fade_mo": _boot_mean(np.asarray(mos, dtype=np.float64), seed=61 + int(delay * 10)),
+            "net_mean": _nanmean([m - RT_BPS for m in mos]),
+            "hit_rate": float(np.mean(np.asarray(mos) - RT_BPS > 0)) if mos else float("nan"),
+        }
+
+    first_r50_mos = [
+        float(r["fade_mo_first_r50"])
+        for r in vrows
+        if r.get("fade_mo_first_r50") is not None
+    ]
+    first_r50_delays = [
+        float(r["first_r50_delay_s"])
+        for r in vrows
+        if r.get("first_r50_delay_s") is not None
+    ]
+
     book_sources = {}
     for r in vrows:
         src = (r.get("book_meta") or {}).get("source") or "none"
         book_sources[src] = book_sources.get(src, 0) + 1
+
+    # share of V events with frac≥0.9 by horizon
+    share_used = {}
+    for h in HORIZONS:
+        fr = np.asarray(
+            [float(r["frac_of_5s_rebound"][str(h)]) for r in vrows], dtype=np.float64
+        )
+        fr = fr[np.isfinite(fr)]
+        share_used[str(h)] = {
+            "ge_0_5": float(np.mean(fr >= 0.5)) if fr.size else float("nan"),
+            "ge_0_9": float(np.mean(fr >= 0.9)) if fr.size else float("nan"),
+            "ge_1_0": float(np.mean(fr >= 0.999)) if fr.size else float("nan"),
+        }
 
     return {
         "n_events_gated": all_n,
@@ -536,6 +601,14 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
             "confirm_2s": mo_by_delay.get("2.0"),
             "from_end": mo_by_delay.get("0.0"),
         },
+        "share_rebound_used_by_h": share_used,
+        "on_v_first_r50": {
+            "n": len(first_r50_mos),
+            "median_delay_s": _nanmedian(first_r50_delays),
+            "mean_delay_s": _nanmean(first_r50_delays),
+            "fade_mo": _boot_mean(np.asarray(first_r50_mos, dtype=np.float64), seed=55),
+            "net_mean": _nanmean([m - RT_BPS for m in first_r50_mos]),
+        },
         "causal_no_r2_lookaside": {
             "rolling_enter_ge1s": {
                 "n": len(causal_early_mos),
@@ -556,6 +629,19 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 "fade_mo": _boot_mean(np.asarray(causal_r1_mos, dtype=np.float64), seed=52),
                 "net_mean": _nanmean([m - RT_BPS for m in causal_r1_mos]),
             },
+            # severity @ ts_end — no recovery look-ahead
+            "z_ge_15_at_0s": _sel_mo(
+                lambda r: (r.get("z_peak_abs") or 0) >= 15.0, 0.0
+            ),
+            "z_ge_20_at_0s": _sel_mo(
+                lambda r: (r.get("z_peak_abs") or 0) >= 20.0, 0.0
+            ),
+            "z_ge_15_at_0_5s": _sel_mo(
+                lambda r: (r.get("z_peak_abs") or 0) >= 15.0, 0.5
+            ),
+            "all_gated_at_0s": _sel_mo(lambda _r: True, 0.0),
+            "all_gated_at_0_5s": _sel_mo(lambda _r: True, 0.5),
+            "all_gated_at_2s": _sel_mo(lambda _r: True, 2.0),
         },
     }
 
@@ -579,6 +665,7 @@ def write_figs(rows: list[dict[str, Any]], summary: dict[str, Any], fig_dir: Pat
     ax.plot(hs, means, "s--", color="#148f77", lw=1.2, label="mean")
     ax.axhline(0.5, color="#7f8c8d", ls=":", lw=0.9)
     ax.axhline(0.75, color="#7f8c8d", ls=":", lw=0.9)
+    ax.axvline(1.0, color="#b7950b", ls="--", lw=1.0, label="used-up ~+1s")
     ax.axvline(2.0, color="#c0392b", ls="--", lw=1.0, label="confirm +2s")
     ax.set_xlabel("seconds after ts_end")
     ax.set_ylabel("fraction of +5s rebound already realized")
@@ -673,6 +760,8 @@ def write_markdown(summary: dict[str, Any], fig_paths: list[str], out: Path) -> 
     res = summary["residual_mo_frac_by_delay"]
     onv = summary["on_v_set"]
     causal = summary["causal_no_r2_lookaside"]
+    share = summary.get("share_rebound_used_by_h") or {}
+    fr50 = summary.get("on_v_first_r50") or {}
 
     fig_lines = "\n".join(f"- `{Path(p).name}`" for p in fig_paths)
 
@@ -687,33 +776,41 @@ def write_markdown(summary: dict[str, Any], fig_paths: list[str], out: Path) -> 
         "",
         "## Verdict — when the rebound is used up",
         "",
-        f"- Median ≥50% of the +5s rebound is already realized by **+{_fmt(used.get('0.5'), 2)}s**.",
-        f"- Median ≥75% by **+{_fmt(used.get('0.75'), 2)}s**.",
-        f"- Median ≥90% by **+{_fmt(used.get('0.9'), 2)}s**.",
-        f"- At **+2.0s (current confirm)**: median frac of +5s rebound = "
-        f"**{_fmt(fc['2.0']['median'])}** (mean {_fmt(fc['2.0']['mean'])}).",
-        f"- At **+0.5s / +1.0s**: median frac = "
-        f"**{_fmt(fc['0.5']['median'])}** / **{_fmt(fc['1.0']['median'])}**.",
+        f"- **Cliff between +0.5s and +1.0s.** Median frac of the +5s rebound: "
+        f"**{_fmt(fc['0.5']['median'])} at +0.5s → {_fmt(fc['1.0']['median'])} at +1.0s** "
+        f"(mean {_fmt(fc['0.5']['mean'])} → {_fmt(fc['1.0']['mean'])}).",
+        f"- Median crosses 50% / 75% / 90% of +5s rebound by **+{_fmt(used.get('0.5'), 2)}s** "
+        f"/ **+{_fmt(used.get('0.75'), 2)}s** / **+{_fmt(used.get('0.9'), 2)}s**.",
+        f"- At **+2.0s (current confirm)**: median frac = **{_fmt(fc['2.0']['median'])}** "
+        f"(mean {_fmt(fc['2.0']['mean'])}); "
+        f"share with ≥90% used = **{_fmt((share.get('2.0') or {}).get('ge_0_9'), 2)}**.",
+        f"- Share ≥90% used: +0.5s **{_fmt((share.get('0.5') or {}).get('ge_0_9'), 2)}** · "
+        f"+1s **{_fmt((share.get('1.0') or {}).get('ge_0_9'), 2)}** · "
+        f"+2s **{_fmt((share.get('2.0') or {}).get('ge_0_9'), 2)}**.",
         "",
-        "So on the faded V set, the rebound is largely **front-loaded inside the "
-        "first ~1s**; waiting to +2s leaves a thin residual for the taker path.",
+        "**Bottom line:** on faded Vs, the rebound is **used up by ~+1s** (often fully). "
+        "Confirm@+2s is after the move; residual fade MO from +1s/+2s → +5s is ≤0.",
         "",
         "## Rebound consumption curve (V set)",
         "",
-        "| t after end | median frac of +5s rebound | mean | p25 | p75 | rebound mean bps |",
-        "|-------------|---------------------------:|-----:|----:|----:|-----------------:|",
+        "| t after end | median frac of +5s rebound | mean | p25 | p75 | ≥90% used | rebound mean bps |",
+        "|-------------|---------------------------:|-----:|----:|----:|----------:|-----------------:|",
     ]
     for h in HORIZONS:
         c = fc[str(h)]
         rb = summary["rebound_bps_curve"][str(h)]
+        sh = share.get(str(h)) or {}
         lines.append(
             f"| +{h:g}s | {_fmt(c['median'])} | {_fmt(c['mean'])} | "
-            f"{_fmt(c['p25'])} | {_fmt(c['p75'])} | {_fmt(rb['mean_bps'])} |"
+            f"{_fmt(c['p25'])} | {_fmt(c['p75'])} | {_fmt(sh.get('ge_0_9'), 2)} | "
+            f"{_fmt(rb['mean_bps'])} |"
         )
 
     lines += [
         "",
         "## Fade-side MO: from `ts_end` vs delayed entry (exit fixed @ +5s)",
+        "",
+        "Same causal-V set as the paper board (selected with r2 — diagnostic only).",
         "",
         "| entry delay | gross fade mo mean | CI | net (−RT4) | hit | residual / end→5s |",
         "|-------------|-------------------:|----|-----------:|----:|------------------:|",
@@ -728,9 +825,17 @@ def write_markdown(summary: dict[str, Any], fig_paths: list[str], out: Path) -> 
 
     lines += [
         "",
-        f"Compare lab identity on same V set: entry@0 residual is the full "
-        f"`−mo_5s` tape path; entry@+2s net ≈ {_fmt(mo['2.0']['net_mean'])} bps "
-        f"(matches path-gap vs Promote scoreboard).",
+        f"Entry@0 matches lab economics (~{_fmt(mo['0.0']['net_mean'])} net). "
+        f"Entry@+2s net ≈ {_fmt(mo['2.0']['net_mean'])} — same sign as path gap on the board.",
+        "",
+        "### Structural note — recovery confirm burns the edge",
+        "",
+        f"First time rolling `recovery≥0.5` on the V set: median delay "
+        f"**{_fmt(fr50.get('median_delay_s'))}s**, gross fade mo "
+        f"**{_fmt((fr50.get('fade_mo') or {}).get('mean'))}**, net "
+        f"**{_fmt(fr50.get('net_mean'))}**. Waiting until the V is *visible* "
+        "is waiting until the rebound is mostly done — so **r2-confirm-then-taker "
+        "is structurally late**, not just a +2s clock bug.",
         "",
         "## Spread / impact at entry clocks",
         "",
@@ -750,60 +855,86 @@ def write_markdown(summary: dict[str, Any], fig_paths: list[str], out: Path) -> 
         )
     lines += [
         "",
+        "Tape 5-print impact is **fade-favorable** at +0/+0.5s (negative adverse) and "
+        "flips **adverse** from +1s onward — consistent with rebound used-up.",
+        "",
         f"Book sources on V rows: `{json.dumps(summary.get('book_sources') or {})}`.",
         "",
-        "## Suggested executable rule (causal — no label / r2 look-ahead)",
+        "## Suggested executable rule (causal — no r2 / label look-ahead)",
         "",
-        "Current rule waits until **+2s** so `recovery_2s` is known. That is "
-        "causal for classification, but economically late.",
+        "**Do not** wait for `recovery_2s≥0.5` then taker-fade. That confirm *is* the rebound.",
         "",
-        "Proposed **rolling V-confirm** (still causal):",
+        "Proposed **severity-at-end** fade (still causal):",
         "",
-        "1. At `ts_end`, start WAIT.",
-        "2. Soft gate at **+1.0s**: require `recovery(t=1s) ≥ 0.35` (same soft as today).",
-        "3. Enter at the **first** `t ∈ [1s, 2s]` where rolling "
-        "`recovery(t) ≥ 0.5` using only tape ≤ t. If never, skip (same as missing V).",
-        "4. Exit still at `ts_end + 5s` (or adverse stop from entry).",
+        "1. On gated SSM `ts_end`, if `|z_peak| ≥ 15` (optional tighten to 18–20), **enter immediately** "
+        "(or ≤+0.25s OE latency buffer).",
+        "2. Side = `−direction` (fade crash). Exit at `ts_end+5s` or adverse stop from entry.",
+        "3. **No** recovery@1s/@2s gate for entry. Optional *late abort*: if still flat by +0.5s "
+        "and book/tape already shows `recovery≥0.5`, skip leftover size (rebound done).",
+        "4. Keep RT=4 shadow haircut; promote only if causal net CI > 0 on panel + path improves vs confirm@+2s.",
         "",
-        "This never peeks past the decision clock. It only enters earlier when "
-        "the V is already visible before +2s.",
+        "Severity uses only info available at event end (SSM path) — no future recovery labels.",
         "",
         "### Counterfactuals",
         "",
-        "| rule | n | mean delay | gross fade mo | net (−RT4) |",
-        "|------|--:|-----------:|--------------:|-----------:|",
+        "| rule | n | delay | gross fade mo | net (−RT4) | hit |",
+        "|------|--:|------:|--------------:|-----------:|----:|",
         (
             f"| confirm@+2s (today, V via r2) | {onv['confirm_2s']['n']} | 2.00 | "
-            f"{_fmt(onv['confirm_2s']['mean'])} | {_fmt(onv['confirm_2s']['net_mean'])} |"
+            f"{_fmt(onv['confirm_2s']['mean'])} | {_fmt(onv['confirm_2s']['net_mean'])} | "
+            f"{_fmt(onv['confirm_2s']['hit_rate'], 3)} |"
         ),
         (
-            f"| rolling early on V set | {onv['early_rolling']['n']} | "
+            f"| oracle V @0s (look-ahead class) | {onv['from_end']['n']} | 0.00 | "
+            f"{_fmt(onv['from_end']['mean'])} | {_fmt(onv['from_end']['net_mean'])} | "
+            f"{_fmt(onv['from_end']['hit_rate'], 3)} |"
+        ),
+        (
+            f"| first r≥0.5 then enter (V set) | {fr50.get('n')} | "
+            f"{_fmt(fr50.get('median_delay_s'))} | "
+            f"{_fmt((fr50.get('fade_mo') or {}).get('mean'))} | "
+            f"{_fmt(fr50.get('net_mean'))} | — |"
+        ),
+        (
+            f"| rolling early min_wait=1s (V) | {onv['early_rolling']['n']} | "
             f"{_fmt(onv['early_rolling']['median_delay_s'])} | "
             f"{_fmt(onv['early_rolling']['fade_mo']['mean'])} | "
-            f"{_fmt(onv['early_rolling']['net_mean'])} |"
+            f"{_fmt(onv['early_rolling']['net_mean'])} | — |"
         ),
         (
-            f"| r1≥0.5 enter@+1s on V set | {onv['r1_strict']['n']} | 1.00 | "
-            f"{_fmt(onv['r1_strict']['fade_mo']['mean'])} | "
-            f"{_fmt(onv['r1_strict']['net_mean'])} |"
+            f"| **causal** `|z|≥15` @0s | {causal['z_ge_15_at_0s']['n']} | 0.00 | "
+            f"{_fmt(causal['z_ge_15_at_0s']['fade_mo']['mean'])} | "
+            f"{_fmt(causal['z_ge_15_at_0s']['net_mean'])} | "
+            f"{_fmt(causal['z_ge_15_at_0s']['hit_rate'], 3)} |"
         ),
         (
-            f"| **causal** rolling (no r2 filter) | "
-            f"{causal['rolling_enter_ge1s']['n']} | "
-            f"{_fmt(causal['rolling_enter_ge1s']['mean_delay_s'])} | "
-            f"{_fmt(causal['rolling_enter_ge1s']['fade_mo']['mean'])} | "
-            f"{_fmt(causal['rolling_enter_ge1s']['net_mean'])} |"
+            f"| **causal** `|z|≥20` @0s | {causal['z_ge_20_at_0s']['n']} | 0.00 | "
+            f"{_fmt(causal['z_ge_20_at_0s']['fade_mo']['mean'])} | "
+            f"{_fmt(causal['z_ge_20_at_0s']['net_mean'])} | "
+            f"{_fmt(causal['z_ge_20_at_0s']['hit_rate'], 3)} |"
         ),
         (
-            f"| **causal** r1≥0.5 @+1s (no r2) | "
-            f"{causal['r1_ge_0_5_enter_at_1s']['n']} | 1.00 | "
-            f"{_fmt(causal['r1_ge_0_5_enter_at_1s']['fade_mo']['mean'])} | "
-            f"{_fmt(causal['r1_ge_0_5_enter_at_1s']['net_mean'])} |"
+            f"| **causal** `|z|≥15` @+0.5s | {causal['z_ge_15_at_0_5s']['n']} | 0.50 | "
+            f"{_fmt(causal['z_ge_15_at_0_5s']['fade_mo']['mean'])} | "
+            f"{_fmt(causal['z_ge_15_at_0_5s']['net_mean'])} | "
+            f"{_fmt(causal['z_ge_15_at_0_5s']['hit_rate'], 3)} |"
+        ),
+        (
+            f"| **causal** all gated @0s | {causal['all_gated_at_0s']['n']} | 0.00 | "
+            f"{_fmt(causal['all_gated_at_0s']['fade_mo']['mean'])} | "
+            f"{_fmt(causal['all_gated_at_0s']['net_mean'])} | "
+            f"{_fmt(causal['all_gated_at_0s']['hit_rate'], 3)} |"
+        ),
+        (
+            f"| **causal** all gated @+2s | {causal['all_gated_at_2s']['n']} | 2.00 | "
+            f"{_fmt(causal['all_gated_at_2s']['fade_mo']['mean'])} | "
+            f"{_fmt(causal['all_gated_at_2s']['net_mean'])} | "
+            f"{_fmt(causal['all_gated_at_2s']['hit_rate'], 3)} |"
         ),
         "",
-        "**Recommendation:** shadow-test rolling confirm with `min_wait=1.0s`, "
-        "`v_thr=0.5`, keep RT=4 and adverse stop; promote only if causal (no-r2) "
-        "net CI clears 0 and path PnL improves vs confirm@+2s on the same panel.",
+        "**Recommendation:** shadow `|z|≥15` (or 20) enter-at-`ts_end` taker fade; "
+        "drop r2 confirm for the executable path. Keep current r2 rule as lab scoreboard "
+        "only. Re-kill if early/late or CI fails under severity gate.",
         "",
         "## Figures",
         "",
@@ -815,6 +946,7 @@ def write_markdown(summary: dict[str, Any], fig_paths: list[str], out: Path) -> 
         "on Phase-4 days · `live_orders=False` · ClickHouse MCP banned · not live alpha.",
         "- Rebound “used up” uses peak favorable excursion by horizon vs peak by +5s "
         "(path-dependent); residual MO uses fixed exit@+5s.",
+        "- Oracle V @0s uses r2 class look-ahead for diagnostics; causal rows do not.",
         "",
         "Reproduce: `python3 analyze_entry_timing.py`",
         "",

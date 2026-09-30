@@ -1,9 +1,8 @@
 # Overview — EXP_REPORT
 
 ## Sample
-- Theory package; empirics in sibling chapters (ETH+BTC Pass 2.6).
+- Pass 2.7 expand: **34d** (2026-08-28…09-30) · ETH+BTC+SOL · HL+Deribit+Kraken · **n_ok=204**.
 
 ## Status
-- Pass 2.6 blocker-close: **0 Promote**. Mid-clock Hold (CI_lo=1.17<1.5, n=73). TSRV OOS Hold. MC Kill sparse stands.
-- Kraken spot L2 wired from S3; futures quoted TOB via REST ingest (archives lack L2/BBO).
-- See [`../../DESK_MEMO.md`](../../DESK_MEMO.md) · [`../../out/blocker_close/`](../../out/blocker_close/).
+- **0 Promote / 5 Hold / 4 Kill**. Mid-clock Hold (CI_lo=1.13). TSRV Hold (late fails). noise↔spread Hold (ρ≈0).
+- See [`../../DESK_MEMO.md`](../../DESK_MEMO.md) · [`../../notebooks/desk_synthesis.ipynb`](../../notebooks/desk_synthesis.ipynb).

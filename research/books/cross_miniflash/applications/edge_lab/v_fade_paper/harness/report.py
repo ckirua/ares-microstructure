@@ -48,12 +48,16 @@ def summarize(
             detector_skip=bool(cell.get("skip")),
         )
 
-    equity = np.cumsum(lab) if lab.size else np.asarray([], dtype=np.float64)
-    max_dd = 0.0
-    if equity.size:
-        peak = np.maximum.accumulate(equity)
-        dd = equity - peak
-        max_dd = float(dd.min())
+    equity_lab = np.cumsum(lab) if lab.size else np.asarray([], dtype=np.float64)
+    max_dd_lab = 0.0
+    if equity_lab.size:
+        peak = np.maximum.accumulate(equity_lab)
+        max_dd_lab = float((equity_lab - peak).min())
+    equity_path = np.cumsum(path) if path.size else np.asarray([], dtype=np.float64)
+    max_dd_path = 0.0
+    if equity_path.size:
+        peak_p = np.maximum.accumulate(equity_path)
+        max_dd_path = float((equity_path - peak_p).min())
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -76,12 +80,17 @@ def summarize(
         "lab_pnl_net_bps": lab_ci,
         "path_pnl_net_bps": path_ci,
         "hit_rate_lab": float(np.mean(lab > 0)) if lab.size else float("nan"),
-        "final_equity_lab_bps": float(equity[-1]) if equity.size else 0.0,
-        "max_dd_lab_bps": max_dd,
+        "hit_rate_path": float(np.mean(path > 0)) if path.size else float("nan"),
+        "final_equity_lab_bps": float(equity_lab[-1]) if equity_lab.size else 0.0,
+        "max_dd_lab_bps": max_dd_lab,
+        "final_equity_path_bps": float(equity_path[-1]) if equity_path.size else 0.0,
+        "max_dd_path_bps": max_dd_path,
         "rt_friction_bps": sim.get("rt_friction_bps") or vf.get("rt_friction_bps", 4.0),
         "confirm_s": sim.get("confirm_s"),
         "exit_s": sim.get("exit_s"),
         "adverse_stop_bps": sim.get("adverse_stop_bps"),
+        "entry_mode": sim.get("entry_mode") or vf.get("entry_mode"),
+        "z_min": sim.get("z_min") if sim.get("z_min") is not None else vf.get("z_min"),
         "kills": kills,
         "config": {
             "gate": cfg.get("gate"),
@@ -145,7 +154,20 @@ def write_figs(
     plt.close(fig)
     paths.append(str(p))
 
-    # 2) equity path (lab identity)
+    # 2) path equity (Promote scoreboard) + lab diagnostic
+    from .equity import write_path_equity_figs
+
+    mode = str(sim.get("entry_mode") or (trades[0].get("entry_mode") if trades else "severity_zend"))
+    paths.extend(
+        write_path_equity_figs(
+            trades,
+            fig_dir,
+            label=f"{mode} path",
+            venue=venue,
+            symbol=symbol,
+            stem="equity_path",
+        )
+    )
     lab = [float(t["lab_pnl_net_bps"]) for t in trades if t.get("lab_pnl_net_bps") is not None]
     fig, ax = plt.subplots(figsize=(11, 3.6))
     if lab:
@@ -156,7 +178,7 @@ def write_figs(
         ax.set_ylabel("cum lab net bps")
     else:
         ax.text(0.5, 0.5, "no fades", ha="center", va="center", transform=ax.transAxes)
-    ax.set_title(f"{day} {venue} {symbol} — cum lab PnL (−mo₅ₛ − RT4)")
+    ax.set_title(f"{day} {venue} {symbol} — cum lab PnL (−mo₅ₛ − RT4) diagnostic")
     p = fig_dir / "equity_lab.png"
     fig.tight_layout()
     fig.savefig(p, dpi=140, bbox_inches="tight")
@@ -240,8 +262,10 @@ Generated: `{summary.get('generated_at')}`
 - n_faded: **{summary.get('n_faded')}** · time_stop: {summary.get('n_time_stops')} · adverse: {summary.get('n_adverse_exits')}
 - Lab net bps (−mo₅ₛ − RT): mean **{_fmt(lab.get('mean'))}** CI[{_fmt(lab.get('lo'))}, {_fmt(lab.get('hi'))}] n={lab.get('n')}
 - Path net bps (entry→exit): mean **{_fmt(path_ci.get('mean'))}** CI[{_fmt(path_ci.get('lo'))}, {_fmt(path_ci.get('hi'))}]
-- Hit-rate (lab): **{_fmt(summary.get('hit_rate_lab'))}**
-- Cum equity / max DD (lab): **{_fmt(summary.get('final_equity_lab_bps'))}** / **{_fmt(summary.get('max_dd_lab_bps'))}** bps
+- Hit-rate (lab / path): **{_fmt(summary.get('hit_rate_lab'))}** / **{_fmt(summary.get('hit_rate_path'))}**
+- Cum **path** equity / max DD: **{_fmt(summary.get('final_equity_path_bps'))}** / **{_fmt(summary.get('max_dd_path_bps'))}** bps
+- Cum lab equity / max DD (diagnostic): **{_fmt(summary.get('final_equity_lab_bps'))}** / **{_fmt(summary.get('max_dd_lab_bps'))}** bps
+- Entry mode: `{summary.get('entry_mode')}` · z_min={_fmt(summary.get('z_min'))}
 
 ## Kill criteria (spec §7)
 

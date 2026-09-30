@@ -1,10 +1,14 @@
 # Paper-live — continuous crash-risk overlay (shadow only)
 
-**Class:** risk-policy · **not** PnL alpha  
+**Class:** risk-policy · **not** PnL alpha · **not** V-fade  
 **Primary cell:** Hyperliquid ETH  
 **Base:** [`../paper_harness/`](../paper_harness/) (detect → kill-ladder → shadow fills → risk report)
 
 Long-running **rolling shadow sim**. No live exchange orders. Never submits to mercat/gateway.
+
+> **severity_zend** (`|z|≥20` @0.5→3s, Promote_shadow) is **not** this package.  
+> Run it from [`../edge_lab/v_fade_paper/`](../edge_lab/v_fade_paper/) — see [Restart with severity](#restart-with-severity-zend-not-this-unit) below.  
+> `confirm_r2@2→5` is Hold / path-late; do not use it as the executable default.
 
 Desk context: [`../../TRADING_APPLICATIONS.md`](../../TRADING_APPLICATIONS.md) · [`../paper_harness/README.md`](../paper_harness/README.md).  
 Data inventory: [`../../../../DATA_PATHS.md`](../../../../DATA_PATHS.md). ClickHouse MCP banned.
@@ -73,7 +77,9 @@ tail -f /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applica
 
 Log handlers **flush each record**. Optional daily UTC rotate (`log_rotate: daily` in `config.yaml`). systemd also appends stdout/stderr to the same file.
 
-You will see: session start, heartbeats, tier changes, FIRE lines (with Nanex escalate), shadow fill summaries, RISK_REPORT refreshes, and errors.
+You will see: session start (incl. **v_fade Promote pointer** `severity_zend |z|≥20 @0.5→3s`), heartbeats with **`cum_eq_ladder_bps` / `Δeq_bps`**, tier changes, FIRE lines, shadow fill summaries, RISK_REPORT refreshes, and errors.
+
+> paper_live is the crash-risk **ladder overlay** (maker equity scoreboard). Executable V-fade alpha curves live in [`../edge_lab/v_fade_paper/out/EQUITY.md`](../edge_lab/v_fade_paper/out/EQUITY.md).
 
 ---
 
@@ -82,6 +88,34 @@ You will see: session start, heartbeats, tier changes, FIRE lines (with Nanex es
 - systemd: `systemctl --user stop ares-paper-live.service`
 - Foreground: `Ctrl-C` (SIGINT) — finishes the current poll, then exits.
 - Ad-hoc process: `pkill -f run_paper_live.py` (SIGTERM also handled).
+
+---
+
+## Restart with severity_zend (not this unit)
+
+This service is crash-risk kill-ladder only. For the Promote_shadow V-fade use the **separate** unit:
+
+```bash
+# durable living shadow (DISTINCT from ares-paper-live.service)
+systemctl --user enable --now ares-vfade-shadow.service
+systemctl --user status ares-vfade-shadow.service
+tail -f /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper/logs/v_fade_shadow.log
+
+# one-shot / foreground under v_fade_paper/
+cd /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper
+python3 run_shadow_day.py
+python3 run_v_fade_shadow_live.py --poll --interval 120
+# ≡ severity_zend |z|≥20 @0.5→3s prior_only · live_orders=false
+```
+
+Restart **this** crash-risk loop (unchanged class):
+
+```bash
+systemctl --user restart ares-paper-live.service
+# or foreground:
+cd /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/paper_live
+python3 run_paper_live.py --poll --interval 10 --quiet
+```
 
 ---
 
@@ -121,5 +155,6 @@ Cadence: warehouse BBO can lag the tape; fills still book at the trade print (ta
 | Collector TOB probe + book | **Wired if day dir present** |
 | `tail -f` log + daily rotate | **Wired** |
 | startarb `shadow_live` (pairs z-fade PnL sleeve) | **Not this package** (different alpha lane) |
+| `v_fade_paper` severity_zend Promote_shadow | **Not this package** — run under `edge_lab/v_fade_paper/` |
 | mercat / gateway live path | **Not used** |
 | ClickHouse MCP | **Banned** |

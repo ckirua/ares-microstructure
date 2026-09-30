@@ -73,7 +73,7 @@ def notebook_desk_synthesis() -> nbformat.NotebookNode:
 
 Romero (2016) / ZMA05 TSRV on crypto perps (**HL · Deribit · Kraken**).
 
-**Program status (Pass 2.6):** **0 Promote / 5 Hold / 4 Kill**
+**Program status (Pass 2.7):** **0 Promote / 5 Hold / 4 Kill** · n_ok=**204** · n_mid=**122** · 34d ETH+BTC+SOL
 
 Hard rule: sized claims only if a **Promote** clears the pre-registered gate. Holds are monitors / research debt — not soft-Promotes.
 

@@ -26,6 +26,20 @@ Same-venue price fade event study; venue-fade when xvenue sync allows (deck slid
 
 Markout after fade; τ grid; Kraken `trade_synth` excluded from native TOB. Not a rename of `lob.tob_depletion_cancel_proxy`.
 
+## Info / Bayesian dig
+
+**Question:** is fade **temporary liquidity pull** (widen then revert) or **permanent** adverse impact?
+
+| Lens | Finding | Path |
+|------|---------|------|
+| P(fade) Beta-Binomial | θ≈0.0114 CrI[0.0108,0.0120]; prior-stable; HL≫Deribit (hier) | `out/bayes/` |
+| Spread IRF | peak Δ **−0.11bps** this dig vs +0.28 prior expand → **unstable** | `out/feature_stats/` |
+| P(widen \| fade) | ≈0.60 CrI[0.19,0.93] thin | `info.bayes_widen_given_fade` |
+| Temp vs perm markout | 250ms vs 5s share unstable | `info.fade_temp_vs_perm_impact` |
+| Xvenue IS | sparse Hasbrouck around fade | research-only |
+
+**Wire-as:** MM temporary widen / size cut sketch when θ_fade + IRF agree — **Hold** until IRF sign-stable on ≥10 days.
+
 ## Pass checklist
 
 ### Pass 1
@@ -35,5 +49,6 @@ Markout after fade; τ grid; Kraken `trade_synth` excluded from native TOB. Not 
 - [x] Draft CANDIDATES
 
 ### Pass 2
-- [ ] Overlap gate vs lob cancel proxy
-- [ ] Signal board → DESK_MEMO
+- [x] Overlap gate vs lob cancel proxy
+- [x] Signal board → DESK_MEMO
+- [x] Info/Bayes deep dig

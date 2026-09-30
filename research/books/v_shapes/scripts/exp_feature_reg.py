@@ -849,7 +849,74 @@ def fit_logistic_breach_sign(rows: list[dict]) -> dict:
     }
 
 
-def make_figures(results: dict) -> None:
+def _fig_train_test_split(prim: dict, meta: dict | None = None) -> None:
+    """Chronological day split honesty — train (earlier) vs test (later)."""
+    train_days = list(prim.get("train_days") or [])
+    test_days = list(prim.get("test_days") or [])
+    day_meta = (meta or {}).get("day_meta") or []
+    # rows per UTC day (sum venues/symbols)
+    counts: dict[str, int] = {}
+    for r in day_meta:
+        d = r.get("day")
+        if not d:
+            continue
+        counts[d] = counts.get(d, 0) + int(r.get("n_ok") or 0)
+    all_days = sorted(set(train_days) | set(test_days) | set(counts))
+    if not all_days:
+        all_days = train_days + test_days
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.0), gridspec_kw={"width_ratios": [2.2, 1]})
+    ax = axes[0]
+    xs, ys, colors = [], [], []
+    for i, d in enumerate(all_days):
+        xs.append(i)
+        ys.append(counts.get(d, 0))
+        colors.append("#3d5a5b" if d in train_days else "#8b3a3a")
+    ax.bar(xs, ys, color=colors, alpha=0.9)
+    ax.set_xticks(xs)
+    ax.set_xticklabels([d[5:] for d in all_days], rotation=45, ha="right", fontsize=8)
+    ax.set_ylabel("Decision rows (n_ok sum)")
+    ax.set_title("Chrono day split — teal=train · red=test")
+    ax.grid(True, axis="y", alpha=0.3)
+    ax2 = axes[1]
+    n_tr = int(prim.get("n_train") or 0)
+    n_te = int(prim.get("n_test") or 0)
+    ax2.bar(["train", "test"], [n_tr, n_te], color=["#3d5a5b", "#8b3a3a"], alpha=0.9)
+    ax2.set_ylabel("n rows")
+    ax2.set_title(f"n_train={n_tr:,}  n_test={n_te:,}")
+    for i, v in enumerate([n_tr, n_te]):
+        ax2.text(i, v, f"{v:,}", ha="center", va="bottom", fontsize=9)
+    fig.suptitle(
+        f"Train/test honesty — {prim.get('target', PRIMARY_TARGET)}  "
+        f"({len(train_days)}/{len(test_days)} UTC days)",
+        fontsize=11,
+    )
+    fig.tight_layout()
+    fig.savefig(FIG / "train_test_split.png", dpi=140)
+    plt.close(fig)
+
+
+def _fig_calendar_coefs(results: dict) -> None:
+    """Leading calendar-clock Ridge coefs (Promote-as-Monitor target)."""
+    blk = (results.get("by_target") or {}).get("y_cal_300s") or {}
+    coef = ((blk.get("ridge") or {}).get("coef")) or blk.get("coef") or {}
+    if not coef:
+        return
+    names = list(coef.keys())
+    vals = [float(coef[n]) for n in names]
+    order = np.argsort(np.abs(vals))[::-1]
+    names = [names[i] for i in order]
+    vals = [vals[i] for i in order]
+    fig, ax = plt.subplots(figsize=(8.0, 4.2))
+    ax.barh(names, vals, color="#2f4f4f")
+    ax.axvline(0, color="gray", lw=0.8)
+    ax.set_xlabel("Standardized Ridge coef")
+    ax.set_title("Coefs — y_cal_300s (calendar Monitor Promote)")
+    fig.tight_layout()
+    fig.savefig(FIG / "ridge_coefs_calendar.png", dpi=140)
+    plt.close(fig)
+
+
+def make_figures(results: dict, meta: dict | None = None) -> None:
     FIG.mkdir(parents=True, exist_ok=True)
     # IC by horizon
     fig, ax = plt.subplots(figsize=(8.5, 4.2))
@@ -937,6 +1004,36 @@ def make_figures(results: dict) -> None:
     fig.tight_layout()
     fig.savefig(FIG / "ridge_coefs_primary.png", dpi=140)
     plt.close(fig)
+
+    _fig_train_test_split(prim, meta)
+    _fig_calendar_coefs(results)
+
+
+def regenerate_figs_from_artifacts() -> list[str]:
+    """Rebuild all feature_reg figs from out/ JSON — no warehouse re-fit."""
+    summary = json.loads((OUT / "summary.json").read_text())
+    prim = json.loads((OUT / "primary_fit.json").read_text())
+    meta = json.loads((OUT / "panel_meta.json").read_text()) if (OUT / "panel_meta.json").exists() else {}
+    coef_tables = (
+        json.loads((OUT / "coef_tables.json").read_text()) if (OUT / "coef_tables.json").exists() else {}
+    )
+    by_target: dict[str, Any] = {}
+    for key, blk in (summary.get("results") or {}).items():
+        entry = dict(blk)
+        # prefer full primary_fit for primary target
+        if key == (summary.get("primary_target") or PRIMARY_TARGET):
+            entry = {**entry, **prim}
+        ct = coef_tables.get(key) or {}
+        if ct.get("ridge") and not ((entry.get("ridge") or {}).get("coef")):
+            ridge = dict(entry.get("ridge") or {})
+            ridge["coef"] = ct["ridge"]
+            entry["ridge"] = ridge
+            entry.setdefault("coef", ct["ridge"])
+        by_target[key] = entry
+    results = {"by_target": by_target}
+    make_figures(results, meta=meta)
+    written = sorted(p.name for p in FIG.glob("*.png"))
+    return written
 
 
 def gate_decisions(results: dict) -> dict:
@@ -1046,8 +1143,21 @@ def gate_decisions(results: dict) -> dict:
         }
     )
 
-    # paper alpha idea — only if primary Promote
+    # paper / monitor ideas from gates
     trade_ideas = []
+    cal = next((c for c in candidates if c["id"] == "info.v_feature_ridge_calendar"), None)
+    if cal and cal["decision"] == "Promote":
+        trade_ideas.append(
+            {
+                "id": "ti.v_feature_cal_monitor",
+                "label": "Monitor",
+                "title": "Causal V-feature Ridge score on calendar clock (info monitor)",
+                "depends_on": ["info.v_feature_ridge_calendar"],
+                "gate_status": {"info.v_feature_ridge_calendar": "Promote"},
+                "tradable_size": "N/A — Monitor only; R²≪1, not sized alpha",
+                "falsifier": cal["evidence"],
+            }
+        )
     if ok:
         trade_ideas.append(
             {
@@ -1065,26 +1175,29 @@ def gate_decisions(results: dict) -> dict:
             {
                 "id": "ti.v_feature_ridge_monitor",
                 "label": "Monitor",
-                "title": "Ridge V-feature IC monitor on trade clock",
+                "title": "Ridge V-feature IC monitor on trade clock (primary — failed OOS)",
                 "depends_on": ["info.v_feature_ridge_tick"],
                 "gate_status": {"info.v_feature_ridge_tick": "Hold"},
                 "tradable_size": "N/A — Monitor / paper; do not soft-Promote",
                 "falsifier": candidates[0]["evidence"],
             }
         )
-    # throttle reinforcement if breach logistic or abs_Tm coef meaningful
     trade_ideas.append(
         {
             "id": "ti.v_feature_throttle_join",
             "label": "Exec throttle",
-            "title": "Join causal T− / breach into avoid-chase throttle score",
-            "depends_on": ["info.v_feature_ridge_tick", "info.v_path_continuous"],
+            "title": "Join causal T− / calendar Ridge score into avoid-chase throttle",
+            "depends_on": [
+                "info.v_feature_ridge_calendar" if (cal and cal["decision"] == "Promote") else "info.v_feature_ridge_tick",
+                "info.v_path_continuous",
+            ],
             "gate_status": {
+                "info.v_feature_ridge_calendar": (cal or {}).get("decision", "Hold"),
                 "info.v_feature_ridge_tick": candidates[0]["decision"],
                 "info.v_path_continuous": "Hold",
             },
-            "tradable_size": "Paper throttle score only until both gates clear",
-            "falsifier": "Requires stable OOS IC on trade clock AND continuous-V Hold cleared",
+            "tradable_size": "Paper throttle score — calendar Promote backs monitor join; live POV still paper until v_path clears",
+            "falsifier": "Tick primary Hold; calendar IC stable but R² small; v_path continuous still Hold",
         }
     )
     return {"candidates": candidates, "trade_ideas_new": trade_ideas}
@@ -1154,7 +1267,7 @@ def write_reports(results: dict, gates: dict, panel_meta: dict) -> None:
 - `out/feature_reg/summary.json`
 - `out/feature_reg/panel_rows.json` / `panel_meta.json`
 - `out/feature_reg/coef_tables.json`
-- `out/feature_reg/figs/ic_by_horizon.png`, `ridge_path.png`, `oos_scatter_primary.png`, `ridge_coefs_primary.png`
+- `out/feature_reg/figs/ic_by_horizon.png`, `ridge_path.png`, `oos_scatter_primary.png`, `ridge_coefs_primary.png`, `train_test_split.png`, `ridge_coefs_calendar.png`
 """
     (APP / "EXP_REPORT.md").write_text(report)
 
@@ -1248,7 +1361,7 @@ def run(*, max_files: int, fast: bool, include_btc: bool) -> dict:
     (OUT / "primary_fit.json").write_text(
         json.dumps(_jsonable(by_target.get(PRIMARY_TARGET, {})), indent=2)
     )
-    make_figures(results)
+    make_figures(results, meta=meta)
     gates = gate_decisions(results)
     write_reports(results, gates, meta)
     print("== done ==", flush=True)
@@ -1261,7 +1374,16 @@ def main() -> None:
     ap.add_argument("--max-files", type=int, default=24)
     ap.add_argument("--fast", action="store_true")
     ap.add_argument("--no-btc", action="store_true")
+    ap.add_argument(
+        "--figs-only",
+        action="store_true",
+        help="Regenerate figs from out/feature_reg JSON artifacts (no re-fit).",
+    )
     args = ap.parse_args()
+    if args.figs_only:
+        written = regenerate_figs_from_artifacts()
+        print("figs regenerated:", written, flush=True)
+        return
     run(max_files=args.max_files, fast=args.fast, include_btc=not args.no_btc)
 
 

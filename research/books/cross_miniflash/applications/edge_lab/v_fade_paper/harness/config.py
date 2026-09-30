@@ -26,16 +26,19 @@ def load_config(path: str | Path | None = None) -> dict[str, Any]:
     raw.setdefault(
         "v_fade",
         {
-            "confirm_s": 2.0,
-            "exit_s": 5.0,
+            "entry_mode": "severity_zend",
+            "confirm_s": 0.5,
+            "exit_s": 3.0,
+            "z_min": 20.0,
             "soft_confirm_r1": 0.35,
             "v_threshold_r2": 0.5,
             "cont_threshold_r2": 0.2,
             "rt_friction_bps": 4.0,
             "friction_bps_one_way": 2.0,
-            "adverse_stop_bps": 12.0,
+            "adverse_stop_bps": 1e9,
             "max_concurrent": 1,
             "clip_notional": 1.0,
+            "suppress_fire_pause": "prior_only",
             "n_boot": 800,
         },
     )

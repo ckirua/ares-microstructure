@@ -57,6 +57,8 @@ Ranked by expected desk value (earn first, then save, then ignore).
 | **Status** | **Promote** (causal_fade_v_only +11.63 bps). |
 | **Implementation** | Paper first: `edge_lab` rule → `paper_harness` aggressor shadow → live taker bot with nest+int gates. |
 
+Path markout closed the lab→exec gap: `confirm_r2@2s` is path-dead (−5.7 Hold) because the rebound is spent by ~+1s; executable default is `severity_zend` (`|z|≥20` @0.5→3s, no r2) at **+20.2** Promote_shadow — see [`edge_lab/v_fade_paper/out/PATH_GAP_REPORT.md`](edge_lab/v_fade_paper/out/PATH_GAP_REPORT.md). CLI: `python3 run_v_fade_paper.py --panel-days --entry-mode severity_zend --confirm-s 0 --z-min 15` (or best-policy `--confirm-s 0.5 --exit-s 3 --z-min 20`); keep `--entry-mode confirm_r2 --confirm-s 2` for the lab board only.
+
 ### B. Intensity / Nanex nest halt (risk overlay)
 
 | Field | Spec |

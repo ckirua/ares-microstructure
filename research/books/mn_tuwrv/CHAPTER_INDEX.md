@@ -6,10 +6,11 @@ Data: [`../../DATA_PATHS.md`](../../DATA_PATHS.md). Desk: [`DESK_MEMO.md`](DESK_
 
 **Book:** Romero (2016) · ZMA05 TSRV. Slug: `mn_tuwrv`.
 
-**Program status:** **Pass 2.6 blocker-close** — denser TOB (21d, n_mid=73), Kraken spot L2 wired, futures REST ingest. Mid-clock CI_lo=1.17 < 1.5 → **Hold**. Tape TSRV OOS not significant → **Hold**. **0 Promote**. MC **Kill** sparse stands.
+**Program status:** **Pass 2.7 expand-panel** — full listing cache **34d** · ETH+BTC+SOL · **n_ok=204** · **n_mid=122**. Mid-clock CI_lo=1.13 < 1.5 → **Hold**. TSRV early clears but late does not → **Hold**. noise↔spread ρ≈0 → **Hold**. **0 Promote**. MC **Kill** sparse stands.
+
 
 **Shared lib:** [`../../lib/tsrv.py`](../../lib/tsrv.py) · loaders [`scripts/_data.py`](scripts/_data.py) (`load_tob_day`, `load_kraken_spot_tob_day`, futures ingest cache)  
-**Blocker script:** [`scripts/exp_blocker_close.py`](scripts/exp_blocker_close.py) · artifact [`out/blocker_close/`](out/blocker_close/)  
+**Blocker/expand script:** [`scripts/exp_expand_panel.py`](scripts/exp_expand_panel.py) · artifact [`out/expand_panel/`](out/expand_panel/)  
 **Futures ingest:** [`scripts/ingest_kraken_futures_tob.py`](scripts/ingest_kraken_futures_tob.py) → [`out/kraken_futures_tob/`](out/kraken_futures_tob/)
 
 ---
@@ -18,12 +19,12 @@ Data: [`../../DATA_PATHS.md`](../../DATA_PATHS.md). Desk: [`DESK_MEMO.md`](DESK_
 
 | Package | Status | Notes |
 |---------|--------|-------|
-| `ch00_overview` | `exp_run` | Signal board synced to Pass 2.6 |
-| `estimators` | `exp_run` | TSRV OOS Hold; MC Kill sparse |
+| `ch00_overview` | `exp_run` | Signal board synced to Pass 2.7 |
+| `estimators` | `exp_run` | TSRV OOS Hold; clocks Kill/Hold; n=204 |
 | `monte_carlo` | `exp_run` | Kill sparse-only (n=500) |
 | `noise_proxy` | `exp_run` | Multi-week noise_std |
-| `market_noise` | `exp_run` | Mid-clock denser CI still Hold |
-| `xvenue_noise` | `exp_run` | Hold concordance |
+| `market_noise` | `exp_run` | ρ≈0 Hold; mid-clock denser still Hold |
+| `xvenue_noise` | `exp_run` | concordance Hold n_cells=79 |
 
 ---
 
@@ -48,7 +49,7 @@ Data: [`../../DATA_PATHS.md`](../../DATA_PATHS.md). Desk: [`DESK_MEMO.md`](DESK_
 
 ---
 
-## Kraken data map (Pass 2.6)
+## Kraken data map (Pass 2.7)
 
 | Stream | Where | Quoted TOB? |
 |--------|-------|-------------|
@@ -58,7 +59,7 @@ Data: [`../../DATA_PATHS.md`](../../DATA_PATHS.md). Desk: [`DESK_MEMO.md`](DESK_
 | ClickHouse `kraken_md` | `148.251.90.84:9000` | unreachable from this host |
 
 
-## Notebooks (Pass 2.6 desk pack)
+## Notebooks (Pass 2.7 desk pack)
 
 | Notebook | Role |
 |----------|------|

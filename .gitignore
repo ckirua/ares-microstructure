@@ -50,7 +50,19 @@ htmlcov/
 !**/logs/.gitkeep
 paper_live.log
 paper_live.log.*
+v_fade_shadow.log
+v_fade_shadow.log.*
 *.log
+
+# Heavy / local caches that must never land outside out/
+*.parquet
+*.pkl
+*.joblib
+*.npy
+*.npz
+*.h5
+*.feather
+*.arrow
 
 # systemd local overrides / drop-ins (never commit host-specific units)
 **/systemd.local/

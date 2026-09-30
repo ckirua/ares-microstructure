@@ -244,7 +244,9 @@ def collect_counts(
                     n_widen += int(widen)
                 row["n_fade_irf"] = n_fade_ev
                 row["n_fade_widen"] = n_widen
-                row["fade_irf_peak"] = float(np.nanmax(irf["mean_delta_bps"])) if irf.get("mean_delta_bps") else float("nan")
+                dlt = np.asarray(irf.get("mean_delta_bps", []), dtype=np.float64)
+                dlt = dlt[np.isfinite(dlt)]
+                row["fade_irf_peak"] = float(np.max(dlt)) if dlt.size else float("nan")
                 day_rows.append(row)
 
     return {"day_rows": day_rows, "storm_adverse": storm_adverse, "fade_widen": fade_widen}

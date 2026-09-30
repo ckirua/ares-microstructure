@@ -1,9 +1,24 @@
 # TI-v-fade — executable strategy spec (directional, not MM)
 
-**Status:** Promote (research_sim) · `causal_fade_v_only`  
-**Source:** [`out/EXP_REPORT.md`](out/EXP_REPORT.md) · [`exp_edge_lab.py`](exp_edge_lab.py) · panel [`../mm_quoting/out/panel_cache.json`](../mm_quoting/out/panel_cache.json)  
-**Honesty:** tape `mo_5s` economics · RT friction 4 bps · **mid_mo null** → not naked live alpha · `live_orders=False`  
+**Status:** Promote_shadow (executable path) · lab identity still `causal_fade_v_only`  
+**Source:** [`out/EXP_REPORT.md`](out/EXP_REPORT.md) · [`v_fade_paper/out/PATH_GAP_REPORT.md`](v_fade_paper/out/PATH_GAP_REPORT.md) · [`exp_edge_lab.py`](exp_edge_lab.py)  
+**Honesty:** tape economics · RT=4 bps · **mid_mo null** · `live_orders=False` · lab ≠ path  
 **Kill sibling:** TI-cont-ride causal is **Kill** — do **not** ride continuation in this bot.
+
+### Executable shadow default (path gap CLOSED)
+
+| param | value | notes |
+|-------|------:|-------|
+| `entry_mode` | **severity_zend** | no r2 wait (confirm_r2 is path-late) |
+| `z_min` | **20** | `|z_peak|` at event end |
+| `confirm_s` | **0.5** | OE buffer after `ts_end` |
+| `exit_s` | **3.0** | time stop from event end |
+| `suppress_fire_pause` | **prior_only** | fade at own fire `ts_end`; block follow-ons 300s |
+| adverse stop | **off** | panel best had null adverse |
+| Panel path (HL ETH 09-04…10) | **+20.16** bps | CI [9.77, 29.79] · n=23 · **Promote_shadow** |
+| confirm_r2@2→5 path | **−5.74** bps | Hold on path (lab identity still +) |
+
+Run: `cd v_fade_paper && python3 run_v_fade_paper.py --panel-days` · `python3 run_shadow_day.py` · `python3 build_equity_curves.py`
 
 ---
 
@@ -42,27 +57,43 @@ Optional joins (not required for fade entry): `event_panel` `nanex_overlap` / `t
 
 ---
 
-## 3. Parameters (locked to `exp_edge_lab.py`)
+## 3. Parameters
+
+### 3a. Executable shadow default (Promote_shadow — use this)
 
 | param | value | notes |
 |-------|------:|-------|
+| `entry_mode` | **severity_zend** | no r2 wait |
+| `z_min` | **20** | `|z_peak|` at event end |
+| Entry delay `confirm_s` | **0.5 s** after `ts_end` | OE buffer |
+| Exit `exit_s` | **3.0 s** from `ts_end` | time stop |
+| `suppress_fire_pause` | **prior_only** | own fire ok; block follow-ons 300s |
+| Adverse stop | **off** | `adverse_stop_bps=1e9` |
 | `FRICTION_BPS` one-way | **2.0** | `_common.FRICTION_BPS` |
-| `RT_FRICTION` | **4.0** bps | `2 × FRICTION_BPS` round-trip taker haircut |
+| `RT_FRICTION` | **4.0** bps | round-trip taker haircut |
 | Gate | `|ΔP|≥10 bps`, `i_c≥5` | `severity_gate` primary |
 | SSM `z_star` | 6.0 | detect path |
-| `σ_m` floor | ≥1 bp (`sigma_m_frac=1.0`) | infra pre-condition |
+| Primary paper cell | HL ETH | `v_fade_paper/config.yaml` |
+
+Path scoreboard: entry@+0.5s → exit@3s tape − RT4. Panel n=23 · path mean **+20.16** · Promote_shadow.
+
+### 3b. Lab identity / confirm_r2 (scoreboard only — path-late Hold)
+
+Locked to `exp_edge_lab.py` `causal_fade_v_only` for lab identity. **Do not** use as executable default.
+
+| param | value | notes |
+|-------|------:|-------|
 | Confirm horizon | **2.0 s** after `ts_end` | causal V/cont |
 | Soft confirm | **1.0 s** | `r1 ≥ 0.35` or missing |
 | V threshold | `recovery_2s ≥ 0.5` | + soft 1s |
-| Cont threshold | `recovery_2s < 0.2` | **flat** in this spec (Kill ride) |
+| Cont threshold | `recovery_2s < 0.2` | **flat** (Kill ride) |
 | Partial | `0.2 ≤ r2 < 0.5` | **skip** |
 | Hold / markout | exit at **`ts_end + 5s`** | matches sim `mo_5s` |
-| Entry time | **`ts_end + 2s`** (after V confirm) | residual hold ≈ 3s |
-| Trade size (sim) | unit notional `size=−1` fade | scale later; sim is unit |
-| Primary venues | `hyperliquid`, `deribit`, `kraken` | venue-local detect+trade |
+| Entry time | **`ts_end + 2s`** | residual hold ≈ 3s — path-late |
+| Adverse stop | 12 bps | legacy paper default |
+| Trade size (sim) | unit notional `size=−1` fade | scale later |
+| Primary venues | `hyperliquid`, `deribit`, `kraken` | venue-local |
 | Symbols | `ETH`, `BTC` | Phase-4 panel |
-| Primary paper cell | HL ETH | mirror `paper_harness` |
-| Adverse stop | see §5 | live/paper only (sim used fixed 5s exit) |
 
 Economics identity (exact match to lab):
 
@@ -125,51 +156,46 @@ def causal_class(recovery_2s, recovery_1s) -> str:
 Matches `exp_edge_lab.sim_v_cont` rule `causal_fade_v_only`, plus explicit entry/exit for paper/live shadow.
 
 ```python
-# --- constants (lab-locked) ---
+# --- Promote_shadow executable defaults (severity_zend) ---
 RT_BPS = 4.0
 GATE = dict(min_dp_pct=0.10, min_i_c=5)
-CONFIRM_S, EXIT_S = 2.0, 5.0
-ADVERSE_STOP_BPS = 12.0   # paper default: ~½ typical |oracle V mo|; tune in shadow
-MAX_CONCURRENT = 1        # per venue×symbol
-CLIP_NOTIONAL = ...       # paper: small fixed; live shadow: research clip only
+ENTRY_MODE = "severity_zend"
+Z_MIN = 20.0
+CONFIRM_S, EXIT_S = 0.5, 3.0          # OE buffer → time stop
+ADVERSE_STOP_BPS = 1e9                 # off
+FIRE_PAUSE = "prior_only"              # own fire ok; block follow-ons 300s
+MAX_CONCURRENT = 1
+CLIP_NOTIONAL = ...
 
 def on_tape_tick(state, tape, t_ns):
     if state.mode == "IDLE":
         for ev in new_gated_ssm_events(tape):  # z*=6, severity_gate, σ_m floor
-            state.arm(ev)  # WAIT_RECOVERY, store ts_end, direction, px_end
+            if abs(ev.z_peak) < Z_MIN:
+                continue
+            if fire_pause_blocks(ev, mode=FIRE_PAUSE):
+                continue
+            state.arm(ev)  # WAIT_ENTRY at ts_end + CONFIRM_S (no r2)
         return
 
-    if state.mode == "WAIT_RECOVERY":
+    if state.mode == "WAIT_ENTRY":
         if t_ns < state.ts_end + CONFIRM_S * 1e9:
             return
-        r1 = recovery_fraction(..., horizon_s=1.0)[state.idx]
-        r2 = recovery_fraction(..., horizon_s=2.0)[state.idx]
-        if causal_class(r2, r1) != "v_recovery":
-            state.reset()  # skip partial / cont / unknown
-            return
-        # ENTER FADE — taker against crash
-        side = -state.direction          # +1 crash up → sell; -1 crash down → buy
-        px = asof_trade_px(tape, t_ns)   # tape print (paper_harness honesty)
+        side = -state.direction          # fade crash
+        px = asof_trade_px(tape, t_ns)   # tape print
         fill_shadow(side, CLIP_NOTIONAL, px, cost_one_way_bps=2.0)
         state.mode = "IN_FADE"
         state.entry_px, state.entry_t = px, t_ns
         return
 
     if state.mode == "IN_FADE":
-        # adverse: markout from entry in crash-continue direction (same sign as mo)
-        mtm_bps = state.direction * (asof_trade_px(tape, t_ns) / state.entry_px - 1.0) * 1e4
-        # for a fade position, adverse = crash continuation = +mtm in direction frame
-        pos_pnl_bps = -mtm_bps - accrued_cost_bps(state)  # fade PnL proxy
-        if mtm_bps >= ADVERSE_STOP_BPS:
-            exit_shadow(reason="adverse_stop")
-            state.reset()
-            return
         if t_ns >= state.ts_end + EXIT_S * 1e9:
-            exit_shadow(reason="time_stop")     # aligns with mo_5s scoreboard
-            # paper scoreboard: pnl_net_bps = -mo_5s - RT_BPS  (lab identity)
+            exit_shadow(reason="time_stop")
+            # path scoreboard: side*(exit/entry-1)*1e4 - RT_BPS
             state.reset()
             return
 ```
+
+Lab-only confirm_r2 path (Hold on path): wait +2s, require `causal_class==v_recovery`, exit@5s — see §3b. Do not use for executable shadow.
 
 **Backtest / replay scoring (must match lab):** on each faded event with finite `mo_5s`, record `pnl = -mo_5s - 4.0`. Bootstrap CI + early(2026-09-04…06)/late(07…10) sign-stable + `mean(gross) > 4` for Promote.
 
@@ -287,6 +313,8 @@ python3 exp_edge_lab.py
 # primary Promote row: TI-v-fade (causal) in out/EXP_REPORT.md
 
 cd v_fade_paper
+# Executable shadow default = severity_zend z≥20 @+0.5s→3s prior_only
 python3 run_v_fade_paper.py --panel-days
-# paper artifacts: out/RISK_REPORT.md · out/rollup.json · TRADE_BOARD.md (via write_trade_board.py)
+python3 run_shadow_day.py
+# artifacts: out/SHADOW_BOARD.md · out/RISK_REPORT.md · out/PATH_GAP_REPORT.md
 ```

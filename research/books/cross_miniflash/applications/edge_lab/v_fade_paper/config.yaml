@@ -1,7 +1,7 @@
 # TI-v-fade paper shadow — directional taker fade (NOT MM).
-# Shadow fills only; live_orders must stay false.
+# SHADOW PAPER fills only; live_orders must stay false.
 
-mode: paper
+mode: SHADOW_PAPER
 class: directional_v_fade
 live_orders: false
 
@@ -19,21 +19,30 @@ gate:
 intensity_window_s: 60.0
 nanex_slack_s: 0.5
 
-# V-fade parameters (locked to exp_edge_lab / V_FADE_STRATEGY_SPEC)
+# V-fade parameters — Promote_shadow default from out/gap_summary.json
+# entry_mode:
+#   confirm_r2   — lab scoreboard only: wait +2s, require r2 V (path-late; Hold on path)
+#   severity_zend — executable: |z|≥z_min at ts_end+delay; NO r2 (Promote_shadow)
 v_fade:
-  confirm_s: 2.0
-  exit_s: 5.0
-  soft_confirm_r1: 0.35
-  v_threshold_r2: 0.5
+  entry_mode: severity_zend
+  confirm_s: 0.5              # OE buffer after ts_end (best path: +0.5s)
+  exit_s: 3.0                 # best path horizon
+  z_min: 20.0                 # |z_peak| gate
+  soft_confirm_r1: 0.35       # confirm_r2 only
+  v_threshold_r2: 0.5         # confirm_r2 only
   cont_threshold_r2: 0.2
-  rt_friction_bps: 4.0          # round-trip taker haircut
+  rt_friction_bps: 4.0
   friction_bps_one_way: 2.0
-  adverse_stop_bps: 12.0        # crash-continue from entry
-  max_concurrent: 1             # per venue×symbol
-  clip_notional: 1.0            # unit notional (sim size)
+  adverse_stop_bps: 1.0e9     # off (null in gap_summary → disabled)
+  max_concurrent: 1
+  clip_notional: 1.0
+  suppress_fire_pause: prior_only  # allow own fire ts_end; block follow-ons 300s
+  fire_pause_5m_s: 300.0
   n_boot: 800
   early_days: ["2026-09-04", "2026-09-05", "2026-09-06"]
   late_days: ["2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10"]
+
+fire_pause_5m_s: 300.0
 
 # Kill criteria thresholds (spec §7)
 kill:
@@ -47,6 +56,12 @@ kill:
   k5_min_n: 30
   k6_median_one_way_bps: 5.0
 
+# Living shadow poller (run_v_fade_shadow_live.py --poll)
+# Warehouse lag is minutes–hours; 120s is enough. NOT paper_live's 10s ladder wake.
+poll_interval_s: 120
+
 # Outputs
 out_dir: out
 require_complete_day: true
+log_dir: logs
+log_file: v_fade_shadow.log

@@ -54,6 +54,18 @@ def load_config(path: str | Path | None = None) -> dict[str, Any]:
             "collector_tob_root": "/home/dev/srv/ares-startarb/results/xarb_md/tob",
         },
     )
+    raw.setdefault(
+        "v_fade",
+        {
+            "entry_mode": "severity_zend",
+            "confirm_s": 0.5,
+            "exit_s": 3.0,
+            "z_min": 20.0,
+            "suppress_fire_pause": "prior_only",
+            "adverse_stop_bps": 1e9,
+            "rt_friction_bps": 4.0,
+        },
+    )
     raw["require_complete_day"] = bool(raw.get("require_complete_day", False))
     if bool(raw.get("live_orders")):
         raise RuntimeError("paper_live refuses live_orders=true")

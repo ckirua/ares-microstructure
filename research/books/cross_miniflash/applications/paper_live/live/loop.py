@@ -55,6 +55,16 @@ def run_loop(
         "∞" if iterations <= 0 else iterations,
         out_root,
     )
+    vf = cfg.get("v_fade") or {}
+    LOG.info(
+        "v_fade Promote pointer entry_mode=%s z_min=%s confirm_s=%s exit_s=%s "
+        "fire_pause=%s (ladder overlay ≠ taker fade alpha; see v_fade_paper)",
+        vf.get("entry_mode", "severity_zend"),
+        vf.get("z_min", 20.0),
+        vf.get("confirm_s", 0.5),
+        vf.get("exit_s", 3.0),
+        vf.get("suppress_fire_pause", "prior_only"),
+    )
     LOG.info(
         "data: warehouse trade tape (S3→cache, lag typical) + collector TOB if present; "
         "never mercat/gateway orders"

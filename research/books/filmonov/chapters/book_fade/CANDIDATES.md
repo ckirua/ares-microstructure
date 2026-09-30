@@ -14,5 +14,9 @@
 
 | id | type | lenses | decision | falsifier / expand |
 |----|------|--------|----------|-------------------|
-| `info.fade_spread_widen_irf` | E | info,mm,liq | **Hold** | IRF peak Δspread≈0.28bps; Kill if ≤0 or unstable |
+| `info.fade_spread_widen_irf` | E | info,mm,liq | **Hold** | feature_stats peak Δ≈**−0.11bps** (prior expand +0.28) — **unstable** → Hold widen |
+| `info.fade_markout_1s` | E | info,mm | **Hold** | day-block ≈15.5bps CI[0.21,45.7]; fat tails / not BH-reject |
+| `info.fade_temp_vs_perm_impact` | E | info,cont | **Hold** | 250ms vs 5s markout share unstable; need ≥10 days |
 | `info.xvenue_is_around_fade` | E | info,disc | **Hold** | Hasbrouck IS sparse; not arb; RTT haircut missing |
+| `info.bayes_fade_p_posterior` | E | info,mm | **Hold** | Beta θ≈0.0114 CrI[0.0108,0.0120]; prior-stable; MM pull quantity |
+| `info.bayes_widen_given_fade` | E | info,mm,liq | **Hold** | P(widen\|fade)≈0.60 CrI[0.19,0.93] thin — not clear of 0.5 |

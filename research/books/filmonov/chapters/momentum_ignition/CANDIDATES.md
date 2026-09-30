@@ -14,3 +14,5 @@
 | id | type | lenses | decision | falsifier / expand |
 |----|------|--------|----------|-------------------|
 | `info.ignition_phase1_unique_mass` | D | info,risk | **Hold** | unique_mass≈1.0 may be vacuous if Nanex n=0 @default %; Kill if ≪0.15 |
+| `info.ignition_markout_1s` | E | info,risk | **Hold** | day-block ≈1.60bps CI[0.97,2.14]; BH-reject + sign-stable but n_days=6 |
+| `info.bayes_ignition_rate_venue` | E | info,risk | **Hold** | Poisson-Gamma λ≈6.41/day-venue CrI[5.26,7.67]; escalate rate only |

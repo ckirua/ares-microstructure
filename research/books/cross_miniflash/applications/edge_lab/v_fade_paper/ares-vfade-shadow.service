@@ -1,0 +1,26 @@
+[Unit]
+Description=ares v_fade_paper living SHADOW poller (severity_zend HL ETH; no exchange orders)
+Documentation=file:///home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper/README.md
+After=network-online.target
+Wants=network-online.target
+
+# DISTINCT from ares-paper-live.service (kill-ladder crash-risk overlay).
+# This unit = directional V-fade taker shadow on latest warehouse day.
+# Shadow only — never OE / mercat / gateway / live orders.
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper
+EnvironmentFile=-%h/.env
+Environment=PYTHONPATH=/home/dev/lab/lab-n2070/warehouse/src:/home/dev/srv/ares-startarb/src:/home/dev/srv/ares-microstructure:/home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/strategy_lab:/home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/paper_harness
+Environment=PYTHONUNBUFFERED=1
+# Promote_shadow defaults pinned in script: severity_zend |z|≥20 @0.5→3s prior_only
+ExecStart=/usr/bin/python3 run_v_fade_shadow_live.py --poll --interval 120 --quiet
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper/logs/v_fade_shadow.log
+StandardError=append:/home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper/logs/v_fade_shadow.log
+Nice=10
+
+[Install]
+WantedBy=default.target

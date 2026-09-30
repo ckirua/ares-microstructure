@@ -49,6 +49,7 @@ from _stats_bayes import (  # noqa: E402
     univariate_moments,
 )
 from research.lib.hftpat import (  # noqa: E402
+    clock_cluster_excess,
     clock_cluster_scores,
     event_window_markout,
     ignition_bar_timestamps,
@@ -59,7 +60,6 @@ from research.lib.hftpat import (  # noqa: E402
     quote_storm_intensity,
     spread_irf_after_events,
 )
-from research.lib.spreads import quoted_spread_bps  # noqa: E402
 
 OUT = BOOK / "out" / "feature_stats"
 FIGS = OUT / "figs"
@@ -154,8 +154,10 @@ def load_day_features(
     # clock always on trades
     try:
         clk = clock_cluster_scores(ts)
-        row["clock_max_z"] = float(np.nanmax(clk["z"])) if clk.get("z") is not None and len(clk["z"]) else float("nan")
-        row["clock_n_excess"] = int(np.sum(np.asarray(clk.get("z", []), dtype=np.float64) >= 3.0))
+        exc = clock_cluster_excess(clk, z_thresh=3.0)
+        z = np.asarray(exc.get("z", []), dtype=np.float64)
+        row["clock_max_z"] = float(np.nanmax(z)) if z.size else float("nan")
+        row["clock_n_excess"] = int(exc.get("n_excess", 0))
     except Exception:
         row["clock_max_z"] = float("nan")
         row["clock_n_excess"] = 0
@@ -248,8 +250,9 @@ def load_day_features(
 
     irf = spread_irf_after_events(fade_ts, tob["ts"], tob["bid"], tob["ask"])
     row["fade_irf"] = irf
-    peak = float(np.nanmax(irf["mean_delta_bps"])) if irf["mean_delta_bps"] else float("nan")
-    row["fade_irf_peak"] = peak
+    dlt = np.asarray(irf.get("mean_delta_bps", []), dtype=np.float64)
+    dlt = dlt[np.isfinite(dlt)]
+    row["fade_irf_peak"] = float(np.max(dlt)) if dlt.size else float("nan")
     # temporary vs permanent: short (250ms) vs long (5s) fade markout
     short = markouts["fade_250"].get("mean_bps", float("nan"))
     long = markouts["fade_5000"].get("mean_bps", float("nan"))
@@ -385,11 +388,17 @@ def analyze(rows: list[dict[str, Any]], days: list[str]) -> dict[str, Any]:
             elif key == "fade_irf_peak":
                 out.append(float(r.get("fade_irf_peak", np.nan)))
             elif key == "fade_mo_1s":
-                out.append(float(np.nanmean(r.get("fade_mo_1s", [np.nan]))))
+                arr = np.asarray(r.get("fade_mo_1s", []), dtype=np.float64)
+                arr = arr[np.isfinite(arr)]
+                out.append(float(np.mean(arr)) if arr.size else float("nan"))
             elif key == "storm_mo_1s":
-                out.append(float(np.nanmean(r.get("storm_mo_1s", [np.nan]))))
+                arr = np.asarray(r.get("storm_mo_1s", []), dtype=np.float64)
+                arr = arr[np.isfinite(arr)]
+                out.append(float(np.mean(arr)) if arr.size else float("nan"))
             elif key == "ign_mo_1s":
-                out.append(float(np.nanmean(r.get("ign_mo_1s", [np.nan]))))
+                arr = np.asarray(r.get("ign_mo_1s", []), dtype=np.float64)
+                arr = arr[np.isfinite(arr)]
+                out.append(float(np.mean(arr)) if arr.size else float("nan"))
             elif key == "perm_share":
                 out.append(float((r.get("fade_temp_vs_perm") or {}).get("perm_share", np.nan)))
         return np.asarray(out, dtype=np.float64)

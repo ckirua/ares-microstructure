@@ -51,7 +51,7 @@ def fig_signal_board() -> Path:
     ax.set_xlim(0, 1)
     ax.set_yticks([])
     ax.set_xticks([])
-    ax.set_title("MN/TSRV Pass 2.6 — signal board (0 Promote / 5 Hold / 4 Kill)")
+    ax.set_title("MN/TSRV Pass 2.7 — signal board (0 Promote / 5 Hold / 4 Kill)")
     for spine in ax.spines.values():
         spine.set_visible(False)
     return _savefig("signal_board.png")
@@ -67,7 +67,7 @@ def fig_gate_counts() -> Path:
         ax.text(i, counts[k] + 0.08, str(counts[k]), ha="center", fontsize=12, fontweight="bold")
     ax.set_ylim(0, max(counts.values()) + 1.2)
     ax.set_ylabel("candidates")
-    ax.set_title("Gate counts — Pass 2.6")
+    ax.set_title("Gate counts — Pass 2.7")
     return _savefig("fig_gate_counts.png")
 
 
@@ -126,7 +126,7 @@ def fig_clock_medians() -> Path:
     ax.set_xticks(x)
     ax.set_xticklabels(names)
     ax.set_ylabel("median fifth / fourth")
-    ax.set_title("Clock bounce ratios — Pass 2.6 blocker panel (bootstrap CI95)")
+    ax.set_title("Clock bounce ratios — Pass 2.7 expand panel (bootstrap CI95)")
     ax.legend(loc="upper left", fontsize=9)
     return _savefig("fig_clock_medians.png")
 
@@ -193,6 +193,7 @@ def fig_noise_vs_spread() -> Path:
     ax.set_title(
         f"noise vs spread — ρ={sf['rho']:.3f} CI=[{sf['lo']:.3f},{sf['hi']:.3f}] n={int(sf['n'])} → Hold"
     )
+
     ax.legend(fontsize=9)
     return _savefig("fig_noise_vs_spread.png")
 
@@ -226,7 +227,7 @@ def fig_tob_coverage() -> Path:
     ax.set_xticks(x)
     ax.set_xticklabels(venues)
     ax.set_ylabel("venue-days (ok rows)")
-    ax.set_title("TOB coverage — Pass 2.6 blocker panel")
+    ax.set_title("TOB coverage — Pass 2.7 expand panel")
     ax.legend(fontsize=9)
     return _savefig("fig_tob_coverage.png")
 

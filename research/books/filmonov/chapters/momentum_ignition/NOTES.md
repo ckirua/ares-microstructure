@@ -25,6 +25,19 @@
 
 **Mandatory** overlap table vs Nanex / SSM / `vshape_events` / MinV. Promote only if pre-phase adds info beyond crash tags.
 
+## Info / Bayesian dig
+
+**Question:** does the 3-phase sequence carry **incremental** information vs crash/V geometry?
+
+| Lens | Finding | Path |
+|------|---------|------|
+| Forward markout @1s | ≈1.60bps CI[0.97,2.14]; BH-reject + sign-stable; n_days=6 | `out/feature_stats/` |
+| λ ignition / day-venue | ≈6.41 CrI[5.26,7.67] | `out/bayes/` |
+| Phase1 unique mass | often vacuous when Nanex n=0 @default % | prior expand |
+| Cascade storm→ign @1s | hit-rate ≈0 | sparse storms |
+
+**Wire-as:** escalate-vs-crash **label** on risk strip — not tradable α. Cross-link `crash` / `vstat` via overlap helpers only.
+
 ## Pass checklist
 
 ### Pass 1
@@ -34,5 +47,6 @@
 - [x] Draft CANDIDATES (+ draft overlap table)
 
 ### Pass 2
-- [ ] Overlap gates vs crash + vstat
-- [ ] Signal board → DESK_MEMO
+- [x] Overlap gates vs crash + vstat
+- [x] Signal board → DESK_MEMO
+- [x] Info/Bayes deep dig

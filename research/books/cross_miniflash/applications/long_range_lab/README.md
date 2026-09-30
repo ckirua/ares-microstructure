@@ -14,6 +14,7 @@ Sibling [`../expanded_lab/`](../expanded_lab/) owns the event-study risk scorebo
 | **Notebook** | [`long_range_strategies.ipynb`](long_range_strategies.ipynb) |
 | MM summary | [`out/summary.json`](out/summary.json) |
 | **Non-MM edges report** | [`out/long_edges/EXP_REPORT.md`](out/long_edges/EXP_REPORT.md) |
+| **Fire-pause hardening** | [`out/long_edges/FIRE_PAUSE_HARDENING.md`](out/long_edges/FIRE_PAUSE_HARDENING.md) |
 | Non-MM summary | [`out/long_edges/summary.json`](out/long_edges/summary.json) |
 | Non-MM figs | [`out/long_edges/figs/`](out/long_edges/figs/) |
 | Per-day MM | [`out/days/`](out/days/) |
@@ -36,6 +37,10 @@ python3 run_long_range.py --smoke 3 --workers 4
 python3 run_long_edges.py --workers 8
 python3 run_long_edges.py --smoke 3 --workers 4
 python3 run_long_edges.py --rescore   # rebuild report from events.jsonl
+
+# Fire-pause hardening (BTC / Deribit / Kraken + falsifiers)
+python3 run_fire_pause_harden.py --workers 8
+python3 run_fire_pause_harden.py --skip-expand --workers 4  # rescore from cache
 ```
 
 Requires warehouse + startarb env (`startarb.env.ensure_env`).
@@ -48,7 +53,7 @@ Requires warehouse + startarb env (`startarb.env.ensure_env`).
 | `LR-cont-long-ride` | Causal cont@2s → ride, hold 1–60m | **Hold** — mean + at 15m, CI includes 0 |
 | `LR-cluster-fade` | ≥3 SSM / 5m → fade anchor 15–60m | **Kill/Hold** — fade is anti-edge @15m/60m |
 | `LR-cluster-ride` | Cascade → ride crash 15–60m | **Hold** @60m mean +46bps but n=12 underpowered |
-| `LR-fire-pause` | Fire tier → pause; Δ\|mo\| vs observe | **Promote** @5m (Δ\|mo\|≈+20bps, n=194) |
+| `LR-fire-pause` | Fire tier → pause; Δ\|mo\| vs observe | **Hold** (was Promote@5m) — hardening demoted: nest/overlap CI∋0, early half weak, external mixed (KR_BTC Kill); see [`out/long_edges/FIRE_PAUSE_HARDENING.md`](out/long_edges/FIRE_PAUSE_HARDENING.md) |
 | `LR-ssm-drift-ride` | Ride all gated SSM 5–30m | **Hold** — CI includes 0 |
 
 Honesty gates: bootstrap CI · early/late sign-stable · RT 4bps friction · non-overlapping holds · causal recoveries @1–2s only.

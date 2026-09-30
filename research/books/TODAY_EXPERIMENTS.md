@@ -9,6 +9,7 @@ Session catalog of ares-microstructure research-book runs (chat + parallel worke
 | Book / app | Experiment | Key metric | Decision | Artifact |
 |------------|------------|------------|----------|----------|
 | edge_lab | TI-v-fade causal | net **+11.63** bps CI[7.67,15.91] n=117 | **Promote** | `cross_miniflash/applications/edge_lab/out/` |
+| edge_lab/v_fade_paper | path gap closed | confirm_r2 path **−5.7** Hold; severity_zend z≥20 @0.5→3s path **+20.2** | **Promote_shadow** | `…/edge_lab/v_fade_paper/out/` |
 | edge_lab | TI-cont-ride causal | net **−2.83** bps CI[−7.40,1.56] n=64 | **Kill** | same |
 | edge_lab | TI-v-fade+cont combo | net **+6.52** bps CI[3.33,9.90] n=181 (fade-dominated) | **Promote** | same |
 | edge_lab | TI-int-halt | Δ\|mo\| fire−obs **+6.54** CI[2.17,10.68] n_fire=226 | **Promote** | same |
@@ -31,7 +32,7 @@ Session catalog of ares-microstructure research-book runs (chat + parallel worke
 | filmonov | Pass-2 harden | 0 Promote / 13 Hold / 11 Kill | no Promote | `filmonov/out/pass2/` |
 | mn_tuwrv | Pass-2.6 blocker-close | 0 Promote; sparse RV / noise clocks Kill | Hold TSRV / Kill sparse | `mn_tuwrv/out/pass2/` |
 
-**Catalogued experiments:** **22** (scoreboard rows).
+**Catalogued experiments:** **23** (scoreboard rows).
 
 ---
 
@@ -149,6 +150,9 @@ Re-run: book harness + `scripts/exp_bootstrap_btc.py` + native rerun scripts und
 
 ### TRADE_IDEAS / TRADING_APPLICATIONS
 Desk playbooks refreshed today: `cross_miniflash/applications/TRADE_IDEAS.md`, `cross_miniflash/TRADING_APPLICATIONS.md` (pointer docs; numbers live in labs above).
+
+### v_fade_paper — path gap closed → Promote_shadow
+Lab mo@5s credited rebound already spent before `confirm_r2@+2s` entry → path **−5.74** Hold. Causal fix `severity_zend` (no r2): `|z_peak|≥20` @ delay **0.5s** → exit **3s** · path **+20.16** CI[9.77,29.79] n=23 · **Promote_shadow**. Artifacts: `applications/edge_lab/v_fade_paper/out/{PATH_GAP_REPORT.md,SHADOW_BOARD.md,gap_summary.json,figs/}`.
 
 ### mm_quoting (V continuation quoting)
 **Promote** med quoting playbook — restore after V-confirm; stay wide on cont. **Not** tradable fade.  

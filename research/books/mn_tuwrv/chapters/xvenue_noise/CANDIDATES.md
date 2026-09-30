@@ -1,3 +1,3 @@
-| id | type | lenses | decision | falsifier |
+| id | type | lenses | decision | evidence |
 |----|------|--------|----------|----------|
-| `frag.xvenue_noise_concord` | panel | frag, liq, cont | **Hold** | close_noise_days=5/6 (rel range <35%) |
+| `frag.xvenue_noise_concord` | diagnostic | frag | **Hold** | Pass 2.7: frac_close=0.633 n_cells=79 (descriptive ≠ edge) |

@@ -264,7 +264,8 @@ def poll_once(
         # Heartbeat only — no re-sim
         LOG.info(
             "heartbeat poll=%s day=%s trades=%s last_age_s=%.0f "
-            "gated=%s fires=%s collector=%s lag_s=%s (no new tape)",
+            "gated=%s fires=%s collector=%s lag_s=%s "
+            "cum_eq_ladder_bps=%s Δeq_bps=%s (no new tape)",
             poll_i,
             day,
             tape_meta["n_trades"],
@@ -277,6 +278,8 @@ def poll_once(
                 if isinstance(collector.get("lag_s"), (int, float))
                 else "—"
             ),
+            state.get("cum_equity_ladder_bps"),
+            state.get("delta_equity_bps"),
         )
         report_every = int(cfg.get("report_every_polls") or 6)
         force_report = report_every > 0 and (poll_i % report_every == 0)
@@ -453,16 +456,24 @@ def poll_once(
         write_html(summary, summary["figures"], html_path)
         save_summary_json(summary, day_dir / "summary.json")
         LOG.info(
-            "RISK_REPORT refreshed → %s fires=%s fills=%s Δeq_bps=%s",
+            "RISK_REPORT refreshed → %s fires=%s fills=%s "
+            "cum_eq_ladder_bps=%s Δeq_bps=%s",
             md_path,
             summary.get("n_fire"),
             (summary.get("shadow") or {}).get("kill_ladder", {}).get("n_fills"),
+            ((summary.get("shadow") or {}).get("kill_ladder") or {}).get(
+                "final_equity_bps"
+            ),
             ((summary.get("shadow") or {}).get("delta_vs_baseline") or {}).get(
                 "delta_equity_bps"
             ),
         )
 
     delta = shadow.get("delta_vs_baseline") or {}
+    kl = (shadow.get("results") or {}).get("kill_ladder_maker") or {}
+    if not kl:
+        kl = shadow.get("kill_ladder") or {}
+    cum_eq = kl.get("final_equity_bps")
     state = {
         "day": day,
         "venue": venue,
@@ -481,6 +492,16 @@ def poll_once(
         "fill_model": shadow.get("fill_model"),
         "fills_by_regime": by_reg,
         "delta_equity_bps": delta.get("delta_equity_bps"),
+        "cum_equity_ladder_bps": cum_eq,
+        "v_fade_defaults": {
+            "entry_mode": (cfg.get("v_fade") or {}).get("entry_mode", "severity_zend"),
+            "z_min": (cfg.get("v_fade") or {}).get("z_min", 20.0),
+            "confirm_s": (cfg.get("v_fade") or {}).get("confirm_s", 0.5),
+            "exit_s": (cfg.get("v_fade") or {}).get("exit_s", 3.0),
+            "suppress_fire_pause": (cfg.get("v_fade") or {}).get(
+                "suppress_fire_pause", "prior_only"
+            ),
+        },
         "figures": summary.get("figures") or state.get("figures"),
         "data_source": data_src,
         "updated_at": datetime.now(timezone.utc).isoformat(),
@@ -488,13 +509,16 @@ def poll_once(
             "n_fire": summary.get("n_fire"),
             "ssm_10_n": summary.get("ssm_10_n"),
             "n_trades": summary.get("n_trades"),
+            "cum_equity_ladder_bps": cum_eq,
+            "delta_equity_bps": delta.get("delta_equity_bps"),
         },
     }
     _save_state(state_path, state)
 
     LOG.info(
         "poll=%s done day=%s trades=%s gated=%s fires=%s "
-        "new_actions=%s fills=%s Δfills=%s warehouse_lag_s=%.0f "
+        "new_actions=%s fills=%s Δfills=%s "
+        "cum_eq_ladder_bps=%s Δeq_bps=%s warehouse_lag_s=%.0f "
         "collector=%s elapsed=%.1fs",
         poll_i,
         day,
@@ -504,6 +528,8 @@ def poll_once(
         len(new_actions),
         n_fills,
         delta_fills,
+        cum_eq,
+        delta.get("delta_equity_bps"),
         float(tape_meta.get("last_age_s") or 0.0),
         collector.get("available"),
         time_mono() - t0,

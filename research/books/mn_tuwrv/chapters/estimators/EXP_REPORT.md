@@ -1,11 +1,20 @@
-# Estimators — EXP_REPORT (Pass 2.6 blocker-close)
+# Estimators — EXP_REPORT (Pass 2.7 expand)
 
-**`cont.tsrv_first_adj`:** **Hold** — fragile_rate=0.011 adv_med=-2.75e-07 CI=[-2.306071822364372e-06, 1.1699299344884352e-06] SE=8.31e-07 earlyCI=[-4.654016190012627e-06, 1.3038927370727255e-05] lateCI=[-2.862172387962406e-06, 1.019566994153289e-06] ratio_med=1.0171 ratioCI=[0.9594350796515484, 1.0516421957379292] roll_ci_lo_pos_frac=0.00 n=90 (MC Kill sparse still stands; Promote needs OOS CI_lo>0 early∧late)
+**Sample:** 34d · ETH+BTC+SOL · HL+Deribit+Kraken · **n_ok=204** · **n_mid=122**
 
-- sparse−tsrv overall: {'n': 90.0, 'median': -2.747479641365083e-07, 'mean': -1.0759664019689518e-05, 'se': 8.306201301512939e-07, 'ci95': [-2.306071822364372e-06, 1.1699299344884352e-06]}
-- early/late: {'n': 40.0, 'median': 3.4908770417389824e-07, 'mean': -1.8631476095667503e-05, 'se': 4.959528934185611e-06, 'ci95': [-4.654016190012627e-06, 1.3038927370727255e-05]} / {'n': 50.0, 'median': -5.438004162805318e-07, 'mean': -4.462214358907126e-06, 'se': 9.83031907868457e-07, 'ci95': [-2.862172387962406e-06, 1.019566994153289e-06]}
-- tsrv/sparse ratio: {'n': 90.0, 'median': 1.017116835942236, 'mean': 1.0226128288195953, 'se': 0.025718414696119976, 'ci95': [0.9594350796515484, 1.0516421957379292]}
-- rolling 5d frac CI_lo>0: 0.0
-- **`cont.sparse_rv_only` remains Kill** (MC first_adj RMSE ≪ fourth).
+## Clocks (fifth/fourth)
 
-Artifact: [`../../out/blocker_close/blocker_close.json`](../../out/blocker_close/blocker_close.json)
+| Clock | Decision | median | CI95 | n |
+|-------|----------|--------|------|---|
+| calendar | **Kill** | 1.006 | [0.947, 1.065] | 204 |
+| trade | **Kill** | 0.815 | [0.768, 0.853] | 204 |
+| tick_bounce | **Kill** | 1.096 | [1.061, 1.129] | 203 |
+| mid | **Hold** | 2.449 | [1.130, 3.777] | 122 |
+
+Gate CI_lo>1.5 **not** met for mid (CI_lo=1.13). Venue split: HL 0.77 · Deribit 6.12 · Kraken spot 1.13.
+
+## TSRV first_adj OOS
+
+**Hold** — early CI_lo>0 but late CI through 0; overall CI through 0; ratio med=0.984. MC Kill of `cont.sparse_rv_only` unchanged.
+
+Artifact: [`../../out/expand_panel/expand_panel.json`](../../out/expand_panel/expand_panel.json)

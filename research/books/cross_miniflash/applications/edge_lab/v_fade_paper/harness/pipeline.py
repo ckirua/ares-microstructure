@@ -381,6 +381,8 @@ def _write_panel_figs(
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
+    from .equity import write_path_equity_figs
+
     paths: list[str] = []
     if not trades:
         return paths
@@ -390,6 +392,19 @@ def _write_panel_figs(
     lab = [float(t["lab_pnl_net_bps"]) for t in ordered if t.get("lab_pnl_net_bps") is not None]
     days = [str(t.get("day")) for t in ordered if t.get("lab_pnl_net_bps") is not None]
 
+    # Primary: path equity (event + calendar) with drawdown
+    mode = str((ordered[0].get("entry_mode") if ordered else "") or "severity_zend")
+    paths.extend(
+        write_path_equity_figs(
+            ordered,
+            fig_dir,
+            label=f"{mode} path",
+            venue=venue,
+            symbol=symbol,
+            stem="equity_path",
+        )
+    )
+    # Keep legacy lab equity diagnostic
     fig, ax = plt.subplots(figsize=(11, 3.8))
     if lab:
         eq = np.cumsum(lab)
@@ -401,21 +416,21 @@ def _write_panel_figs(
             if d != prev:
                 ax.axvline(i + 1, color="#ecf0f1", lw=0.8)
                 prev = d
-    ax.set_title(f"Panel equity — {venue} {symbol} causal V-fade (lab −mo5s−RT4)")
+    ax.set_title(f"Panel equity — {venue} {symbol} lab identity (−mo5s−RT4) diagnostic")
     ax.set_xlabel("fade #")
-    ax.set_ylabel("cum net bps")
+    ax.set_ylabel("cum lab net bps")
     p = fig_dir / "panel_equity_lab.png"
     fig.tight_layout()
     fig.savefig(p, dpi=140, bbox_inches="tight")
     plt.close(fig)
     paths.append(str(p))
 
-    # Per-day means
+    # Per-day means (path)
     by_day: dict[str, list[float]] = {}
     for t in ordered:
-        if t.get("lab_pnl_net_bps") is None:
+        if t.get("path_pnl_net_bps") is None:
             continue
-        by_day.setdefault(str(t["day"]), []).append(float(t["lab_pnl_net_bps"]))
+        by_day.setdefault(str(t["day"]), []).append(float(t["path_pnl_net_bps"]))
     fig, ax = plt.subplots(figsize=(10, 3.6))
     ds = sorted(by_day.keys())
     means = [float(np.mean(by_day[d])) for d in ds]
@@ -425,7 +440,7 @@ def _write_panel_figs(
     for i, (m, n) in enumerate(zip(means, ns)):
         ax.text(i, m, f"n={n}", ha="center", va="bottom" if m >= 0 else "top", fontsize=7)
     ax.axhline(0, color="#7f8c8d", lw=0.8)
-    ax.set_title(f"Per-day mean lab net bps — {venue} {symbol}")
+    ax.set_title(f"Per-day mean path net bps — {venue} {symbol}")
     ax.tick_params(axis="x", rotation=30)
     p = fig_dir / "panel_daily_means.png"
     fig.tight_layout()
