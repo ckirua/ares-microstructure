@@ -1,0 +1,115 @@
+{
+  "created_at": "2026-09-30T08:21:20.914725+00:00",
+  "symbol": "ETH",
+  "n_rows": 438329,
+  "data_source": "/home/dev/srv/ares-startarb/results/xarb_md/tob",
+  "features": {
+    "venues": [
+      "hyperliquid",
+      "lighter",
+      "risex"
+    ],
+    "per_venue": {
+      "hyperliquid": {
+        "n_quotes": 47238,
+        "duration_s": 29087.190666193,
+        "update_hz": 1.6240138328278995,
+        "mean_spread_bps": 0.3836916163593635,
+        "spread_ci95": [
+          0.382652066166719,
+          0.3845467938912392
+        ],
+        "mean_imbalance": 0.03117955884998072,
+        "imbalance_ci95": [
+          0.02553181972771324,
+          0.03697218761982801
+        ],
+        "frac_one_tick": 0.9883780007620984,
+        "inferred_tick": 0.09999999999990905,
+        "mean_tob_size": 245.7679464266057
+      },
+      "lighter": {
+        "n_quotes": 307128,
+        "duration_s": 29087.353559567,
+        "update_hz": 10.558815513107545,
+        "mean_spread_bps": 0.4784224200180996,
+        "spread_ci95": [
+          0.47771733129851773,
+          0.4793375864889159
+        ],
+        "mean_imbalance": 0.05787969445282622,
+        "imbalance_ci95": [
+          0.05545814156955625,
+          0.06009600562070295
+        ],
+        "frac_one_tick": 0.06856750280013545,
+        "inferred_tick": 0.009999999999763531,
+        "mean_tob_size": 12.235217844025943
+      },
+      "risex": {
+        "n_quotes": 83963,
+        "duration_s": 29083.365709557,
+        "update_hz": 2.8869767288456973,
+        "mean_spread_bps": 0.6470086771754552,
+        "spread_ci95": [
+          0.6407483255949334,
+          0.6524242401518284
+        ],
+        "mean_imbalance": 0.014566886064312272,
+        "imbalance_ci95": [
+          0.009847236838818083,
+          0.020380023713104094
+        ],
+        "frac_one_tick": 0.45372366399485486,
+        "inferred_tick": 0.009999999999763531,
+        "mean_tob_size": 17.49803595631409
+      }
+    },
+    "panel": {
+      "fei_size": 0.3779869746308442,
+      "fei_updates": 0.7335617176201213,
+      "size_share": {
+        "hyperliquid": 0.8920757739862945,
+        "lighter": 0.04441076058451691,
+        "risex": 0.06351346542918862
+      },
+      "update_share": {
+        "hyperliquid": 0.10776607374833024,
+        "lighter": 0.7006603443144103,
+        "risex": 0.1915735819372596
+      },
+      "role_blur_l1": {
+        "hyperliquid": 0.7843097002379642,
+        "lighter": 0.6562495837298934,
+        "risex": 0.12806011650807098
+      },
+      "role_blur_max": 0.7843097002379642,
+      "spread_stability": {
+        "venue": "hyperliquid",
+        "train": {
+          "n": 33066,
+          "point": 0.38333238276665166,
+          "lo": 0.3823427416422866,
+          "hi": 0.3844713213071369,
+          "alpha": 0.05,
+          "n_boot": 300
+        },
+        "test": {
+          "n": 14172,
+          "point": 0.3845297773794458,
+          "lo": 0.38282708521458286,
+          "hi": 0.386299903838152,
+          "alpha": 0.05,
+          "n_boot": 300
+        },
+        "stable": true
+      }
+    }
+  },
+  "candidates": {
+    "liq.quoted_spread_bps": "Promote \u2014 cost floor / make\u2013take",
+    "liq.depth_imbalance": "Promote \u2014 skew / inventory input",
+    "liq.role_blur_l1": "Promote \u2014 flicker vs size monitor",
+    "liq.update_hz": "Hold \u2014 venue-specific; needs latency model"
+  }
+}
