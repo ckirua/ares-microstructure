@@ -2,7 +2,7 @@
 
 Living map of book chapters → candidate signals/features/strategies → experiment status.
 Book PDF + verbatim `_raw/` extracts: **local only** (gitignored). Data inventory: [`DATA_PATHS.md`](../../DATA_PATHS.md).
-Loop / quality bar: [`LOOP.md`](../../LOOP.md). Desk synthesis: [`DESK_MEMO.md`](DESK_MEMO.md).
+Loop / quality bar: [`LOOP.md`](../../LOOP.md). Desk synthesis: [`DESK_MEMO.md`](DESK_MEMO.md). Sibling program: [`../empirical_mm/`](../empirical_mm/) (Hasbrouck notes).
 
 **Status legend:** `todo` · `notes` · `candidates` · `exp_run` · `iterate` · `park`
 

@@ -1,0 +1,52 @@
+# TI-v-fade paper shadow — directional taker fade (NOT MM).
+# Shadow fills only; live_orders must stay false.
+
+mode: paper
+class: directional_v_fade
+live_orders: false
+
+# Primary cell (expand after HL ETH green)
+venue: hyperliquid
+symbol: ETH
+extra_venues: []   # e.g. [deribit, kraken]
+
+# Detection (mirrors paper_harness / _common)
+z_star: 6.0
+sigma_m_frac: 1.0
+gate:
+  min_dp_pct: 0.10
+  min_i_c: 5
+intensity_window_s: 60.0
+nanex_slack_s: 0.5
+
+# V-fade parameters (locked to exp_edge_lab / V_FADE_STRATEGY_SPEC)
+v_fade:
+  confirm_s: 2.0
+  exit_s: 5.0
+  soft_confirm_r1: 0.35
+  v_threshold_r2: 0.5
+  cont_threshold_r2: 0.2
+  rt_friction_bps: 4.0          # round-trip taker haircut
+  friction_bps_one_way: 2.0
+  adverse_stop_bps: 12.0        # crash-continue from entry
+  max_concurrent: 1             # per venue×symbol
+  clip_notional: 1.0            # unit notional (sim size)
+  n_boot: 800
+  early_days: ["2026-09-04", "2026-09-05", "2026-09-06"]
+  late_days: ["2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10"]
+
+# Kill criteria thresholds (spec §7)
+kill:
+  k1_rolling_days: 5
+  k1_min_n: 20
+  k2_n_boot: 800
+  k4_hit_rate_kill: 0.55
+  k4_hit_rate_warn: 0.65
+  k4_min_n: 40
+  k5_adverse_share: 0.40
+  k5_min_n: 30
+  k6_median_one_way_bps: 5.0
+
+# Outputs
+out_dir: out
+require_complete_day: true

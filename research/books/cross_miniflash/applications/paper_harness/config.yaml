@@ -1,0 +1,67 @@
+# Paper-trade harness — risk-policy overlay (NOT PnL alpha).
+# Shadow fills only; no live order submission.
+
+mode: paper
+class: risk_policy
+
+# Primary cell (expand venues when loaders are easy)
+venue: hyperliquid
+symbol: ETH
+# Optional extra venues for the same UTC day (tape must load)
+extra_venues: []   # e.g. [deribit, kraken]
+
+# Detection (mirrors applications/scripts/_common.py + crash.py)
+z_star: 6.0
+sigma_m_frac: 1.0          # σ_m floor on (≥1 bp via crash.sigma_process_meas)
+gate:
+  min_dp_pct: 0.10         # 10 bps
+  min_i_c: 5
+
+# Ladder: within-gated z percentiles + intensity + Nanex∩SSM
+# Defaults ≈ Phase-4 gated slice; overwritten per-day when enough events.
+z_breaks:
+  p25: 12.5
+  p50: 15.9
+  p75: 20.4
+dp_p90: 0.45               # |ΔP|% halt escalate
+intensity_window_s: 60.0
+ladder_hold_s: 60.0        # how long a tier stays in force after event end
+nanex_pull_s: 15.0         # Nanex∩SSM temporary pull (min nest_hard window)
+nanex_slack_s: 0.5
+# RISK_GATE_STACK combined throttle (MONEY-SAVING overlay)
+nest_hard_pause: true      # Nanex∩SSM → size→0 even if tier is only widen
+fire_pause_5m_s: 300.0     # LR-fire-pause: first fire → 300s effective_mult=0
+run_risk_gate_stack: true  # baseline vs kill_ladder vs full stack
+
+
+# Shadow maker (strategy_lab fill model — tape print, not stale BBO)
+friction_bps: 2.0
+base_size: 0.25            # coin units at touch
+# Research soft-cap: ±2 coins nullifies crash-window fills (inventory hits cap in minutes).
+# Use 10 so ladder size/pull can bind in fire windows; not a live risk limit.
+max_inventory: 10.0
+max_trades: 120000         # tape downsample cap per day
+# When warehouse BBO median Δt > this, use tape-proxy touch for fill eligibility.
+stale_book_s: 5.0
+# MUST stay 0 with tape-proxy — positive half-spread makes prints unreachable.
+tape_proxy_half_spread_bps: 0.0
+# Also run expanded_lab best risk playbook (ladder × dual V-confirm)
+run_ladder_plus_confirm: true
+wide_mult: 0.25
+
+# Size mult by tier (halt → pull)
+size_mult:
+  none: 1.0
+  observe: 1.0
+  widen: 0.5
+  size_cap: 0.25
+  halt: 0.0
+
+# Markout horizons for risk report (seconds)
+markout_horizons_s: [1.0, 5.0]
+recovery_horizon_s: 5.0
+
+# Outputs
+out_dir: out
+# When true, refuse to run if day completeness flags fail
+require_complete_day: true

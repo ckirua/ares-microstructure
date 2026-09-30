@@ -1,0 +1,25 @@
+# Research-tree conventions (root .gitignore also applies).
+# Keep: NOTES / CANDIDATES / EXP_REPORT / EXPERIMENTS / DESK_MEMO /
+# notebooks (not checkpoints) / scripts / lib / config.yaml templates.
+
+# Book PDFs + verbatim extracts
+*.pdf
+**/_raw/
+
+# Experiment / live artifacts (keep .gitkeep placeholders)
+# Use /** so the directory itself is not excluded (negations can apply).
+**/out/**
+!**/out/.gitkeep
+!**/out/**/.gitkeep
+**/logs/**
+!**/logs/.gitkeep
+paper_live.log
+paper_live.log.*
+*.log
+*.pid
+
+# Caches
+**/__pycache__/
+.ipynb_checkpoints/
+.pytest_cache/
+**/fig_cache/

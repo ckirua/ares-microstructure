@@ -4,25 +4,64 @@
 !.env.example
 credentials*.json
 **/secrets/
+*.pem
+*.key
+id_rsa*
+.aws/
+.netrc
 
-# Local runtime
+# Local runtime / Python
 **/__pycache__/
 *.py[cod]
+*$py.class
 *.egg-info/
+.eggs/
+dist/
+build/
 .venv/
 venv/
+.env/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.tox/
+.nox/
+.cache/
 .ipynb_checkpoints/
 *.pid
 
+# Coverage / test artifacts
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.hypothesis/
+
 # Copyrighted book PDF + verbatim extracts — keep local only
 *.pdf
-research/_raw/
-research/books/**/_raw/
+**/_raw/
+
+# Experiment artifacts, fig caches, logs (placeholders kept)
+**/out/**
+!**/out/.gitkeep
+!**/out/**/.gitkeep
+**/fig_cache/
+**/logs/**
+!**/logs/.gitkeep
+paper_live.log
+paper_live.log.*
+*.log
+
+# systemd local overrides / drop-ins (never commit host-specific units)
+**/systemd.local/
+**/*.service.d/
+**/override.conf
+*.local.service
 
 # OS / editor
 .DS_Store
+Thumbs.db
 .idea/
 .vscode/
+*.swp
+*~

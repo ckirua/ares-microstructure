@@ -1,0 +1,82 @@
+# Paper-live — continuous crash-risk overlay (shadow only).
+# No live order submission. Never mercat/gateway OE.
+
+mode: paper
+class: risk_policy
+live_orders: false
+
+# Primary cell
+venue: hyperliquid
+symbol: ETH
+
+# Poll loop
+poll_interval_s: 10.0          # default ~5–15s
+report_every_polls: 6          # refresh RISK_REPORT.md at least this often
+heartbeat_every_polls: 1       # heartbeat line each poll
+max_files: 48                  # warehouse trade shard tail (higher → fresher window)
+require_complete_day: false    # live UTC day is incomplete by definition
+
+# Data sources (warehouse primary; collector TOB when present)
+data:
+  prefer_warehouse_refresh: true   # re-list S3/cache each poll
+  use_collector_tob: true          # book via strategy_lab load_best_book
+  collector_tob_root: /home/dev/srv/ares-startarb/results/xarb_md/tob
+  note: >
+    Trade tape = warehouse (S3→~/.cache/warehouse); typically lags live
+    by minutes–hours depending on ingest. Collector TOB is denser for book
+    when the UTC day dir exists, but does not replace the trade tape.
+
+# Detection — A13 horizon_lab Promote defaults (HORIZON_RECOMMENDATION.md)
+# Event-time SSM on the trade tape. NEVER trade_last_300 / trade_last_9000
+# (or ≥900 OHLC / 1m calendar) as observation bars — those Kill (gated≈0).
+detection_clock: event         # event | (research only: cal_1s). Not trade_last_N.
+z_star: 6.0
+sigma_m_frac: 1.0
+gate:
+  min_dp_pct: 0.10             # 10 bps
+  min_i_c: 5
+
+# Ladder + Nanex escalate
+z_breaks:
+  p25: 12.5
+  p50: 15.9
+  p75: 20.4
+dp_p90: 0.45
+# Intensity aggregation — wall_60s default (A13 Promote). Optional MFT alts
+# for intensity only: trade_300–trade_3000. Avoid trade_9000 intensity as default.
+# Wake coalesce ≤1s OK; poll_interval_s is decision wake (not SSM obs bar).
+intensity_clock: wall_60s      # wall_60s | trade_300…trade_3000 (intensity only)
+intensity_window_s: 60.0       # wall seconds for wall_* clocks
+ladder_hold_s: 60.0
+nanex_pull_s: 15.0
+nanex_slack_s: 0.5
+
+# Shadow maker (fill at trade print)
+friction_bps: 2.0
+base_size: 0.25
+max_inventory: 10.0
+max_trades: 120000
+stale_book_s: 5.0
+tape_proxy_half_spread_bps: 0.0
+# expanded_lab best-risk playbook (ladder × dual V-confirm)
+run_ladder_plus_confirm: true
+wide_mult: 0.25
+
+size_mult:
+  none: 1.0
+  observe: 1.0
+  widen: 0.5
+  size_cap: 0.25
+  halt: 0.0
+
+markout_horizons_s: [1.0, 5.0]
+recovery_horizon_s: 5.0
+
+# Outputs
+out_dir: out
+log_dir: logs
+log_file: paper_live.log
+# daily rotate at midnight UTC (TimedRotatingFileHandler); else size rotate
+log_rotate: daily              # daily | size | none
+log_max_bytes: 10485760        # 10 MiB when log_rotate=size
+log_backup_count: 14
