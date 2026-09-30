@@ -8,14 +8,15 @@ data experiments in the style of [`ares-startarb`](../ares-startarb).
 
 | Artifact | Path |
 |----------|------|
-| Desk memo (MM map) | [`research/DESK_MEMO.md`](research/DESK_MEMO.md) |
-| Living chapter index | [`research/CHAPTER_INDEX.md`](research/CHAPTER_INDEX.md) |
+| Desk memo (MM map) | [`research/books/mmip/DESK_MEMO.md`](research/books/mmip/DESK_MEMO.md) |
+| Living chapter index | [`research/books/mmip/CHAPTER_INDEX.md`](research/books/mmip/CHAPTER_INDEX.md) |
+| Books | [`research/books/`](research/books/) |
 | Shared helpers | [`research/lib/`](research/lib/) |
 | Startarb data reuse map | [`research/DATA_PATHS.md`](research/DATA_PATHS.md) |
-| Intro liquidity | [`research/chapters/intro_liquidity/`](research/chapters/intro_liquidity/) |
-| Classic micro | [`research/chapters/classic_micro/`](research/chapters/classic_micro/) |
-| Ch.1–3 + App.A | [`research/chapters/`](research/chapters/) |
-| Experiment outputs | [`research/out/`](research/out/) |
+| Intro liquidity | [`research/books/mmip/chapters/intro_liquidity/`](research/books/mmip/chapters/intro_liquidity/) |
+| Classic micro | [`research/books/mmip/chapters/classic_micro/`](research/books/mmip/chapters/classic_micro/) |
+| Ch.1–3 + App.A | [`research/books/mmip/chapters/`](research/books/mmip/chapters/) |
+| Experiment outputs | [`research/books/mmip/out/`](research/books/mmip/out/) |
 
 Book PDF and verbatim extracts stay **local-only** (gitignored).
 
@@ -28,13 +29,13 @@ Book PDF and verbatim extracts stay **local-only** (gitignored).
 
 ```bash
 # Intro (collector TOB)
-python3 research/scripts/exp_intro_liquidity.py --symbol ETH
+python3 research/books/mmip/scripts/exp_intro_liquidity.py --symbol ETH
 
 # Classic micro (needs startarb env + S3)
-cd ../ares-startarb && uv run python ../ares-microstructure/research/scripts/exp_classic_micro.py --symbol ETH
+cd ../ares-startarb && uv run python ../ares-microstructure/research/books/mmip/scripts/exp_classic_micro.py --symbol ETH
 
 # Promote hardening (reads out/)
-python3 research/scripts/exp_harden_promotes.py
+python3 research/books/mmip/scripts/exp_harden_promotes.py
 ```
 
 ## Status (2026-09-30)

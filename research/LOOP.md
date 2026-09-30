@@ -5,7 +5,7 @@
 Intro · Ch.1 · Ch.2 · Ch.3 · App.A · classic micro · Promote hardening shipped under the MM quality bar
 (NOTES + CANDIDATES + EXP_REPORT + notebook/lib + `out/` + falsifiers/CIs).
 
-See [`DESK_MEMO.md`](DESK_MEMO.md) for the unified feature/strategy map.
+See [`books/mmip/DESK_MEMO.md`](books/mmip/DESK_MEMO.md) for the unified feature/strategy map.
 
 ## Quality bar (Jane Street / top-MM desk)
 
