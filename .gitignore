@@ -1,0 +1,27 @@
+# Secrets / env
+.env
+.env.*
+!.env.example
+credentials*.json
+**/secrets/
+
+# Local runtime
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+*.pid
+
+# Copyrighted book PDF + verbatim extracts — keep local only
+*.pdf
+research/_raw/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
