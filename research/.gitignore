@@ -18,6 +18,10 @@ paper_live.log
 paper_live.log.*
 v_fade_shadow.log
 v_fade_shadow.log.*
+tick_shadow.log
+tick_shadow.log.*
+shadow.log
+shadow.log.*
 *.log
 *.pid
 

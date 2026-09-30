@@ -1,0 +1,41 @@
+# tick_shadow — trades WS + incremental SSM severity_zend sleeve
+# live_orders MUST stay false. Warehouse poll peers are NOT deleted.
+
+mode: SHADOW_TICK
+live_orders: false
+
+venue: hyperliquid
+symbol: ETH
+coin: ETH
+
+# Detection (mirrors paper_harness / _common defaults)
+z_star: 6.0
+sigma_m_frac: 1.0
+noise_floor_log: 1.0e-4
+# Online process-noise rate (log-price var / s). Offline uses MC-GARCH bars;
+# this is a documented Δ — see ARCHITECTURE.md.
+process_rate: 1.0e-8
+gate:
+  min_dp_pct: 0.10
+  min_i_c: 5
+
+# Promote_shadow severity_zend
+v_fade:
+  entry_mode: severity_zend
+  confirm_s: 0.5
+  exit_s: 3.0
+  z_min: 20.0
+  rt_friction_bps: 4.0
+  adverse_stop_bps: 1.0e9
+  max_concurrent: 1
+  suppress_fire_pause: prior_only
+  fire_pause_5m_s: 300.0
+
+heartbeat_s: 10.0
+rest_warm_n: 10
+ws_reconnect_s: 2.0
+rest_fallback_poll_s: 1.0
+
+log_dir: logs
+log_file: tick_shadow.log
+out_dir: out

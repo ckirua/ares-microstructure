@@ -1,0 +1,25 @@
+[Unit]
+Description=ares tick_shadow — HL ETH trades WS + incremental SSM severity_zend (shadow only)
+Documentation=file:///home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow/README.md
+After=network-online.target
+Wants=network-online.target
+
+# Dual-running live sleeve next to ares-paper-live / ares-vfade-shadow (warehouse poll).
+# Shadow only — never OE / mercat / gateway / live orders.
+# Severity defaults from config.yaml: severity_zend |z|≥20 @0.5→3s prior_only.
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow
+EnvironmentFile=-%h/.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 -u run_tick_shadow.py --coin ETH
+Restart=on-failure
+RestartSec=5
+# App also writes/flushes logs/tick_shadow.log; journal catch any print/traceback.
+StandardOutput=append:/home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow/logs/tick_shadow.log
+StandardError=append:/home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow/logs/tick_shadow.log
+Nice=10
+
+[Install]
+WantedBy=default.target

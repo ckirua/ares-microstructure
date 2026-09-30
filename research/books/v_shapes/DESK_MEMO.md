@@ -4,8 +4,9 @@
 **Source:** Flora & Renò working paper (2020-09-17, SSRN 3554122) → `research/books/v_shapes/`  
 **Philosophy:** lenses `risk | info | exec | disc | cont | liq | mm` — V-statistic objects are **not** automatically tradable.  
 **Data:** warehouse trades + collector TOB on **HL + Deribit + Kraken** — **no ClickHouse MCP**.  
-**Program status:** Widened+hardened + feature-reg + paper-throttle — 5 Promote / 10 Hold / 4 Kill · days=20.
+**Program status:** Widened+hardened + feature-reg + paper-throttle + paper_live shadow — 5 Promote / 10 Hold / 4 Kill · days=20.
 **SoT:** [`CHAPTER_INDEX.md`](CHAPTER_INDEX.md) · Lib: [`../../lib/vstat.py`](../../lib/vstat.py) · Loaders: [`scripts/_data.py`](scripts/_data.py).
+**Living shadow:** [`applications/paper_live/`](applications/paper_live/) — MinV/EGARCH Promote monitors + Kill throttle paper telemetry (`logs/shadow.log`).
 
 ---
 
@@ -88,6 +89,7 @@ Memo-grade board in [`notebooks/trade_ideas.ipynb`](notebooks/trade_ideas.ipynb)
 | `ti.v_feature_throttle_join` Calendar Ridge → paper avoid-chase score | **Exec throttle** (paper) | calendar Promote + `info.v_path_continuous` | calendar **Promote** / v_path **Hold** | live POV still paper until v_path clears |
 | `ti.paper_minv_exec_throttle` Paper harness MinV→throttle vs always-on | **Monitor** (killed overlay) | `exec.minv_breach_throttle` | **Kill** | OOS breach Δadv_mo30=+0.010 CI=[0.004,0.015] n=5; Δdd CI includes 0; `out/paper_throttle/` |
 | `ti.paper_cal_throttle_join` Cal Ridge deepen on breach (paper) | **Exec throttle** (paper) | calendar Promote + cal join | cal join **Hold** | parent Kill; paper-only weight |
+| `ti.paper_live_shadow` Living warehouse shadow telemetry | **Monitor** (shadow) | MinV Promote + Kill throttle | monitors **Promote** / throttle **Kill** | [`applications/paper_live/`](applications/paper_live/) · `logs/shadow.log` — hypo only |
 
 ### 5b. Feature-reg / next ideas (tradable vs monitor)
 
@@ -104,6 +106,18 @@ Paths: [`applications/feature_reg/`](applications/feature_reg/) · [`out/feature
 ### 5c. Paper exec-throttle harness
 
 Harness: [`applications/paper_throttle/`](applications/paper_throttle/) · script [`scripts/exp_paper_throttle.py`](scripts/exp_paper_throttle.py) · artifacts [`out/paper_throttle/`](out/paper_throttle/) · memo [`applications/paper_throttle/paper_throttle.ipynb`](applications/paper_throttle/paper_throttle.ipynb).
+
+### 5d. Living paper_live SHADOW (monitor telemetry)
+
+Package: [`applications/paper_live/`](applications/paper_live/) · runner `run_paper_live.py` · log [`applications/paper_live/logs/shadow.log`](applications/paper_live/logs/shadow.log) · events `out/events.jsonl` · board [`applications/paper_live/shadow_board.ipynb`](applications/paper_live/shadow_board.ipynb).
+
+Mirrors cross_miniflash `v_fade_shadow` cadence (warehouse latest-complete-day poll). Logs **Promote** MinV/EGARCH breaches + optional calendar Ridge score + **hypothetical** Kill throttle state. **Does not** soft-Promote `exec.minv_breach_throttle`. `live_orders=false`.
+
+```bash
+cd research/books/v_shapes/applications/paper_live
+python3 run_paper_live.py --poll --interval 120
+tail -f logs/shadow.log
+```
 
 | Slice | Δmax_dd (throttle−base) | Δadverse mo30 | Δpnl | n |
 |-------|-------------------------|---------------|------|---|

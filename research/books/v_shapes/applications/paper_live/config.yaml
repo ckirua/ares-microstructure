@@ -1,0 +1,81 @@
+# V-shapes paper_live — MinV / EGARCH monitor SHADOW (no exchange orders).
+#
+# Desk honesty (EXP_REPORT / DESK_MEMO §5c):
+#   risk.egarch_minv_bands / risk.daily_minv_panel  → Promote (Monitor)
+#   info.v_feature_ridge_calendar                   → Promote (Monitor only)
+#   exec.minv_breach_throttle                       → Kill (do-not-size)
+#   exec.minv_throttle_cal_join / as_alpha          → Hold
+#
+# Shadow logs Promote breach monitors + paper Kill throttle state for
+# observation / accounting ONLY. Never soft-Promote the Killed throttle.
+# Never mercat/gateway OE. ClickHouse MCP banned.
+
+mode: paper
+class: risk_monitor_shadow
+live_orders: false
+alpha_claim: false
+
+# Primary cell (HL ETH); extras optional when easy
+venue: hyperliquid
+symbol: ETH
+extra_venues: [deribit, kraken]
+
+# Poll loop — match v_fade_shadow cadence (warehouse day recompute)
+poll_interval_s: 120.0
+require_complete_day: true
+lookback_days: 21
+max_files: 48
+
+# MinV / EGARCH (Promote monitors)
+hn_min: [1, 5, 30]
+hn_primary_min: 5
+dt_s: 5.0
+n_grid: 41
+n_boot: 25
+fast: true
+
+# Paper throttle knobs (observation ONLY — Kill as risk overlay)
+throttle:
+  size_mult: 0.35
+  widen_bps: 5.0
+  pov: 0.20
+  take_pause: true
+  gate: Kill
+  gate_id: exec.minv_breach_throttle
+  do_not_size: true
+  note: >
+    OOS adverse mo30 worsens CI>0 — Kill as risk overlay.
+    Logged as hypothetical paper state; never production quoting.
+
+# Calendar Ridge (Promote Monitor only — optional if coef artifacts exist)
+calendar_ridge:
+  enabled: true
+  coef_path: ../../out/feature_reg/coef_tables.json
+  prefer_targets: [y_cal_60s, y_cal_300s, y_cal_30s]
+  cal_thresh_abs: 0.0002007109070232962
+  boost_size_mult: 0.22
+  boost_widen_bps: 8.0
+  boost_pov: 0.10
+  gate: Promote
+  gate_id: info.v_feature_ridge_calendar
+  promote_as: Monitor
+  note: Monitor only; R²≪1 — never sized alpha.
+
+# Gate stamp (hard-pinned honesty)
+gates:
+  risk.egarch_minv_bands: Promote
+  risk.daily_minv_panel: Promote
+  risk.v_vs_jump_taxonomy: Promote
+  info.v_feature_ridge_calendar: Promote
+  exec.minv_breach_throttle: Kill
+  exec.minv_throttle_cal_join: Hold
+  exec.minv_throttle_as_alpha: Hold
+
+# Outputs
+out_dir: out
+log_dir: logs
+log_file: shadow.log
+log_rotate: daily
+log_max_bytes: 10485760
+log_backup_count: 14
+events_jsonl: events.jsonl

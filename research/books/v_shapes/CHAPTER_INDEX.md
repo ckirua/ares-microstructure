@@ -6,7 +6,7 @@ Data: [`../../DATA_PATHS.md`](../../DATA_PATHS.md). Loop: [`../../LOOP.md`](../.
 
 **Book:** Flora & Renò, *V-shapes* (2020-09-17), 38 PDF pp. SSRN 3554122. Slug: `v_shapes`.
 
-**Program status:** **Widened+hardened + feature-reg + paper-throttle** — 20 UTC days · 5 Promote / 10 Hold / 4 Kill.
+**Program status:** **Widened+hardened + feature-reg + paper-throttle + paper_live shadow** — 20 UTC days · 5 Promote / 10 Hold / 4 Kill.
 
 **Shared lib:** [`../../lib/vstat.py`](../../lib/vstat.py) (kernels, \(T^\pm\), \(V\), MinV, pre-avg/HAC, EGARCH bootstrap) · loaders [`scripts/_data.py`](scripts/_data.py) (HL + Deribit + Kraken).  
 **Do not merge** with [`../../lib/crash.py`](../../lib/crash.py) `vshape_events` (geometric Dugast–Foucault).
@@ -52,6 +52,7 @@ A package is **not** `exp_run`-complete after Pass 1 alone. Tracking path: **`pa
 | `xvenue_concord` | Multi-venue MinV on ETH/BTC | HL↔Deribit↔Kraken concordance; FEI/Epps around V | `exp_run` | [`chapters/xvenue_concord/`](chapters/xvenue_concord/) |
 | `feature_reg` | Causal V-features × Ridge/OLS/EN under tick/cal/vol clocks | Primary trade-time Hold; calendar Monitor Promote; leakage Kill | `exp_run` | [`applications/feature_reg/`](applications/feature_reg/) |
 | `paper_throttle` | MinV/EGARCH Promote → maker throttle vs always-on | Risk overlay Kill (adverse mo CI>0); Hold as alpha; cal join Hold | `exp_run` | [`applications/paper_throttle/`](applications/paper_throttle/) |
+| `paper_live` | Living warehouse shadow: MinV/EGARCH monitors + Kill throttle paper state | Telemetry only; never soft-Promote Kill; `live_orders=false` | `exp_run` | [`applications/paper_live/`](applications/paper_live/) |
 
 **First vertical slice (still two-pass):** \(V_{\tau,n}\) + EGARCH bands on HL+Deribit+Kraken ETH (complete UTC week) → daily MinV → info joins + concordance vs `crash.vshape_events` / SSM → widen BTC after Promote gate → feature regressions under honest clocks → paper exec-throttle harness.
 
