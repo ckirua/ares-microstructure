@@ -219,7 +219,7 @@ Do **not** fork MM kill-ladder equity as the alpha claim. Reuse `paper_harness` 
 ### How to run
 
 ```bash
-cd /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper
+cd research/books/cross_miniflash/applications/edge_lab/v_fade_paper   # from repo root
 
 # Primary cell
 python3 run_v_fade_paper.py --day 2026-09-04 --venue hyperliquid --symbol ETH
@@ -308,7 +308,7 @@ Trip **any** → flatten, set `decision=Kill` for the window, page desk:
 ## 9. Reproduce lab scoreboard + paper shadow
 
 ```bash
-cd /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab
+cd research/books/cross_miniflash/applications/edge_lab
 python3 exp_edge_lab.py
 # primary Promote row: TI-v-fade (causal) in out/EXP_REPORT.md
 

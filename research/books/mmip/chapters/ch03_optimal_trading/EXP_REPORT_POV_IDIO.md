@@ -104,4 +104,4 @@ n 1m bars≈3740, returns=3739
 | `style.extraday_idio` | **Promote** (D) | Minimal BTC/ETH/SOL beta panel; document short sample |
 | `tca.is_arrival` (own fills) | **Hold** | Still needs proprietary / shadow fills |
 
-Artifacts: `research/books/mmip/out/ch03_pov_idio/`. Plots: ['/home/dev/srv/ares-microstructure/research/books/mmip/out/ch03_pov_idio/impact_vs_algo_pov.png', '/home/dev/srv/ares-microstructure/research/books/mmip/out/ch03_pov_idio/impact_pov_vs_tape_rho.png', '/home/dev/srv/ares-microstructure/research/books/mmip/out/ch03_pov_idio/beta_var_shares.png']
+Artifacts: `research/books/mmip/out/ch03_pov_idio/`. Plots: ['research/books/mmip/out/ch03_pov_idio/impact_vs_algo_pov.png', 'research/books/mmip/out/ch03_pov_idio/impact_pov_vs_tape_rho.png', 'research/books/mmip/out/ch03_pov_idio/beta_var_shares.png']

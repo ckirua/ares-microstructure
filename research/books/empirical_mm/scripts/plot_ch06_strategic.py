@@ -1,7 +1,7 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Ch.6 Kyle strategic-trade schematic figures (synthetic)."""
 
-from __future__ import annotations
 
 import json
 from datetime import datetime, timezone

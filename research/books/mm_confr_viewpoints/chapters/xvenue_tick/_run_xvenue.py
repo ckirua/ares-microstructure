@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Chapter-local xvenue_tick runner — owns out/xvenue_tick/ only.
 
@@ -5,7 +6,6 @@ Does not edit shared scripts/ or research/lib/. Uses ticksize + book _data
 loaders + mmip helpers (epps / fei) when importable.
 """
 
-from __future__ import annotations
 
 import json
 import math

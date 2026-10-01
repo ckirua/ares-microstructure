@@ -1,6 +1,9 @@
 """SHADOW PAPER helpers — latest complete day, gap candidate, honesty banner."""
 
+
 from __future__ import annotations
+
+import os
 
 import json
 import sys
@@ -15,8 +18,8 @@ from .kill import _boot_mean
 
 PKG = Path(__file__).resolve().parents[1]
 SCRIPTS = PKG.parents[2] / "scripts"  # cross_miniflash/scripts
-WAREHOUSE_SRC = Path("/home/dev/lab/lab-n2070/warehouse/src")
-STARTARB = Path("/home/dev/srv/ares-startarb")
+WAREHOUSE_SRC = Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 
 HONESTY_BANNER = (
     "**SHADOW PAPER** · `research_sim` · `live_orders=false` · "
@@ -415,7 +418,7 @@ See [`EQUITY.md`](EQUITY.md) (panel n from gap best / `build_equity_curves.py`).
 
 ```bash
 # tail V-fade living shadow
-tail -f /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper/logs/v_fade_shadow.log
+tail -f research/books/cross_miniflash/applications/edge_lab/v_fade_paper/logs/v_fade_shadow.log
 
 # status / restart (user systemd)
 systemctl --user status ares-vfade-shadow.service

@@ -7,7 +7,10 @@ are tape ΔP, tape markout, recovery class, and venue-local counterfactuals.
 ClickHouse MCP banned.
 """
 
+
 from __future__ import annotations
+
+import os
 
 import json
 import sys
@@ -19,8 +22,8 @@ import numpy as np
 
 BOOK = Path(__file__).resolve().parents[2]
 ROOT = BOOK.parents[2]
-STARTARB = Path("/home/dev/srv/ares-startarb")
-WAREHOUSE_SRC = Path("/home/dev/lab/lab-n2070/warehouse/src")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
+WAREHOUSE_SRC = Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))
 APP = BOOK / "applications"
 OUT = APP / "out"
 PANEL_DIR = OUT / "event_panel"

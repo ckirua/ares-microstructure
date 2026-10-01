@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Core V-statistic + bootstrap_sim empirics (Pass 1+2) for v_shapes.
 
@@ -6,7 +7,7 @@ Also always runs Models 0–3 size/power (synthetic) and writes chapter artifact
 ClickHouse MCP banned — warehouse / startarb loaders only.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -17,9 +18,9 @@ import numpy as np
 
 BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
-sys.path.insert(0, str(Path("/home/dev/lab/lab-n2070/warehouse/src")))
+sys.path.insert(0, str(Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))))
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path("/home/dev/srv/ares-startarb") / "src"))
+sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import (  # noqa: E402
@@ -311,7 +312,7 @@ def _write_notebooks() -> None:
                     "source": [
                         "import json, sys\n",
                         "from pathlib import Path\n",
-                        "ROOT = Path('../..').resolve().parents[1] if False else Path('/home/dev/srv/ares-microstructure')\n",
+                        "ROOT = Path('../..').resolve().parents[1] if False else Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure'))\n",
                         "sys.path.insert(0, str(ROOT))\n",
                         "from research.lib.vstat import min_v, bootstrap_minv_ci, ASYMPTOTIC_BAND_95\n",
                         f"print('bands kill', ASYMPTOTIC_BAND_95)\n",

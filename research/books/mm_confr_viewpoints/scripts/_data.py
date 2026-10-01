@@ -15,7 +15,10 @@ Kraken **quoted** TOB: prefer spot L2 via ``load_kraken_spot_tob_day``
 Data inventory: ``research/DATA_PATHS.md``. ClickHouse MCP banned.
 """
 
+
 from __future__ import annotations
+
+import os
 
 import sys
 from datetime import datetime, timezone
@@ -24,8 +27,8 @@ from typing import Any  # noqa: F401 — used by load_warehouse_tob kwargs typin
 
 import numpy as np
 
-STARTARB = Path("/home/dev/srv/ares-startarb")
-WAREHOUSE_SRC = Path("/home/dev/lab/lab-n2070/warehouse/src")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
+WAREHOUSE_SRC = Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))
 MICRO_ROOT = Path(__file__).resolve().parents[3]
 for _p in (str(WAREHOUSE_SRC), str(STARTARB / "src"), str(MICRO_ROOT)):
     if _p not in sys.path:

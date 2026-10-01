@@ -3,7 +3,7 @@
 Generated from `rollup.json` · primary **hyperliquid ETH** · extra `['deribit', 'kraken']`
 
 ```bash
-cd /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper
+cd research/books/cross_miniflash/applications/edge_lab/v_fade_paper   # from repo root
 python3 run_v_fade_paper.py --panel-days --extra-venues deribit,kraken
 python3 write_trade_board.py
 ```

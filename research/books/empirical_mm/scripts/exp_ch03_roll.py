@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Ch.3 Roll (disc) + Ch.8 noise-robust RV (cont) — paired clocks.
 
@@ -5,7 +6,7 @@ Hasbrouck notes: Roll γ₁ identification; continuous-path RV fine vs coarse.
 No ClickHouse MCP.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -18,7 +19,7 @@ import numpy as np
 BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path("/home/dev/srv/ares-startarb") / "src"))
+sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import (  # noqa: E402

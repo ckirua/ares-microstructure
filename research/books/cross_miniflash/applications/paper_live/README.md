@@ -48,7 +48,7 @@ Requires a logged-in user session (or `loginctl enable-linger $USER` for boot pe
 ### Foreground / smoke
 
 ```bash
-cd /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/paper_live
+cd research/books/cross_miniflash/applications/paper_live   # from repo root
 
 # continuous (Ctrl-C / SIGTERM to stop)
 python3 run_paper_live.py --poll
@@ -72,7 +72,7 @@ Requires startarb/warehouse env (`startarb.env.ensure_env`) — same as paper_ha
 Absolute path (works from any cwd — relative `logs/paper_live.log` only works inside this package):
 
 ```bash
-tail -f /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/paper_live/logs/paper_live.log
+tail -f logs/paper_live.log
 ```
 
 Log handlers **flush each record**. Optional daily UTC rotate (`log_rotate: daily` in `config.yaml`). systemd also appends stdout/stderr to the same file.
@@ -99,10 +99,10 @@ This service is crash-risk kill-ladder only. For the Promote_shadow V-fade use t
 # durable living shadow (DISTINCT from ares-paper-live.service)
 systemctl --user enable --now ares-vfade-shadow.service
 systemctl --user status ares-vfade-shadow.service
-tail -f /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper/logs/v_fade_shadow.log
+tail -f ../edge_lab/v_fade_paper/logs/v_fade_shadow.log
 
 # one-shot / foreground under v_fade_paper/
-cd /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper
+cd research/books/cross_miniflash/applications/edge_lab/v_fade_paper   # from repo root
 python3 run_shadow_day.py
 python3 run_v_fade_shadow_live.py --poll --interval 120
 # ≡ severity_zend |z|≥20 @0.5→3s prior_only · live_orders=false
@@ -113,7 +113,7 @@ Restart **this** crash-risk loop (unchanged class):
 ```bash
 systemctl --user restart ares-paper-live.service
 # or foreground:
-cd /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/paper_live
+cd research/books/cross_miniflash/applications/paper_live   # from repo root
 python3 run_paper_live.py --poll --interval 10 --quiet
 ```
 

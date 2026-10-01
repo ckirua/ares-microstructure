@@ -1,6 +1,9 @@
 """Load paper-live YAML config (HL ETH defaults)."""
 
+
 from __future__ import annotations
+
+import os
 
 from pathlib import Path
 from typing import Any
@@ -51,7 +54,7 @@ def load_config(path: str | Path | None = None) -> dict[str, Any]:
         {
             "prefer_warehouse_refresh": True,
             "use_collector_tob": True,
-            "collector_tob_root": "/home/dev/srv/ares-startarb/results/xarb_md/tob",
+            "collector_tob_root": str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "results/xarb_md/tob"),
         },
     )
     raw.setdefault(

@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Severity / regime feature model — logistic + regularized predictors.
 
@@ -11,7 +12,6 @@ Also denser Hold→Promote attempts:
   - info.vpin_x_size_severity
 """
 
-from __future__ import annotations
 
 import argparse
 import json

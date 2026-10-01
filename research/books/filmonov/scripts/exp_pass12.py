@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Thin orchestrator: Pass1 sibling runners remain SoT; this chains them.
 
@@ -10,7 +11,6 @@ Usage::
 ClickHouse MCP banned.
 """
 
-from __future__ import annotations
 
 import argparse
 import subprocess

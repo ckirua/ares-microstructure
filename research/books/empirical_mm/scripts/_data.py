@@ -1,6 +1,9 @@
 """Shared loaders for empirical_mm experiments (collector TOB + warehouse trades)."""
 
+
 from __future__ import annotations
+
+import os
 
 from datetime import datetime, timezone
 from pathlib import Path
@@ -8,7 +11,7 @@ from typing import Any
 
 import numpy as np
 
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 DEFAULT_TOB = STARTARB / "results" / "xarb_md" / "tob"
 # Flat parquet (~≤2026-09-10) stores opaque HL instrument ids; catalog FNV(coin) misses.
 # See startarb/config/symbols.yaml → hyperliquid_flat_ids.

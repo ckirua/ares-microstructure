@@ -1,6 +1,9 @@
 """Shadow fills against tape/TOB using strategy_lab maker sim."""
 
+
 from __future__ import annotations
+
+import os
 
 import sys
 from pathlib import Path
@@ -12,7 +15,7 @@ PKG = Path(__file__).resolve().parents[1]
 APP = PKG.parent
 BOOK = APP.parent
 ROOT = BOOK.parents[2]
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 LAB = APP / "strategy_lab"
 
 for p in (str(LAB), str(ROOT), str(STARTARB / "src"), str(BOOK / "scripts")):

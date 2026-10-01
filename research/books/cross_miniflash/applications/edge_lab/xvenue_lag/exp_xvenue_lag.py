@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """X-venue lag taker — when SSM/Nanex fires on A, take on lagging B.
 
@@ -12,7 +13,7 @@ entry at signal_end + latency_ms · no fantasy TOB fills · ClickHouse MCP banne
 Own folder only — does not edit edge_lab core.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -31,8 +32,8 @@ BOOK = APP.parent
 ROOT = BOOK.parents[2]
 SCRIPTS_APP = APP / "scripts"
 SCRIPTS_BOOK = BOOK / "scripts"
-STARTARB = Path("/home/dev/srv/ares-startarb")
-WAREHOUSE_SRC = Path("/home/dev/lab/lab-n2070/warehouse/src")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
+WAREHOUSE_SRC = Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))
 OUT = LAB / "out"
 FIG = OUT / "figs"
 

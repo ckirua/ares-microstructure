@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Phase 4 program-wide Pass 2.5 hardening for cross_miniflash.
 
@@ -8,7 +9,7 @@ write DESK_MEMO signal board, CHAPTER_INDEX COMPLETE rollup, desk_synthesis.
 ClickHouse MCP banned. No git commit. Do not edit the plan file.
 """
 
-from __future__ import annotations
+import os
 
 import json
 import sys
@@ -1098,7 +1099,7 @@ def write_desk_synthesis(artifact: dict) -> None:
                 "source": [
                     "import json\n",
                     "from pathlib import Path\n",
-                    "BOOK = Path('/home/dev/srv/ares-microstructure/research/books/cross_miniflash')\n",
+                    "BOOK = (Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure')) / 'research' / 'books' / 'cross_miniflash')\n",
                     "gates = json.loads((BOOK/'out/phase4_hardening/hardening_gates.json').read_text())\n",
                     "G = gates['gates']\n",
                     "print('Promote:', [k for k,v in G.items() if v['decision']=='Promote'])\n",

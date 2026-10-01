@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """TI-nanex-nest deep join — escalate size/taker on Nanex∩SSM vs SSM-only.
 
@@ -10,7 +11,6 @@ Honesty: research_sim · costs · capacity — not live alpha.
 No MM quoting. ClickHouse MCP banned. No commit.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

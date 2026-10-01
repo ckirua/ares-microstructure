@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Feature regressions for V-shapes — ridge primary, honest clocks.
 
@@ -21,7 +22,7 @@ model.
 ClickHouse MCP banned. No soft-Promote.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -46,9 +47,9 @@ APP = BOOK / "applications" / "feature_reg"
 OUT = BOOK / "out" / "feature_reg"
 FIG = OUT / "figs"
 
-sys.path.insert(0, str(Path("/home/dev/lab/lab-n2070/warehouse/src")))
+sys.path.insert(0, str(Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))))
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path("/home/dev/srv/ares-startarb") / "src"))
+sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import (  # noqa: E402

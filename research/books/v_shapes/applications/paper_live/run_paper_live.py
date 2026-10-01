@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """V-shapes paper_live SHADOW poller — MinV/EGARCH monitors (no exchange orders).
 
@@ -22,7 +23,6 @@ Examples:
 Never mercat/gateway OE. ClickHouse MCP banned.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

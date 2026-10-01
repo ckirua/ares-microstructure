@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Chapter 3 experiment: market-impact stylized facts on HL ETH trade tape.
 
@@ -18,7 +19,7 @@ Data preference (no ClickHouse MCP):
 
 Paper only. No orders.
 """
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -33,7 +34,7 @@ import numpy as np
 BOOK_ROOT = Path(__file__).resolve().parents[1]
 ROOT = BOOK_ROOT.parents[2]  # repo root (mmip → books → research → repo)
 OUT_DIR = BOOK_ROOT / "out" / "ch03_optimal_trading"
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 DENSE_DAYS = ["2026-09-14", "2026-09-15", "2026-09-16", "2026-09-25", "2026-09-26"]
 
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Phase 2 vertical slice: crash_baselines + mc_garch_vol + kalman_ssm.
 
@@ -9,7 +10,7 @@ Pass 2: overlap vs SSM, VPIN/OFI/markout around events, z*∈[2,12] scan,
 ClickHouse MCP banned. Data via warehouse + optional collector TOB.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -22,7 +23,7 @@ import numpy as np
 
 BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(STARTARB / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))

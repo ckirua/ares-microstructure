@@ -55,7 +55,7 @@ See also [`CANDIDATES.md`](CANDIDATES.md).
 ## 3. Experiment (2026-09-30)
 
 **Script:** `research/books/mmip/scripts/exp_ch01_fragmentation.py`  
-**Data:** `/home/dev/srv/ares-startarb/results/xarb_md/tob/20260929/` (WS collector; HL + Lighter + RiseX). RiseX symbols normalized (`ETH/USDC` → `ETH`).  
+**Data:** ``${ARES_STARTARB:-../ares-startarb}`/results/xarb_md/tob/20260929/` (WS collector; HL + Lighter + RiseX). RiseX symbols normalized (`ETH/USDC` → `ETH`).  
 **Not used:** ClickHouse. Warehouse trade tape deferred to iterate backlog (true notional share).
 
 ### ETH (~71 min collector window)

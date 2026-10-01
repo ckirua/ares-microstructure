@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Classic microstructure package: markout, spreads, session effects, resilience.
 
@@ -5,7 +6,7 @@ Implements under-covered book themes with real HL tape + collector/warehouse mid
 No ClickHouse MCP. Paper only.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -18,7 +19,7 @@ import numpy as np
 
 BOOK_ROOT = Path(__file__).resolve().parents[1]
 ROOT = BOOK_ROOT.parents[2]  # repo root (mmip → books → research → repo)
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(STARTARB / "src"))
 

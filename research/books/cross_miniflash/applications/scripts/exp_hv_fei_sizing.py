@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Exp 4 — H^v / FEI capacity → child sizing.
 
@@ -8,7 +9,6 @@ self-impact fantasy beyond stated assumptions in research.lib.pov).
 ClickHouse MCP banned.
 """
 
-from __future__ import annotations
 
 import argparse
 import sys

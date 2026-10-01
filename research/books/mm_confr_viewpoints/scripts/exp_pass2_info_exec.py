@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Pass-2 info/exec deep dig: tick_constraint + rel_tick_panel.
 
@@ -10,7 +11,6 @@ Writes NEW figs under out/tick_constraint/figs/ and out/rel_tick_panel/figs/
 (does not delete existing required figs). ClickHouse MCP banned. No git.
 """
 
-from __future__ import annotations
 
 import json
 import sys

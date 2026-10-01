@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Exp 3 — HL thin-excess + crash-share SOR / size-cap.
 
@@ -8,7 +9,6 @@ markout on each venue's own tape).
 ClickHouse MCP banned.
 """
 
-from __future__ import annotations
 
 import argparse
 import sys

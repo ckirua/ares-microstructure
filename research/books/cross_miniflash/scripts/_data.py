@@ -11,7 +11,10 @@ with a local fallback map if startarb config is unavailable.
 Data inventory: ``research/DATA_PATHS.md``. ClickHouse MCP banned.
 """
 
+
 from __future__ import annotations
+
+import os
 
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,7 +22,7 @@ from typing import Any
 
 import numpy as np
 
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 DEFAULT_TOB = STARTARB / "results" / "xarb_md" / "tob"
 HL_FLAT_IDS: dict[str, int] = {
     "BTC": 3860219501,

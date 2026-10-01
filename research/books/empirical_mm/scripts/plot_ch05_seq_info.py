@@ -1,7 +1,7 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Ch.5 sequential-trade schematic figures (synthetic Glosten–Milgrom cartoons)."""
 
-from __future__ import annotations
 
 import json
 from datetime import datetime, timezone

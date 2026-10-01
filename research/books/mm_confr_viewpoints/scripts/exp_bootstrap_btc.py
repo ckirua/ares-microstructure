@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Pass-2.5 hardening: day-block bootstrap CIs + BTC replication.
 
@@ -7,7 +8,6 @@ touched CANDIDATES. Promote only if falsifiers pass.
 ClickHouse MCP banned. No git commit.
 """
 
-from __future__ import annotations
 
 import importlib.util
 import json

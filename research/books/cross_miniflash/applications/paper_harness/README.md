@@ -23,7 +23,7 @@ Desk context: [`../../TRADING_APPLICATIONS.md`](../../TRADING_APPLICATIONS.md) Â
 ## How to run (paper only)
 
 ```bash
-cd /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/paper_harness
+cd research/books/cross_miniflash/applications/paper_harness   # from repo root
 
 # one UTC day (HL ETH)
 python3 run_paper_day.py --day 2026-09-04

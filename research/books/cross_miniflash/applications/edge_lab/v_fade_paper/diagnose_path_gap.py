@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Path-gap diagnose + executable sweep with severity_zend causal fix.
 
@@ -15,7 +16,6 @@ Writes:
 No ClickHouse MCP. No commit. live_orders=False.
 """
 
-from __future__ import annotations
 
 import copy
 import json

@@ -13,7 +13,7 @@ Executable causal V-fade taker on real warehouse tape. **Not** MM. **Not** live 
 ## How to run
 
 ```bash
-cd /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper
+cd research/books/cross_miniflash/applications/edge_lab/v_fade_paper   # from repo root
 
 # Single day (primary cell HL ETH)
 python3 run_v_fade_paper.py --day 2026-09-04
@@ -46,7 +46,7 @@ Unit `ExecStart`: `python3 run_v_fade_shadow_live.py --poll --interval 120 --qui
 ### Tail the log
 
 ```bash
-tail -f /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/edge_lab/v_fade_paper/logs/v_fade_shadow.log
+tail -f ../edge_lab/v_fade_paper/logs/v_fade_shadow.log
 ```
 
 You will see: session START (severity_zend defaults), **HEARTBEAT** lines (`n_faded`, `cum_path_eq_bps`), **TRADE** lines when new fades appear, SHADOW_BOARD refresh path, and errors.

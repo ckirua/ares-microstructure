@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Native Kraken spot L2 vs futures trade_synth — focused compare for mm_confr.
 
@@ -9,7 +10,6 @@ Honesty: futures PF_* still have **no** L2 in mercat-kraken-md; spot L2 is
 the native path for MQ / tick-constraint. ClickHouse MCP banned. No git commit.
 """
 
-from __future__ import annotations
 
 import json
 import sys

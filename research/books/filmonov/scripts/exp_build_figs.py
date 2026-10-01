@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Build / refresh desk-quality figures for Filimonov.
 
@@ -8,7 +9,6 @@ Pass1 runners (SoT) — this script does not delete them.
 ClickHouse MCP banned. No git commit.
 """
 
-from __future__ import annotations
 
 import json
 import shutil

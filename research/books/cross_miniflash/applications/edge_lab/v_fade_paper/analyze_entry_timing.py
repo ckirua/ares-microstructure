@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Entry-timing micro-research for V-fade executable gap.
 
@@ -14,7 +15,6 @@ Writes:
 Own files only under v_fade_paper/ (+ this script). No ClickHouse MCP. No commit.
 """
 
-from __future__ import annotations
 
 import json
 import sys

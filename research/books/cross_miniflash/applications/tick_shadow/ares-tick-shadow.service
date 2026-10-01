@@ -1,6 +1,6 @@
 [Unit]
 Description=ares tick_shadow — HL ETH trades WS + incremental SSM severity_zend (shadow only)
-Documentation=file:///home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow/README.md
+Documentation=file://%h/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow/README.md
 After=network-online.target
 Wants=network-online.target
 
@@ -10,15 +10,19 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow
+WorkingDirectory=%h/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow
 EnvironmentFile=-%h/.env
+Environment=ARES_STARTARB=%h/srv/ares-startarb
+Environment=WAREHOUSE_ROOT=%h/lab/lab-n2070/warehouse
+Environment=WAREHOUSE_SRC=%h/lab/lab-n2070/warehouse/src
+Environment=ARES_MICROSTRUCTURE=%h/srv/ares-microstructure
 Environment=PYTHONUNBUFFERED=1
 ExecStart=/usr/bin/python3 -u run_tick_shadow.py --coin ETH
 Restart=on-failure
 RestartSec=5
 # App also writes/flushes logs/tick_shadow.log; journal catch any print/traceback.
-StandardOutput=append:/home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow/logs/tick_shadow.log
-StandardError=append:/home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow/logs/tick_shadow.log
+StandardOutput=append:%h/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow/logs/tick_shadow.log
+StandardError=append:%h/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow/logs/tick_shadow.log
 Nice=10
 
 [Install]

@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """TI-v-fade SHADOW PAPER CLI — causal fade on real tape (not MM, not live).
 
@@ -11,7 +12,6 @@ Honesty: SHADOW PAPER · research_sim · RT=4bps · mid_mo null → tape mo · l
 ClickHouse MCP banned. Warehouse + startarb loaders only.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

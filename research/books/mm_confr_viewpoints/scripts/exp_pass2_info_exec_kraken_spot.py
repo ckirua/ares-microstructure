@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Pass-2 info/exec dig on Kraken **spot** L2 (real quotes).
 
@@ -12,7 +13,6 @@ out/rel_tick_panel/. Updates EXP_REPORT / CANDIDATES. No plan edit.
 ClickHouse MCP banned. No git commit.
 """
 
-from __future__ import annotations
 
 import json
 import sys

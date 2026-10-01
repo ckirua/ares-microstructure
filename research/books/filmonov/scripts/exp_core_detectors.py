@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Pass-1 empirics for Filimonov core detectors.
 
@@ -9,7 +10,7 @@ ClickHouse MCP banned. Detectors: ``research.lib.hftpat``.
 Kraken ``trade_synth`` TOB is labeled and **excluded** from native TOB fade tests.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -25,9 +26,9 @@ import numpy as np  # noqa: E402
 
 BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
-sys.path.insert(0, str(Path("/home/dev/lab/lab-n2070/warehouse/src")))
+sys.path.insert(0, str(Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))))
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path("/home/dev/srv/ares-startarb") / "src"))
+sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import (  # noqa: E402

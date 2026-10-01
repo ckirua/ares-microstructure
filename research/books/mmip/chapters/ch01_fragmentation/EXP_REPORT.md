@@ -37,7 +37,7 @@ On a ~71 min HL/Lit/RX ETH collector window, **visible size is concentrated** (H
 
 | Item | Detail |
 |------|--------|
-| Source | `/home/dev/srv/ares-startarb/results/xarb_md/tob/20260929/` |
+| Source | ``${ARES_STARTARB:-../ares-startarb}`/results/xarb_md/tob/20260929/` |
 | Window | ns `[1790715569912889710, 1790719820774579807]` ≈ **4251 s** (~71 min) |
 | Clock | Collector receive / exchange fields as stored in parquet; alignment = **1s floor buckets** last-quote |
 | Universe | ETH (+ BTC parallel); RiseX `ETH/USDC`→`ETH` |

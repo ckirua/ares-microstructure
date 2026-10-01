@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Signal boards + info-theory + stats + Bayesian panels for cross_miniflash.
 
@@ -10,7 +11,6 @@ Bayesian: conjugate Beta–Binomial (V-recovery) + Metropolis–Hastings logisti
 required (not installed cleanly on this host).
 """
 
-from __future__ import annotations
 
 import argparse
 import json

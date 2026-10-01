@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """V-recovery vs continuation quoting restore — policy sims (desk deliverable).
 
@@ -11,7 +12,6 @@ Desk object: info.crash_v_vs_continuation (TRADING_APPLICATIONS §3.2).
 Honesty: MM playbook **sim** on real tape — not live orders, not tradable alpha.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

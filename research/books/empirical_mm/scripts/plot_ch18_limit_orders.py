@@ -1,7 +1,7 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Ch.18–21 Part III figures from exp_ch18_eth_summary.json (+ light report refresh)."""
 
-from __future__ import annotations
 
 import json
 import sys

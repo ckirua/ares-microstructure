@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Ch.15 PIN (disc mixture intuition) + VPIN / intensity (cont) + Ch.22 Amihud.
 
@@ -7,7 +8,7 @@ EHO PIN full MLE needs day-level B/S counts across many days — we ship:
 - liq: Amihud on calendar bars
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -20,7 +21,7 @@ import numpy as np
 BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path("/home/dev/srv/ares-startarb") / "src"))
+sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import ensure_env, load_hl_tob, load_trades, overlap_trades_with_mids, resolve_days  # noqa: E402

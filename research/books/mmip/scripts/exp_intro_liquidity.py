@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Introduction chapter experiment: liquidity defs → extractable MM features.
 
@@ -5,7 +6,7 @@ Book front matter / Introduction (liquidity, best execution, maker–taker blur)
 Data: local collector TOB (no ClickHouse). Paper only.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -31,7 +32,7 @@ from research.lib import (  # noqa: E402
     time_split_mask,
 )
 
-DEFAULT_TOB = Path("/home/dev/srv/ares-startarb/results/xarb_md/tob")
+DEFAULT_TOB = Path(str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "results/xarb_md/tob"))
 OUT_DIR = BOOK_ROOT / "out" / "intro_liquidity"
 
 

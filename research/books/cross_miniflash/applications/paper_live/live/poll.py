@@ -1,6 +1,9 @@
 """One paper-live poll: warehouse refresh → detect → ladder → shadow → persist."""
 
+
 from __future__ import annotations
+
+import os
 
 import json
 import sys
@@ -17,7 +20,7 @@ PAPER = APP / "paper_harness"
 LAB = APP / "strategy_lab"  # sim.* / strategies (risk_stack + shadow_fills)
 BOOK = APP.parent
 ROOT = BOOK.parents[2]
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 SCRIPTS = APP / "scripts"
 BOOK_SCRIPTS = BOOK / "scripts"
 

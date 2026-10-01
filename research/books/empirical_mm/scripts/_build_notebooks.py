@@ -1,7 +1,7 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Build executed-style notebooks that load summary JSON + display figures."""
 
-from __future__ import annotations
 
 import base64
 import json

@@ -1,7 +1,8 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Program-wide hardening: Promote rollup, DESK_MEMO signal board, desk_synthesis."""
 
-from __future__ import annotations
+import os
 
 import json
 import math
@@ -664,7 +665,7 @@ def main() -> int:
                 "source": [
                     "import json\n",
                     "from pathlib import Path\n",
-                    "p = Path('/home/dev/srv/ares-microstructure/research/books/v_shapes/out/hardening_rollup.json')\n",
+                    "p = (Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure')) / 'research' / 'books' / 'v_shapes' / 'out' / 'hardening_rollup.json')\n",
                     "print(json.dumps(json.loads(p.read_text()), indent=2))\n",
                 ],
             },

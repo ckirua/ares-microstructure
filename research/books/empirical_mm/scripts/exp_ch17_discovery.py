@@ -1,10 +1,11 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Ch.17 price discovery / information shares across HL vs Lighter (cont-path mids).
 
 Paired with disc: lead-lag sign concordance on trade clocks when both tapes exist.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -17,7 +18,7 @@ import numpy as np
 BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path("/home/dev/srv/ares-startarb") / "src"))
+sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import align_mids_calendar, ensure_env, load_venue_tob  # noqa: E402

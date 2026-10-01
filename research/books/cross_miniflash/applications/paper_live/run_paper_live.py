@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Paper-live — continuous crash-risk overlay (shadow only).
 
@@ -13,7 +14,6 @@ Examples:
 No live orders. ClickHouse MCP banned. Never mercat/gateway OE.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

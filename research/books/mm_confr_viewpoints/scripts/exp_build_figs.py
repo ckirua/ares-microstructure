@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Dump desk-quality PNG figures + package JSON for mm_confr_viewpoints.
 
@@ -10,7 +11,7 @@ hist / relax-event windows. Writes:
 ClickHouse MCP banned. No git commit.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -27,8 +28,8 @@ import numpy as np  # noqa: E402
 BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path("/home/dev/lab/lab-n2070/warehouse/src")))
-sys.path.insert(0, str(Path("/home/dev/srv/ares-startarb") / "src"))
+sys.path.insert(0, str(Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))))
+sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from research.lib.ticksize import (  # noqa: E402
@@ -843,7 +844,7 @@ def write_desk_synthesis_nb(fig_paths: dict[str, str], gates: dict) -> None:
             "source": [
                 "import json, sys\n",
                 "from pathlib import Path\n",
-                "ROOT = Path('/home/dev/srv/ares-microstructure')\n",
+                "ROOT = Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure'))\n",
                 "BOOK = ROOT / 'research/books/mm_confr_viewpoints'\n",
                 "sys.path.insert(0, str(ROOT))\n",
                 "gates = json.loads((BOOK/'out/pass2/hardening_gates.json').read_text())\n",

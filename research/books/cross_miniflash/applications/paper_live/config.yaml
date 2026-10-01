@@ -25,7 +25,7 @@ require_complete_day: false    # live UTC day is incomplete by definition
 data:
   prefer_warehouse_refresh: true   # re-list S3/cache each poll
   use_collector_tob: true          # book via strategy_lab load_best_book
-  collector_tob_root: /home/dev/srv/ares-startarb/results/xarb_md/tob
+  collector_tob_root: ${ARES_STARTARB:-../ares-startarb}/results/xarb_md/tob
   note: >
     Trade tape = warehouse (S3→~/.cache/warehouse); typically lags live
     by minutes–hours depending on ingest. Collector TOB is denser for book

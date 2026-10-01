@@ -1,7 +1,7 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Build memo-quality notebooks for Phase 2 packages from phase2_summary + figs."""
 
-from __future__ import annotations
 
 import base64
 import json

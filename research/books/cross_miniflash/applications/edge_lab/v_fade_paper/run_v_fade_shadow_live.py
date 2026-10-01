@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """V-fade living SHADOW poller — severity_zend Promote_shadow (no exchange orders).
 
@@ -17,7 +18,6 @@ Log: logs/v_fade_shadow.log  (heartbeats + cum path equity when trades fire)
 Never mercat/gateway OE. ClickHouse MCP banned.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

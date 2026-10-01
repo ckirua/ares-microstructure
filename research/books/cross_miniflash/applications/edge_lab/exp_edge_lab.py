@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Edge lab — top-3 non-MM trade ideas from TRADE_IDEAS.md.
 
@@ -10,7 +11,6 @@ Honesty: research_sim · costs (2bps one-way) · capacity (tape mo only).
 No live alpha claim. No MM quoting deepen. ClickHouse MCP banned.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

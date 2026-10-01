@@ -1,6 +1,9 @@
 """Warehouse day discovery — mirror v_fade_paper living shadow."""
 
+
 from __future__ import annotations
+
+import os
 
 import sys
 from pathlib import Path
@@ -9,8 +12,8 @@ from typing import Any
 PKG = Path(__file__).resolve().parents[1]
 BOOK = PKG.parents[1]
 SCRIPTS = BOOK / "scripts"
-WAREHOUSE_SRC = Path("/home/dev/lab/lab-n2070/warehouse/src")
-STARTARB = Path("/home/dev/srv/ares-startarb")
+WAREHOUSE_SRC = Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 ROOT = BOOK.parents[2]
 
 

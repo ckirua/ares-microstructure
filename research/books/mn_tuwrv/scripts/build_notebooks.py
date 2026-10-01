@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Author + execute desk-quality mn_tuwrv notebooks from out/ artifacts.
 
@@ -8,7 +9,7 @@ Writes/updates:
 Run from anywhere; paths resolve via absolute BOOK root.
 """
 
-from __future__ import annotations
+import os
 
 import json
 from pathlib import Path
@@ -39,7 +40,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from IPython.display import Image, display, Markdown
 
-BOOK = Path('/home/dev/srv/ares-microstructure/research/books/mn_tuwrv')
+BOOK = (Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure')) / 'research' / 'books' / 'mn_tuwrv')
 OUT = BOOK / 'out'
 FIGS = OUT / 'desk_synthesis' / 'figs'
 sys.path.insert(0, str(BOOK.parents[2]))  # research/

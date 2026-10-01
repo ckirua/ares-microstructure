@@ -44,7 +44,7 @@ ClickHouse MCP banned.
 ### Preferred: background poller (match v_fade_shadow)
 
 ```bash
-cd /home/dev/srv/ares-microstructure/research/books/v_shapes/applications/paper_live
+cd research/books/v_shapes/applications/paper_live   # from repo root
 
 # durable (systemd user unit)
 cp ares-vshapes-shadow.service ~/.config/systemd/user/
@@ -82,7 +82,7 @@ Today the tape is **warehouse** (typically minutes–hours behind exchange), sam
 ## How to `tail -f` the log
 
 ```bash
-tail -f /home/dev/srv/ares-microstructure/research/books/v_shapes/applications/paper_live/logs/shadow.log
+tail -f logs/shadow.log
 ```
 
 You will see:
@@ -97,7 +97,7 @@ You will see:
 JSONL events (append):
 
 ```bash
-tail -f /home/dev/srv/ares-microstructure/research/books/v_shapes/applications/paper_live/out/events.jsonl
+tail -f out/events.jsonl
 ```
 
 Event types: `breach` · `score` · `hypothetical_throttle` (all labeled; throttle = `kind=hypothetical`, `gate=Kill`).

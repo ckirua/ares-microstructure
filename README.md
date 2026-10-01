@@ -1,29 +1,31 @@
 # ares-microstructure
 
 Chapter-by-chapter research program extracting actionable trading content from
-**Market Microstructure in Practice** (Lehalle & Laruelle) and validating it with
-data experiments in the style of [`ares-startarb`](../ares-startarb).
+market-microstructure books and validating it with data experiments in the style
+of [`ares-startarb`](../ares-startarb) (sibling checkout; override with `ARES_STARTARB`).
+
+> **Research only — not financial advice.** See [PUBLIC.md](PUBLIC.md) for what
+> is published, what is gitignored, env setup, and known history leftovers.
 
 ## Quick links
 
 | Artifact | Path |
 |----------|------|
-| Desk memo (MM map) | [`research/books/mmip/DESK_MEMO.md`](research/books/mmip/DESK_MEMO.md) |
+| Public notes | [`PUBLIC.md`](PUBLIC.md) |
+| Desk memo (MMIP map) | [`research/books/mmip/DESK_MEMO.md`](research/books/mmip/DESK_MEMO.md) |
 | Living chapter index | [`research/books/mmip/CHAPTER_INDEX.md`](research/books/mmip/CHAPTER_INDEX.md) |
 | Books | [`research/books/`](research/books/) |
 | Shared helpers | [`research/lib/`](research/lib/) |
 | Startarb data reuse map | [`research/DATA_PATHS.md`](research/DATA_PATHS.md) |
-| Intro liquidity | [`research/books/mmip/chapters/intro_liquidity/`](research/books/mmip/chapters/intro_liquidity/) |
-| Classic micro | [`research/books/mmip/chapters/classic_micro/`](research/books/mmip/chapters/classic_micro/) |
-| Ch.1–3 + App.A | [`research/books/mmip/chapters/`](research/books/mmip/chapters/) |
-| Experiment outputs | [`research/books/mmip/out/`](research/books/mmip/out/) |
 
-Book PDF and verbatim extracts stay **local-only** (gitignored).
+Book PDFs and verbatim extracts stay **local-only** (gitignored). Experiment
+`out/`, `logs/`, and `.env` are also gitignored.
 
 ## Data policy
 
 - **No ClickHouse MCP.** Prefer: startarb collector parquet → warehouse/`open_day` (S3) → public REST.
-- Credentials: `~/.env` (same S3 keys as startarb). Run startarb loaders via `cd ../ares-startarb && uv run …`.
+- Credentials: `~/.env` (same S3 keys as startarb). Run startarb loaders via `cd "${ARES_STARTARB:-../ares-startarb}" && uv run …`.
+- Portable roots: `ARES_STARTARB`, `WAREHOUSE_ROOT` / `WAREHOUSE_SRC`, `ARES_MICROSTRUCTURE` (see `research/lib/paths.py`).
 
 ## Run experiments
 
@@ -32,13 +34,13 @@ Book PDF and verbatim extracts stay **local-only** (gitignored).
 python3 research/books/mmip/scripts/exp_intro_liquidity.py --symbol ETH
 
 # Classic micro (needs startarb env + S3)
-cd ../ares-startarb && uv run python ../ares-microstructure/research/books/mmip/scripts/exp_classic_micro.py --symbol ETH
+cd "${ARES_STARTARB:-../ares-startarb}" && uv run python "${ARES_MICROSTRUCTURE:-../ares-microstructure}/research/books/mmip/scripts/exp_classic_micro.py" --symbol ETH
 
 # Promote hardening (reads out/)
 python3 research/books/mmip/scripts/exp_harden_promotes.py
 ```
 
-## Status (2026-09-30)
+## Status
 
-Baseline Ch.1–3 + App.A snapshot committed; **Jane Street–grade expansion** adds intro package,
-classic markout/spreads/resilience, shared `research/lib/`, desk memo, and hardened Promote rollup.
+Baseline Ch.1–3 + App.A (MMIP) and additional book programs under `research/books/`
+(empirical_mm, cross_miniflash, v_shapes, mn_tuwrv, mm_confr_viewpoints, filmonov).

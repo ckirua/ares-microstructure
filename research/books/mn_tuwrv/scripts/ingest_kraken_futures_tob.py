@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Thin Kraken **futures** quoted-TOB ingest → local parquet cache.
 
@@ -17,7 +18,6 @@ Usage::
     python3 scripts/ingest_kraken_futures_tob.py --once   # single snapshot
 """
 
-from __future__ import annotations
 
 import argparse
 import json

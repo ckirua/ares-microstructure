@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Build REAL path equity curves for Promote severity_zend (+ confirm_r2 peer).
 
@@ -14,7 +15,6 @@ Writes:
 live_orders=false. No ClickHouse MCP. No commit.
 """
 
-from __future__ import annotations
 
 import copy
 import json

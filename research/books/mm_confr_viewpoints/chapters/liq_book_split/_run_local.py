@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Chapter-local empirics for liq_book_split (HL + Deribit + Kraken).
 
@@ -8,7 +9,6 @@ Writes out/liq_book_split/{summary.json, figs/*.png}.
 Labels Kraken trade_synth TOB honestly. ClickHouse MCP banned.
 """
 
-from __future__ import annotations
 
 import json
 import sys

@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Pass-1 empirics for filmonov ``ch00_overview`` + ``latency_size_regimes``.
 
@@ -11,7 +12,7 @@ Updates chapter NOTES/CANDIDATES/EXP_REPORT with numeric Pass-1 headlines.
 ClickHouse MCP banned. Does not touch DESK_MEMO freeze or Pass-2 hardeners.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -28,9 +29,9 @@ import numpy as np  # noqa: E402
 BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
 MM_CONFR = BOOK.parent / "mm_confr_viewpoints"
-sys.path.insert(0, str(Path("/home/dev/lab/lab-n2070/warehouse/src")))
+sys.path.insert(0, str(Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))))
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path("/home/dev/srv/ares-startarb") / "src"))
+sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import (  # noqa: E402
@@ -663,7 +664,7 @@ def write_notebooks() -> None:
                 "from pathlib import Path\n"
                 "import pandas as pd\n"
                 "from IPython.display import Image, display, Markdown\n\n"
-                "BOOK = Path('/home/dev/srv/ares-microstructure/research/books/filmonov')\n"
+                "BOOK = (Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure')) / 'research' / 'books' / 'filmonov')\n"
                 "OUT = BOOK / 'out' / 'ch00_overview'\n"
                 "FIGS = OUT / 'figs'\n"
                 "cov = json.loads((OUT / 'coverage.json').read_text())\n"
@@ -728,7 +729,7 @@ def write_notebooks() -> None:
                 "from pathlib import Path\n"
                 "import pandas as pd\n"
                 "from IPython.display import Image, display\n\n"
-                "BOOK = Path('/home/dev/srv/ares-microstructure/research/books/filmonov')\n"
+                "BOOK = (Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure')) / 'research' / 'books' / 'filmonov')\n"
                 "OUT = BOOK / 'out' / 'latency_size_regimes'\n"
                 "FIGS = OUT / 'figs'\n"
                 "panel = json.loads((OUT / 'panel.json').read_text())\n"

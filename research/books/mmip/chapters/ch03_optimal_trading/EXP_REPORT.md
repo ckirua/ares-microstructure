@@ -83,4 +83,4 @@ On HL ETH DENSE days (2026-09-14, 2026-09-15, 2026-09-16, 2026-09-25, 2026-09-26
 
 See [`CANDIDATES.md`](../../chapters/ch03_optimal_trading/CANDIDATES.md). Notebook: [`ch03_optimal_trading.ipynb`](../../chapters/ch03_optimal_trading/ch03_optimal_trading.ipynb).
 
-Artifacts: `research/books/mmip/out/ch03_optimal_trading/`. Plots: ['/home/dev/srv/ares-microstructure/research/books/mmip/out/ch03_optimal_trading/impact_vs_rho_5m.png', '/home/dev/srv/ares-microstructure/research/books/mmip/out/ch03_optimal_trading/impact_scatter_5m.png', '/home/dev/srv/ares-microstructure/research/books/mmip/out/ch03_optimal_trading/ac_schedule_toy.png', '/home/dev/srv/ares-microstructure/research/books/mmip/out/ch03_optimal_trading/temp_impact_hist.png']
+Artifacts: `research/books/mmip/out/ch03_optimal_trading/`. Plots: ['research/books/mmip/out/ch03_optimal_trading/impact_vs_rho_5m.png', 'research/books/mmip/out/ch03_optimal_trading/impact_scatter_5m.png', 'research/books/mmip/out/ch03_optimal_trading/ac_schedule_toy.png', 'research/books/mmip/out/ch03_optimal_trading/temp_impact_hist.png']

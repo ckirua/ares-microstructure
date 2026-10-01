@@ -42,26 +42,21 @@ from numpy.typing import NDArray
 NS_PER_S = 1_000_000_000
 NS_PER_MS = 1_000_000
 
-
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-
 def _empty_int() -> NDArray[np.int64]:
     return np.zeros(0, dtype=np.int64)
 
-
 def _empty_float() -> NDArray[np.float64]:
     return np.zeros(0, dtype=np.float64)
-
 
 def _asof_idx(query_ts: NDArray[np.int64], ref_ts: NDArray[np.int64]) -> NDArray[np.int64]:
     """Largest ref index with ref_ts[i] <= query (searchsorted right - 1)."""
     q = np.asarray(query_ts, dtype=np.int64)
     r = np.asarray(ref_ts, dtype=np.int64)
     return np.searchsorted(r, q, side="right").astype(np.int64) - 1
-
 
 def _normalize_side(side: NDArray[np.floating] | NDArray[np.integer]) -> NDArray[np.float64]:
     """Map {0,1} or signed sides to ±1 (buy=+1, sell=-1)."""
@@ -71,11 +66,9 @@ def _normalize_side(side: NDArray[np.floating] | NDArray[np.integer]) -> NDArray
         return np.where(s > 0, 1.0, -1.0)
     return np.where(s >= 0, 1.0, -1.0)
 
-
 # ---------------------------------------------------------------------------
 # Quote storms (deck stuffing bursts ~slides 27–29)
 # ---------------------------------------------------------------------------
-
 
 def quote_storm_intensity(
     tob_ts: NDArray[np.int64],
@@ -203,7 +196,6 @@ def quote_storm_intensity(
         "n_bars": int(n_bars),
     }
 
-
 def quote_storm_detect(
     intensity: dict[str, Any],
     *,
@@ -271,7 +263,6 @@ def quote_storm_detect(
         "intensity_key": key,
     }
 
-
 def quote_storm_summary(intensity: dict[str, Any], storms: dict[str, Any]) -> dict[str, Any]:
     """Compact desk headline for storm intensity + detections."""
     hz = np.asarray(intensity.get("intensity_hz", []), dtype=np.float64)
@@ -294,11 +285,9 @@ def quote_storm_summary(intensity: dict[str, Any], storms: dict[str, Any]) -> di
         "max_burst_vs_mean": float(storms.get("max_burst_vs_mean", float("nan"))),
     }
 
-
 # ---------------------------------------------------------------------------
 # Price fade (deck ~slide 33) — post-trade same-venue depth drop
 # ---------------------------------------------------------------------------
-
 
 def price_fade_events(
     trade_ts: NDArray[np.int64],
@@ -393,7 +382,6 @@ def price_fade_events(
         "theta": float(drop_frac),
     }
 
-
 def price_fade_prob(events: dict[str, Any]) -> dict[str, Any]:
     """Aggregate P(fade) and side splits from ``price_fade_events``."""
     fade = np.asarray(events.get("fade", []), dtype=np.float64)
@@ -421,11 +409,9 @@ def price_fade_prob(events: dict[str, Any]) -> dict[str, Any]:
         "theta": float(events.get("theta", float("nan"))),
     }
 
-
 # ---------------------------------------------------------------------------
 # Venue fade (deck ~slide 33) — far-venue depth drop | home trade
 # ---------------------------------------------------------------------------
-
 
 def venue_fade_events(
     home_trade_ts: NDArray[np.int64],
@@ -525,16 +511,13 @@ def venue_fade_events(
         "theta": float(drop_frac),
     }
 
-
 def venue_fade_prob(events: dict[str, Any]) -> dict[str, Any]:
     """Aggregate far-venue fade probability."""
     return price_fade_prob(events)
 
-
 # ---------------------------------------------------------------------------
 # Momentum ignition (deck ~slide 34)
 # ---------------------------------------------------------------------------
-
 
 def ignition_events(
     ts_ns: NDArray[np.int64],
@@ -700,11 +683,9 @@ def ignition_events(
         "bar_px": last_px,
     }
 
-
 # ---------------------------------------------------------------------------
 # Smoking / spoof proxy (deck ~slides 30–32) — high FP expected
 # ---------------------------------------------------------------------------
-
 
 def smoke_spoof_proxy(
     tob_ts: NDArray[np.int64],
@@ -868,11 +849,9 @@ def smoke_spoof_proxy(
         "note": "high_FP_proxy_no_firm_id",
     }
 
-
 # ---------------------------------------------------------------------------
 # Clock clustering (deck ~slides 35–37)
 # ---------------------------------------------------------------------------
-
 
 def clock_cluster_scores(
     trade_ts: NDArray[np.int64],
@@ -915,7 +894,6 @@ def clock_cluster_scores(
         "period_s": float(period_ns / NS_PER_S),
     }
 
-
 def clock_cluster_excess(
     scores: dict[str, Any],
     *,
@@ -947,11 +925,9 @@ def clock_cluster_excess(
         "z_thresh": float(z_thresh),
     }
 
-
 # ---------------------------------------------------------------------------
 # OTR aggregate (deck ~slides 41–43) — venue policy metric only
 # ---------------------------------------------------------------------------
-
 
 def otr_aggregate(
     n_cancel: float | NDArray[np.floating] | int,
@@ -983,11 +959,9 @@ def otr_aggregate(
         "note": "no_participant_ids",
     }
 
-
 # ---------------------------------------------------------------------------
 # Size / latency panel (deck ~slides 10–20)
 # ---------------------------------------------------------------------------
-
 
 def size_latency_panel(
     trade_qty: NDArray[np.float64],
@@ -1037,11 +1011,9 @@ def size_latency_panel(
         "n_tob": int(t.size),
     }
 
-
 # ---------------------------------------------------------------------------
 # Overlap helpers vs crash / lob (rename gates)
 # ---------------------------------------------------------------------------
-
 
 def overlap_vs_crash(
     ign_start_ts: NDArray[np.int64],
@@ -1101,7 +1073,6 @@ def overlap_vs_crash(
         "slack_s": float(slack_s),
     }
 
-
 def overlap_vs_lob_cancel(
     fade_trade_ts: NDArray[np.int64],
     fade_flags: NDArray[np.integer] | NDArray[np.floating],
@@ -1145,7 +1116,6 @@ def overlap_vs_lob_cancel(
         "frac_fade_in_cancel": float(n_ov / pos.size),
         "slack_ms": float(slack_ms),
     }
-
 
 def rename_gate(
     overlap: dict[str, Any],
@@ -1192,7 +1162,6 @@ def rename_gate(
         "kill_frac": float(kill_frac),
     }
 
-
 def ignition_bar_timestamps(ign: dict[str, Any]) -> tuple[NDArray[np.int64], NDArray[np.int64]]:
     """Map ignition bar indices → absolute ns using ``bar_ts`` from detector."""
     bar_ts = np.asarray(ign.get("bar_ts", []), dtype=np.int64)
@@ -1202,11 +1171,9 @@ def ignition_bar_timestamps(ign: dict[str, Any]) -> tuple[NDArray[np.int64], NDA
         return _empty_int(), _empty_int()
     return bar_ts[s], bar_ts[np.clip(e - 1, 0, bar_ts.size - 1)]
 
-
 # ---------------------------------------------------------------------------
 # Pass-2 expand / info-lens helpers (desk dig — do not Promote renames)
 # ---------------------------------------------------------------------------
-
 
 def event_window_markout(
     event_ts: NDArray[np.int64],
@@ -1279,7 +1246,6 @@ def event_window_markout(
         "horizon_ms": float(horizon_ms),
     }
 
-
 def spread_irf_after_events(
     event_ts: NDArray[np.int64],
     tob_ts: NDArray[np.int64],
@@ -1342,7 +1308,6 @@ def spread_irf_after_events(
         "n_obs_per_lag": [int(len(deltas[lag])) for lag in lags],
     }
 
-
 def lead_lag_cascade(
     storm_ts: NDArray[np.int64],
     fade_ts: NDArray[np.int64],
@@ -1387,7 +1352,6 @@ def lead_lag_cascade(
         out["storm_to_ignition"].append(_hit_rate(s, g, w))
         out["fade_to_ignition"].append(_hit_rate(f, g, w))
     return out
-
 
 def fade_tau_sensitivity(
     trade_ts: NDArray[np.int64],
@@ -1441,7 +1405,6 @@ def fade_tau_sensitivity(
         "drop_frac": float(drop_frac),
         "rows": rows,
     }
-
 
 def size_storm_interaction(
     trade_ts: NDArray[np.int64],
@@ -1515,7 +1478,6 @@ def size_storm_interaction(
         ),
     }
 
-
 def clock_vs_funding_windows(
     trade_ts: NDArray[np.int64],
     *,
@@ -1567,7 +1529,6 @@ def clock_vs_funding_windows(
         "window_min": float(window_min),
     }
 
-
 def tod_event_heatmap(
     event_ts: NDArray[np.int64],
     *,
@@ -1595,7 +1556,6 @@ def tod_event_heatmap(
         "hour_ marginal": grid.sum(axis=1),
         "peak_hour": int(np.argmax(grid.sum(axis=1))) if ts.size else -1,
     }
-
 
 def ignition_phase1_unique_mass(
     ign: dict[str, Any],
@@ -1646,7 +1606,6 @@ def ignition_phase1_unique_mass(
         "unique_mass": float(unique / n),
         "slack_ms": float(slack_ms),
     }
-
 
 def xvenue_fade_info_share(
     home_fade_ts: NDArray[np.int64],

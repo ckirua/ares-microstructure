@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Chapter 1 experiment: fragmentation metrics on cross-venue ETH TOB.
 
@@ -14,7 +15,7 @@ Data preference (no ClickHouse MCP):
 Paper only. No orders.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -30,7 +31,7 @@ import pyarrow.parquet as pq
 
 BOOK_ROOT = Path(__file__).resolve().parents[1]
 ROOT = BOOK_ROOT.parents[2]  # repo root (mmip → books → research → repo)
-DEFAULT_TOB = Path("/home/dev/srv/ares-startarb/results/xarb_md/tob")
+DEFAULT_TOB = Path(str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "results/xarb_md/tob"))
 OUT_DIR = BOOK_ROOT / "out" / "ch01_fragmentation"
 
 

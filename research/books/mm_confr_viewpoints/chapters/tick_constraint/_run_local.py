@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Chapter-local empirics for tick_constraint (HL + Deribit + Kraken).
 
@@ -6,7 +7,6 @@ Kraken trade_synth TOB is labeled honestly and excluded from OFI event study.
 ClickHouse MCP banned. Does not edit shared lib.
 """
 
-from __future__ import annotations
 
 import json
 import sys

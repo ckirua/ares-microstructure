@@ -1,7 +1,7 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Run MM quoting + feature models once (shared panel)."""
 
-from __future__ import annotations
 
 import os
 import subprocess
@@ -11,8 +11,8 @@ from pathlib import Path
 APP = Path(__file__).resolve().parent
 BOOK = APP.parent
 ROOT = BOOK.parents[2]
-STARTARB = Path("/home/dev/srv/ares-startarb")
-WAREHOUSE_SRC = Path("/home/dev/lab/lab-n2070/warehouse/src")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
+WAREHOUSE_SRC = Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))
 
 
 def _env() -> dict[str, str]:

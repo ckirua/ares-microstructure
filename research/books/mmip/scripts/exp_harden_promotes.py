@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Harden existing Promotes: CIs, time-splits, falsifiers, kill weak claims.
 
@@ -6,7 +7,6 @@ rollup with desk-honest criteria. Optionally recomputes a few metrics from
 collector TOB / saved arrays. Paper only.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

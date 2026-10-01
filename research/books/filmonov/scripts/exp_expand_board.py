@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Merge Pass-2 expand + info candidates into desk board artifacts.
 
@@ -6,7 +7,7 @@ Updates ``out/pass2_expand/expand_board.json``, signal board PNG under
 Does not rewrite Pass-2.5 freeze file; expand is additive.
 """
 
-from __future__ import annotations
+import os
 
 import json
 import sys
@@ -88,7 +89,7 @@ def write_desk_nb(artifact: dict[str, Any]) -> None:
                     "import json\n",
                     "from pathlib import Path\n",
                     "from IPython.display import Image, display\n",
-                    "BOOK = Path('/home/dev/srv/ares-microstructure/research/books/filmonov')\n",
+                    "BOOK = (Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure')) / 'research' / 'books' / 'filmonov')\n",
                     "board = json.loads((BOOK/'out/pass2_expand/expand_board.json').read_text())\n",
                     "print('days', board['days'], 'early', board.get('early'), 'late', board.get('late'))\n",
                     "print('counts', board['n_promote'], board['n_hold'], board['n_kill'])\n",

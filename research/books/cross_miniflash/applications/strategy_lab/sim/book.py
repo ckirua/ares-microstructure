@@ -11,7 +11,10 @@ Sims therefore mark to asof mid / touch with documented staleness — never clai
 sub-second L2 fidelity on warehouse-only days.
 """
 
+
 from __future__ import annotations
+
+import os
 
 import sys
 from dataclasses import dataclass
@@ -22,8 +25,8 @@ import numpy as np
 
 BOOK = Path(__file__).resolve().parents[3]
 ROOT = BOOK.parents[2]
-STARTARB = Path("/home/dev/srv/ares-startarb")
-WAREHOUSE_SRC = Path("/home/dev/lab/lab-n2070/warehouse/src")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
+WAREHOUSE_SRC = Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))
 DEFAULT_TOB = STARTARB / "results" / "xarb_md" / "tob"
 
 for p in (str(ROOT), str(STARTARB / "src"), str(WAREHOUSE_SRC), str(BOOK / "scripts")):

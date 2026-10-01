@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Paper exec-throttle / risk harness — V-shapes Promote monitors → desk actions.
 
@@ -23,7 +24,7 @@ Desk objects: ti.risk_monitor_minv_breach, ti.exec_throttle_avoid_chase,
 ti.v_feature_throttle_join.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -44,9 +45,9 @@ APP = BOOK / "applications" / "paper_throttle"
 OUT = BOOK / "out" / "paper_throttle"
 FIG = OUT / "figs"
 
-sys.path.insert(0, str(Path("/home/dev/lab/lab-n2070/warehouse/src")))
+sys.path.insert(0, str(Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))))
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path("/home/dev/srv/ares-startarb") / "src"))
+sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import (  # noqa: E402

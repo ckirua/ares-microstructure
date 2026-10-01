@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Long-range NON-MM edges — crash/SSM/V-class over minutes–hours.
 
@@ -15,7 +16,7 @@ Honesty gates: bootstrap CI excludes 0 · early/late sign-stable · RT friction
 ClickHouse MCP banned. No mm_confr.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -32,8 +33,8 @@ LAB = Path(__file__).resolve().parent
 APP = LAB.parent
 BOOK = APP.parent
 ROOT = BOOK.parents[2]
-STARTARB = Path("/home/dev/srv/ares-startarb")
-WAREHOUSE_SRC = Path("/home/dev/lab/lab-n2070/warehouse/src")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
+WAREHOUSE_SRC = Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))
 OUT = LAB / "out" / "long_edges"
 FIG = OUT / "figs"
 PAPER = APP / "paper_harness"

@@ -1,6 +1,6 @@
 [Unit]
 Description=ares v_shapes paper_live MinV/EGARCH SHADOW poller (HL ETH; no exchange orders)
-Documentation=file:///home/dev/srv/ares-microstructure/research/books/v_shapes/applications/paper_live/README.md
+Documentation=file://%h/srv/ares-microstructure/research/books/v_shapes/applications/paper_live/README.md
 After=network-online.target
 Wants=network-online.target
 
@@ -11,15 +11,19 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/dev/srv/ares-microstructure/research/books/v_shapes/applications/paper_live
+WorkingDirectory=%h/srv/ares-microstructure/research/books/v_shapes/applications/paper_live
 EnvironmentFile=-%h/.env
-Environment=PYTHONPATH=/home/dev/lab/lab-n2070/warehouse/src:/home/dev/srv/ares-startarb/src:/home/dev/srv/ares-microstructure:/home/dev/srv/ares-microstructure/research/books/v_shapes/scripts
+Environment=ARES_STARTARB=%h/srv/ares-startarb
+Environment=WAREHOUSE_ROOT=%h/lab/lab-n2070/warehouse
+Environment=WAREHOUSE_SRC=%h/lab/lab-n2070/warehouse/src
+Environment=ARES_MICROSTRUCTURE=%h/srv/ares-microstructure
+Environment=PYTHONPATH=%h/lab/lab-n2070/warehouse/src:%h/srv/ares-startarb/src:%h/srv/ares-microstructure:%h/srv/ares-microstructure/research/books/v_shapes/scripts
 Environment=PYTHONUNBUFFERED=1
 ExecStart=/usr/bin/python3 run_paper_live.py --poll --interval 120 --quiet
 Restart=on-failure
 RestartSec=15
-StandardOutput=append:/home/dev/srv/ares-microstructure/research/books/v_shapes/applications/paper_live/logs/shadow.log
-StandardError=append:/home/dev/srv/ares-microstructure/research/books/v_shapes/applications/paper_live/logs/shadow.log
+StandardOutput=append:%h/srv/ares-microstructure/research/books/v_shapes/applications/paper_live/logs/shadow.log
+StandardError=append:%h/srv/ares-microstructure/research/books/v_shapes/applications/paper_live/logs/shadow.log
 Nice=10
 
 [Install]

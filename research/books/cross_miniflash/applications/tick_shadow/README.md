@@ -11,7 +11,7 @@ systemctl --user daemon-reload
 systemctl --user enable --now ares-tick-shadow.service
 systemctl --user status ares-tick-shadow.service
 journalctl --user -u ares-tick-shadow.service -f
-tail -f /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow/logs/tick_shadow.log
+tail -f logs/tick_shadow.log
 systemctl --user stop ares-tick-shadow.service
 systemctl --user restart ares-tick-shadow.service
 ```
@@ -23,7 +23,7 @@ Stop any manual `run_tick_shadow.py` before enable to avoid duplicate WS clients
 ## Manual run (smoke)
 
 ```bash
-cd /home/dev/srv/ares-microstructure/research/books/cross_miniflash/applications/tick_shadow
+cd research/books/cross_miniflash/applications/tick_shadow   # from repo root
 python3 -u run_tick_shadow.py --coin ETH
 # smoke: --heartbeat-s 5 --max-seconds 30
 tail -f logs/tick_shadow.log

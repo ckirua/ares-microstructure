@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Heston + noise Monte Carlo for mn_tuwrv (§V / Table 1 style).
 
@@ -5,7 +6,6 @@ Desk-speed default n_sims=200; pass --n-sims 25000 for thesis-scale.
 ClickHouse MCP banned — pure simulation.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

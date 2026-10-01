@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Phase 3b frag_xvenue: Herfindahl, venue crash share, concordance, FEI/Epps.
 
@@ -11,7 +12,7 @@ floods do not dominate frag counts (sibling crash_stats may reuse the same gate)
 ClickHouse MCP banned.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -25,7 +26,7 @@ import numpy as np
 
 BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(STARTARB / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))

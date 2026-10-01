@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Build memo-quality notebooks + figures from out/ JSON artifacts.
 
@@ -5,7 +6,7 @@ Mirrors empirical_mm density: theory → load artifacts → tables/plots → gat
 Does not require warehouse (plots from existing JSON). ClickHouse MCP banned.
 """
 
-from __future__ import annotations
+import os
 
 import json
 from pathlib import Path
@@ -634,7 +635,7 @@ Program rollup for Flora & Renò (2020). Lib: `research.lib.vstat` (**not** `cra
         _code(
             """from pathlib import Path
 import json
-OUT = Path('/home/dev/srv/ares-microstructure/research/books/v_shapes/out')
+OUT = (Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure')) / 'research' / 'books' / 'v_shapes' / 'out')
 rollup = json.loads((OUT / 'hardening_rollup.json').read_text())
 print(json.dumps(rollup, indent=2))
 plan = OUT / 'widen_day_plan.json'
@@ -649,7 +650,7 @@ if ti.exists():
         _code(
             """from IPython.display import Image, display
 from pathlib import Path
-p = Path('/home/dev/srv/ares-microstructure/research/books/v_shapes/out/fig_gate_counts.png')
+p = (Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure')) / 'research' / 'books' / 'v_shapes' / 'out' / 'fig_gate_counts.png')
 if p.exists():
     display(Image(filename=str(p)))
 """
@@ -659,7 +660,7 @@ if p.exists():
             """from IPython.display import Image, display
 from pathlib import Path
 import json
-OUT = Path('/home/dev/srv/ares-microstructure/research/books/v_shapes/out')
+OUT = (Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure')) / 'research' / 'books' / 'v_shapes' / 'out')
 for rel in ['daily_minv/fig_minv_panel.png', 'xvenue_concord/fig_concord.png', 'bootstrap_sim/fig_size_power.png', 'liq_around_v/fig_tob_coverage.png']:
     p = OUT / rel
     print(rel, p.exists())
@@ -682,7 +683,7 @@ See `DESK_MEMO.md` §2 (gates) and §5 (trade ideas). EGARCH MinV bands = **Moni
         _code(
             """from pathlib import Path
 import json
-ideas = json.loads(Path('/home/dev/srv/ares-microstructure/research/books/v_shapes/out/trade_ideas.json').read_text())
+ideas = json.loads((Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure')) / 'research' / 'books' / 'v_shapes' / 'out' / 'trade_ideas.json').read_text())
 for idea in ideas.get('ideas', []):
     print(idea['id'], '|', idea['label'], '|', idea['title'])
     print('  gates:', idea.get('gate_status'))

@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Native Kraken spot L2 rerun for mm_confr_viewpoints packages.
 
@@ -9,7 +10,7 @@ artifacts, dual xvenue slices (KR futures synth vs KR spot), refreshes desk docs
 Honesty: spot ≠ PF futures. ClickHouse MCP banned. No git commit. No secrets.
 """
 
-from __future__ import annotations
+import os
 
 import importlib.util
 import json
@@ -28,8 +29,8 @@ BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
 SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path("/home/dev/lab/lab-n2070/warehouse/src")))
-sys.path.insert(0, str(Path("/home/dev/srv/ares-startarb") / "src"))
+sys.path.insert(0, str(Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))))
+sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(SCRIPTS))
 
 from _data import (  # noqa: E402

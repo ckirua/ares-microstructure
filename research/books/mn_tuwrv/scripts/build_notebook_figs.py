@@ -1,10 +1,10 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Build desk-synthesis figures for mn_tuwrv notebooks from existing out/ JSON.
 
 Does not re-run multi-hour panels. Writes PNGs under out/desk_synthesis/figs/.
 """
 
-from __future__ import annotations
 
 import json
 from pathlib import Path

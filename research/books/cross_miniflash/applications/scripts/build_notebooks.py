@@ -1,7 +1,7 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Build application notebooks with formulas + embedded result pointers."""
 
-from __future__ import annotations
 
 import json
 from pathlib import Path

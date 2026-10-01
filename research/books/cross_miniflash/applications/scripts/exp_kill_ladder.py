@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Exp 1 — Gated SSM kill-ladder backtest (observe→widen→size-cap→halt).
 
@@ -8,7 +9,6 @@ Time-split + bootstrap; friction honesty (2bps one-way).
 ClickHouse MCP banned.
 """
 
-from __future__ import annotations
 
 import argparse
 import sys

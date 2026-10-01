@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Phase 3a: crash_stats + cross_section (Pass 1 + Pass 2).
 
@@ -13,7 +14,7 @@ Dense TOB optional; tape-price markout always.
 ClickHouse MCP banned. Data: HL + Deribit + Kraken via scripts/_data.py.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -26,7 +27,7 @@ import numpy as np
 
 BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(STARTARB / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))

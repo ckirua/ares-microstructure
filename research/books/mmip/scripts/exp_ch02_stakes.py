@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Chapter 2 experiments: intraday volume curves + spread↔vol↔share.
 
@@ -7,7 +8,7 @@ Data: startarb warehouse trade tape + HL l2_rebuild quotes (no ClickHouse MCP).
 Paper only. No orders.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -23,7 +24,7 @@ import numpy as np
 BOOK_ROOT = Path(__file__).resolve().parents[1]
 ROOT = BOOK_ROOT.parents[2]  # repo root (mmip → books → research → repo)
 OUT_DIR = BOOK_ROOT / "out" / "ch02_stakes"
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 
 
 def _ensure_startarb() -> None:

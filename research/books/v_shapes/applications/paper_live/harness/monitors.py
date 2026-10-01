@@ -8,7 +8,10 @@ Honesty
   / paper accounting ONLY. Do not soft-Promote. live_orders=False always.
 """
 
+
 from __future__ import annotations
+
+import os
 
 import json
 import sys
@@ -21,8 +24,8 @@ import numpy as np
 PKG = Path(__file__).resolve().parents[1]
 BOOK = PKG.parents[1]
 SCRIPTS = BOOK / "scripts"
-WAREHOUSE_SRC = Path("/home/dev/lab/lab-n2070/warehouse/src")
-STARTARB = Path("/home/dev/srv/ares-startarb")
+WAREHOUSE_SRC = Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 ROOT = BOOK.parents[2]
 
 for _p in (str(WAREHOUSE_SRC), str(STARTARB / "src"), str(ROOT), str(SCRIPTS)):

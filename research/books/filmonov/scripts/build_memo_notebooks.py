@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Refresh memo notebooks after hardening (desk_synthesis + light chapter stubs).
 
@@ -5,7 +6,6 @@ Chapter package notebooks remain owned by Pass1 runners; this ensures
 ``notebooks/desk_synthesis.ipynb`` exists and points at frozen artifacts.
 """
 
-from __future__ import annotations
 
 import json
 import sys

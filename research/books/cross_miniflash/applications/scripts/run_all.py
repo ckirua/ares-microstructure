@@ -1,7 +1,7 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Run all RISK+EXEC application backtests (builds shared event panel once)."""
 
-from __future__ import annotations
 
 import argparse
 import json

@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Friction falsifier — half-spread cost kill-grid for TI-v-fade / TI-cont-ride / TI-int-halt.
 
@@ -7,7 +8,6 @@ Optional join: out/event_panel tiers when present; else cache-local fire gate.
 No MM polish. No ClickHouse MCP. Not live alpha.
 """
 
-from __future__ import annotations
 
 import json
 import sys

@@ -1,7 +1,7 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Ch.00 overview — roadmap status board from CHAPTER_INDEX package inventory."""
 
-from __future__ import annotations
 
 import json
 from datetime import datetime, timezone

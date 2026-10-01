@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Expanded lab runner — panel extension, robustness, strategies, models, scoreboard.
 
@@ -5,7 +6,6 @@ Writes under applications/expanded_lab/out/ only (sibling event_panel untouched)
 ClickHouse MCP banned. Quant bar: time-split, bootstrap CIs, no fake alpha.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

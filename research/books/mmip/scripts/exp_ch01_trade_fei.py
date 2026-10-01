@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Ch.1 iterate: trade-notional FEI on HL tape (single venue → hourly as spatial proxy note).
 
@@ -6,7 +7,7 @@ True multi-venue trade FEI needs Lit/RX trade tables; here we report:
   - Optional binance public aggTrades REST vs HL same window if requested
 Paper only.
 """
-from __future__ import annotations
+import os
 import json, math, sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -15,7 +16,7 @@ import numpy as np
 BOOK_ROOT = Path(__file__).resolve().parents[1]
 ROOT = BOOK_ROOT.parents[2]  # repo root (mmip → books → research → repo)
 OUT = BOOK_ROOT / "out" / "ch01_fragmentation"
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 
 def fei(q):
     q = np.asarray(q, float); s = q.sum()

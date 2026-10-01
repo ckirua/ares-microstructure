@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Living V-fade SHADOW day — latest complete warehouse day.
 
@@ -9,7 +10,6 @@ Writes: out/SHADOW_BOARD.md · out/trades.jsonl · out/shadow_meta.json
 Never routes live orders. ClickHouse MCP banned.
 """
 
-from __future__ import annotations
 
 import sys
 

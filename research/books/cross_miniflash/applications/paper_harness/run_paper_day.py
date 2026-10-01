@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Paper-trade harness entrypoint — one UTC day or rolling window (shadow only).
 
@@ -10,7 +11,6 @@ Examples:
 No live orders. ClickHouse MCP banned. Warehouse + startarb loaders only.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

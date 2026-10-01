@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Program-wide hardening for mm_confr_viewpoints.
 
@@ -8,7 +9,6 @@ Pass-2.5 day-block bootstrap + BTC replication lives in
 ``scripts/exp_bootstrap_btc.py`` → ``out/hardening/``.
 """
 
-from __future__ import annotations
 
 import json
 import sys

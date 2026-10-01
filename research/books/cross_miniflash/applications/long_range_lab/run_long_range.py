@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Long-range crash-risk strategy sims — tick tape + best-available book.
 
@@ -20,7 +21,7 @@ Strategies (overlays on shadow maker — risk policy, not alpha):
 Fills at trade print + fill_i (strategy_lab integrity). ClickHouse MCP banned.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -37,8 +38,8 @@ LAB = Path(__file__).resolve().parent
 APP = LAB.parent
 BOOK = APP.parent
 ROOT = BOOK.parents[2]
-STARTARB = Path("/home/dev/srv/ares-startarb")
-WAREHOUSE_SRC = Path("/home/dev/lab/lab-n2070/warehouse/src")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
+WAREHOUSE_SRC = Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))
 OUT = LAB / "out"
 FIG = OUT / "figs"
 DAYS_DIR = OUT / "days"

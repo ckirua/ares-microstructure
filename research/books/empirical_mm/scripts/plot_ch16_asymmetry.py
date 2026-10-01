@@ -1,7 +1,7 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Ch.16 asymmetry synthesis — comparative plots from ch13/14/15/9/22 out/."""
 
-from __future__ import annotations
 
 import json
 from datetime import datetime, timezone

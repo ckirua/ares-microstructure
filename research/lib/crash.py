@@ -28,11 +28,9 @@ from numpy.typing import NDArray
 
 NS_PER_S = 1_000_000_000
 
-
 # ---------------------------------------------------------------------------
 # Nanex / baseline detectors
 # ---------------------------------------------------------------------------
-
 
 def _infer_tick_size(px: NDArray[np.float64], *, fallback: float = 1e-8) -> float:
     """Median positive consecutive |Δp| as tick proxy (desk fallback, not exchange tick)."""
@@ -45,7 +43,6 @@ def _infer_tick_size(px: NDArray[np.float64], *, fallback: float = 1e-8) -> floa
         return float(fallback)
     t = float(np.median(np.abs(d)))
     return t if t > 0 else float(fallback)
-
 
 def nanex_detect(
     ts_ns: NDArray[np.int64],
@@ -151,7 +148,6 @@ def nanex_detect(
         "tick_size": tick,
     }
 
-
 def outside_tob_flags(
     trade_ts: NDArray[np.int64],
     trade_px: NDArray[np.float64],
@@ -202,7 +198,6 @@ def outside_tob_flags(
         }
     )
     return out
-
 
 def vshape_events(
     ts_ns: NDArray[np.int64],
@@ -292,11 +287,9 @@ def vshape_events(
         "n_events": int(len(starts)),
     }
 
-
 # ---------------------------------------------------------------------------
 # MC-GARCH / variance feed (Engle–Sokalska style components)
 # ---------------------------------------------------------------------------
-
 
 def _bar_log_returns(
     ts_ns: NDArray[np.int64],
@@ -325,7 +318,6 @@ def _bar_log_returns(
         return bar_ts, np.zeros(0, dtype=np.float64)
     r = np.diff(bar_x)
     return bar_ts[1:], r.astype(np.float64)
-
 
 def diurnal_sj(
     bar_ts: NDArray[np.int64],
@@ -362,7 +354,6 @@ def diurnal_sj(
         s = s / float(s[pos].mean())
     return s
 
-
 def garch11_forecast(
     returns: NDArray[np.float64],
     *,
@@ -397,7 +388,6 @@ def garch11_forecast(
     out["h"] = h
     out["h_next"] = float(h_next)
     return out
-
 
 def mc_garch_bar_vol(
     ts_ns: NDArray[np.int64],
@@ -461,7 +451,6 @@ def mc_garch_bar_vol(
         "n_bars": int(bar_r.size),
         "garch_q": g,
     }
-
 
 def sigma_process_meas(
     ts_ns: NDArray[np.int64],
@@ -536,11 +525,9 @@ def sigma_process_meas(
         "noise_floor_log": float(noise_floor_log),
     }
 
-
 # ---------------------------------------------------------------------------
 # Kalman SSM detector
 # ---------------------------------------------------------------------------
-
 
 def kalman_ssm_filter(
     ts_ns: NDArray[np.int64],
@@ -641,7 +628,6 @@ def kalman_ssm_filter(
         "log_z": log_z,
     }
 
-
 def ssm_crash_mask(
     z_score: NDArray[np.float64],
     *,
@@ -651,7 +637,6 @@ def ssm_crash_mask(
     z = np.asarray(z_score, dtype=np.float64)
     return np.isfinite(z) & (np.abs(z) >= float(z_star))
 
-
 def _runs_from_mask(mask: NDArray[np.bool_]) -> tuple[NDArray[np.int64], NDArray[np.int64]]:
     m = np.asarray(mask, dtype=bool)
     if m.size == 0:
@@ -660,7 +645,6 @@ def _runs_from_mask(mask: NDArray[np.bool_]) -> tuple[NDArray[np.int64], NDArray
     starts = np.flatnonzero(d == 1)
     ends = np.flatnonzero(d == -1) - 1
     return starts.astype(np.int64), ends.astype(np.int64)
-
 
 def detect_ssm_events(
     ts_ns: NDArray[np.int64],
@@ -674,11 +658,9 @@ def detect_ssm_events(
     starts, ends = _runs_from_mask(mask)
     return extract_event_features(ts_ns, px, starts, ends, z_score=filter_out["z_score"])
 
-
 # ---------------------------------------------------------------------------
 # Event features / recovery / z* scan
 # ---------------------------------------------------------------------------
-
 
 def extract_event_features(
     ts_ns: NDArray[np.int64],
@@ -744,7 +726,6 @@ def extract_event_features(
         "n_events": n_ev,
     }
 
-
 def severity_gate(
     events: dict[str, Any],
     *,
@@ -798,7 +779,6 @@ def severity_gate(
             out[key] = val
     return out
 
-
 def volume_herfindahl(
     volumes: dict[str, float] | NDArray[np.float64],
     *,
@@ -836,7 +816,6 @@ def volume_herfindahl(
         "complete": bool((vols > 0).all()),
         "total": tot,
     }
-
 
 def xvenue_event_concordance(
     events_by_venue: dict[str, dict[str, Any]],
@@ -930,7 +909,6 @@ def xvenue_event_concordance(
 
     return {"pairs": pair_rows, "triple": triple, "slack_s": float(slack_s), "venues": venues}
 
-
 def recovery_fraction(
     ts_ns: NDArray[np.int64],
     px: NDArray[np.float64],
@@ -972,7 +950,6 @@ def recovery_fraction(
             out[k] = giveback / abs(move)
     return out
 
-
 def classify_recovery(
     recovery: NDArray[np.float64],
     *,
@@ -1005,7 +982,6 @@ def classify_recovery(
         "v_thr": float(v_thr),
         "cont_thr": float(cont_thr),
     }
-
 
 def post_event_markout_px(
     ts_ns: NDArray[np.int64],
@@ -1050,7 +1026,6 @@ def post_event_markout_px(
         }
     return out
 
-
 def zstar_scan(
     z_score: NDArray[np.float64],
     ts_ns: NDArray[np.int64],
@@ -1088,7 +1063,6 @@ def zstar_scan(
             }
         )
     return {"grid": z_grid, "rows": rows}
-
 
 def event_overlap(
     a_start: NDArray[np.int64],

@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Ch.3 iterate: simulated single-algo POV + extraday sys/idio beta panel.
 
@@ -15,7 +16,7 @@ Blocker 2 — Extraday systematic / idiosyncratic split
 
 Data: startarb warehouse (no ClickHouse MCP). Paper only.
 """
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -31,7 +32,7 @@ BOOK_ROOT = Path(__file__).resolve().parents[1]
 ROOT = BOOK_ROOT.parents[2]  # repo root (mmip → books → research → repo)
 OUT_DIR = BOOK_ROOT / "out" / "ch03_pov_idio"
 CH03_OUT = BOOK_ROOT / "out" / "ch03_optimal_trading"
-STARTARB = Path("/home/dev/srv/ares-startarb")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
 DENSE_DAYS = ["2026-09-14", "2026-09-15", "2026-09-16", "2026-09-25", "2026-09-26"]
 MARK_DAYS = ["2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29"]
 PANEL_INSTRUMENTS = {

@@ -37,11 +37,9 @@ K2_EXP = 0.5  # ∫ (e^{±x})^2 on half-line = 1/2
 ASYMPTOTIC_BAND_95 = 2.18
 ASYMPTOTIC_BAND_99 = 3.60
 
-
 # ---------------------------------------------------------------------------
 # Grid / noise helpers
 # ---------------------------------------------------------------------------
-
 
 def grid_1s(
     ts_ns: NDArray[np.int64],
@@ -106,7 +104,6 @@ def grid_1s(
         "dt_s": dt_s,
     }
 
-
 def preaverage_returns(
     log_px: NDArray[np.float64],
     *,
@@ -129,7 +126,6 @@ def preaverage_returns(
         out[i] = float(np.dot(g, r[i : i + kn]))
     return out
 
-
 def hac_bandwidth(n: int, *, rule: str = "andrews") -> int:
     """Andrews-style HAC lag length hook (integer ≥ 0)."""
     n = max(int(n), 1)
@@ -138,11 +134,9 @@ def hac_bandwidth(n: int, *, rule: str = "andrews") -> int:
     # Newey–West / Andrews rough rule
     return max(0, int(np.floor(4.0 * (n / 100.0) ** (2.0 / 9.0))))
 
-
 # ---------------------------------------------------------------------------
 # Kernel estimators & V-statistic
 # ---------------------------------------------------------------------------
-
 
 def _kernel_weights(
     u: NDArray[np.float64],
@@ -170,7 +164,6 @@ def _kernel_weights(
     else:
         raise ValueError(f"unknown kernel kind: {kind}")
     return w
-
 
 def kernel_drift_vol(
     t: NDArray[np.float64],
@@ -201,7 +194,6 @@ def kernel_drift_vol(
     sigma = float(np.sqrt(max(sig2, 0.0)))
     return {"mu": mu, "sigma": sigma, "n_eff": sw, "k2": float(k2)}
 
-
 def t_stat_side(
     t: NDArray[np.float64],
     r: NDArray[np.float64],
@@ -217,7 +209,6 @@ def t_stat_side(
     if not np.isfinite(est["sigma"]) or est["sigma"] <= 0 or not np.isfinite(est["mu"]):
         return float("nan")
     return float(np.sqrt(hn / k2) * est["mu"] / est["sigma"])
-
 
 def v_statistic_at(
     t: NDArray[np.float64],
@@ -237,7 +228,6 @@ def v_statistic_at(
     else:
         v = float(np.sqrt(hn) * tp * tm) if scale_sqrt_hn else float(tp * tm)
     return {"V": v, "T_minus": float(tm), "T_plus": float(tp), "tau": float(tau), "hn": float(hn)}
-
 
 def v_path(
     t: NDArray[np.float64],
@@ -260,7 +250,6 @@ def v_path(
         Tm[i] = out["T_minus"]
         Tp[i] = out["T_plus"]
     return {"tau": taus_a, "V": V, "T_minus": Tm, "T_plus": Tp, "hn": np.array([hn])}
-
 
 def min_v(
     t: NDArray[np.float64],
@@ -300,7 +289,6 @@ def min_v(
         "path": path,
     }
 
-
 def returns_from_log_px(
     log_px: NDArray[np.float64],
     ts_ns: NDArray[np.int64] | None = None,
@@ -336,11 +324,9 @@ def returns_from_log_px(
         t = np.arange(1, x.size, dtype=np.float64)
     return t, r
 
-
 # ---------------------------------------------------------------------------
 # EGARCH(1,1) bootstrap
 # ---------------------------------------------------------------------------
-
 
 def fit_egarch11(
     returns: NDArray[np.float64],
@@ -401,7 +387,6 @@ def fit_egarch11(
         "method": "grid",
     }
 
-
 def _egarch_filter(
     r: NDArray[np.float64],
     omega: float,
@@ -429,7 +414,6 @@ def _egarch_filter(
         ll += -0.5 * (np.log(2 * np.pi) + np.log(s2) + z_prev * z_prev)
     return np.sqrt(np.exp(np.clip(log_s2, -30, 30))), float(ll)
 
-
 def simulate_egarch_paths(
     fit: dict[str, Any],
     n: int,
@@ -454,7 +438,6 @@ def simulate_egarch_paths(
             z = float(rng.standard_normal())
             out[p, i] = s * z
     return out
-
 
 def bootstrap_minv_ci(
     returns: NDArray[np.float64],
@@ -517,16 +500,13 @@ def bootstrap_minv_ci(
         },
     }
 
-
 # ---------------------------------------------------------------------------
 # Simulation Models 0–3 (paper §4)
 # ---------------------------------------------------------------------------
 
-
 def _sim_grid(n: int = 23_400) -> NDArray[np.float64]:
     """Default ~1s grid for a 6.5h RTH day; crypto may pass n=86400."""
     return np.linspace(0.0, 1.0, n)
-
 
 def simulate_model_0(
     n: int = 23_400,
@@ -542,7 +522,6 @@ def simulate_model_0(
     dW = rng.standard_normal(n) * np.sqrt(dt)
     log_p = np.log(P1) + sigma0 * np.cumsum(dW)
     return {"t": t, "log_px": log_p, "px": np.exp(log_p), "sigma": np.full(n, sigma0)}
-
 
 def simulate_model_1(
     n: int = 23_400,
@@ -571,7 +550,6 @@ def simulate_model_1(
         log_p[i] = pe[i] + (log_p[i - 1] - pe[i - 1]) + sig[i] * dW[i]
     return {"t": t, "log_px": log_p, "px": np.exp(log_p), "sigma": sig}
 
-
 def simulate_model_2(
     n: int = 23_400,
     *,
@@ -596,7 +574,6 @@ def simulate_model_2(
     for i in range(1, n):
         log_p[i] = pe[i] + (log_p[i - 1] - pe[i - 1]) + sig[i] * dW[i]
     return {"t": t, "log_px": log_p, "px": np.exp(log_p), "sigma": sig}
-
 
 def simulate_model_3(
     n: int = 23_400,
@@ -647,7 +624,6 @@ def simulate_model_3(
     for i in range(1, n):
         log_p[i] = pe[i] + (log_p[i - 1] - pe[i - 1]) + sig[i] * dW[i]
     return {"t": t, "log_px": log_p, "px": np.exp(log_p), "sigma": sig}
-
 
 def size_power_table(
     *,

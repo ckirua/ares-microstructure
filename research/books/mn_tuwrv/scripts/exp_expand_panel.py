@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Pass 2.7 expand-panel — full listing-cache history + SOL.
 
@@ -11,7 +12,7 @@ Checkpoint resume under out/expand_panel/rows.jsonl.
 ClickHouse MCP banned. No git commits.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -24,9 +25,9 @@ from numpy.typing import NDArray
 
 BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
-sys.path.insert(0, str(Path("/home/dev/lab/lab-n2070/warehouse/src")))
+sys.path.insert(0, str(Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ.get('WAREHOUSE_ROOT') or (Path.home() / 'lab' / 'lab-n2070' / 'warehouse')) / 'src')))))
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path("/home/dev/srv/ares-startarb") / "src"))
+sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import CORE_VENUES, ensure_env, resolve_days  # noqa: E402

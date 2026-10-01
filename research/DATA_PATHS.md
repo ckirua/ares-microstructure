@@ -1,8 +1,8 @@
 # ares-startarb market-data paths (for ares-microstructure reuse)
 
-**Source repo:** `/home/dev/srv/ares-startarb`  
-**Truth plane:** S3 / `warehouse` parquet via `open_day` / `list_days` — **not ClickHouse** (MCP banned; CH often unreachable from dev hosts).  
-**Sibling package:** `/home/dev/lab/lab-n2070/warehouse` (editable dep in `pyproject.toml`).
+**Source repo:** `${ARES_STARTARB:-../ares-startarb}`  
+**Truth plane:** S3 / `warehouse` parquet via `open_day` / `list_days` — **not ClickHouse** (MCP banned; treat CH as optional/off the critical path).  
+**Sibling package:** `${WAREHOUSE_ROOT:-$HOME/lab/lab-n2070/warehouse}` (editable dep in `pyproject.toml`).
 
 ---
 
@@ -78,12 +78,14 @@ Canonical map: `src/startarb/config/symbols.yaml` (`underlyings`, `hyperliquid_f
 
 ## 3. Storage layouts
 
-### S3 (Hetzner) — source of truth
+### S3-compatible object storage — source of truth
 
-- **Flat research:** `s3://mercat-{venue}-md/parquet/{venue}/YYYY/MM/DD/*.parquet`
-- **Release-bound:** `s3://mercat-{venue}-md/public-md/{release_id}/{venue}/{shard}/parquet/...`
+Bucket names and endpoints come from env (`S3_*_MD_BUCKET`, `S3_URL`, … — see startarb `MD_BUCKETS`). Typical layouts:
+
+- **Flat research:** `s3://{venue-md-bucket}/parquet/{venue}/YYYY/MM/DD/*.parquet`
+- **Release-bound:** `s3://{venue-md-bucket}/public-md/{release_id}/{venue}/{shard}/parquet/...`
 - **Type-split public-md:** filenames like `*.type-00008-mark_price.*.parquet`
-- Env: `S3_URL`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `S3_REGION`, `S3_*_MD_BUCKET` (see `startarb.env.MD_BUCKETS`)
+- Env: `S3_URL`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `S3_REGION`, `S3_*_MD_BUCKET`
 
 ### Local resolve order (`warehouse.io.resolve.ensure_local`)
 
@@ -93,7 +95,7 @@ Canonical map: `src/startarb/config/symbols.yaml` (`underlyings`, `hyperliquid_f
 | **Object cache** | `WAREHOUSE_CACHE_ROOT` → **`~/.cache/warehouse`** | `objects/{bucket}/{etag}/file.parquet` after S3 fetch |
 | **Listings** | under cache | `~/.cache/warehouse/listings/` (day index metadata) |
 
-On this host **`/srv/raw` is absent**; loads succeed via **S3 → cache** when `~/.env` has keys.
+If the raw mirror is absent, loads succeed via **S3 → cache** when `~/.env` has keys.
 
 ### ClickHouse
 
@@ -192,29 +194,28 @@ q = hub.get("hyperliquid", "ETH")
 
 ---
 
-## 6. Practical blockers (verified 2026-09-30 on this host)
+## 6. Practical setup checklist
 
-| Check | Result |
-|-------|--------|
-| **`uv run` in ares-startarb** | **OK** — `uv run python -c "import startarb; from warehouse import list_days"` succeeds |
-| **`warehouse` importable** | **OK** — editable install from `/home/dev/lab/lab-n2070/warehouse` |
-| **`list_days('deribit')`** | **OK** — e.g. tail `['2026-09-27', '2026-09-28', '2026-09-29']` (~25s first S3/listing hit) |
-| **`/srv/raw`** | **Missing** — rely on `~/.cache/warehouse/objects/...` |
-| **ClickHouse** | **Not used** by loaders; `docs/DATA.md` reports CH host timeout from research machines |
-| **Local collector parquet** | **Present** under `results/xarb_md/` |
+| Check | Expectation |
+|-------|-------------|
+| **`uv run` in ares-startarb** | `uv run python -c "import startarb; from warehouse import list_days"` succeeds |
+| **`warehouse` importable** | Editable install from `${WAREHOUSE_ROOT:-$HOME/lab/lab-n2070/warehouse}` (or `WAREHOUSE_SRC` on `PYTHONPATH`) |
+| **`list_days('<venue>')`** | Returns recent days when S3/cache credentials work (first listing can be slow) |
+| **`/srv/raw`** | Optional; without it, rely on `~/.cache/warehouse/objects/...` |
+| **ClickHouse** | **Not used** by loaders; do not use ClickHouse MCP |
+| **Local collector parquet** | Optional under `${ARES_STARTARB:-../ares-startarb}/results/xarb_md/` |
 
-**Sample paths:**
+**Sample paths (portable):**
 
-1. `/home/dev/srv/ares-startarb/results/xarb_md/tob/20260929/tob_000000.parquet`
-2. `/home/dev/srv/ares-startarb/results/xarb_md/tob/20260929/tob_000001.parquet`
-3. `/home/dev/.cache/warehouse/objects/mercat-extended-md/eb2f36c8d8235d6de753b38baecc0c30/extended-md-000-00000000000000000042.type-00008-mark_price.d5674df1c768.parquet`
+1. `${ARES_STARTARB:-../ares-startarb}/results/xarb_md/tob/YYYYMMDD/tob_000000.parquet`
+2. `$HOME/.cache/warehouse/objects/{bucket}/{etag}/…parquet`
 
 **Integration checklist for ares-microstructure:**
 
-1. Depend on `startarb` + `warehouse`; `source ~/.env` (S3 keys).
+1. Depend on `startarb` + `warehouse`; `source ~/.env` (S3 keys). Set `ARES_STARTARB` / `WAREHOUSE_ROOT` if not under `$HOME/srv` / `$HOME/lab/...`.
 2. Prefer `load_quote_stream` / `load_trade_tape` over re-parsing S3 keys.
 3. Treat warehouse TOB as **research-grade**, not HFT; use `xarb_collector` or live WS for ms work.
-4. Do not use ClickHouse MCP; optional CH via driver only on hosts where mercat ops docs say it works.
+4. Do not use ClickHouse MCP; optional CH via native driver only where your ops docs say it works.
 
 ---
 

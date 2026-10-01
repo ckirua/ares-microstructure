@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Exp 2 — Nanex∩SSM burst escalate vs SSM-only.
 
@@ -7,7 +8,6 @@ protect effectiveness on |ΔP|, markout, recovery. Placebo = non-nested Nanex.
 ClickHouse MCP banned.
 """
 
-from __future__ import annotations
 
 import argparse
 import sys

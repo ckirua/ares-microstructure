@@ -1,10 +1,10 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Run tick_shadow living sleeve — HL trades WS + incremental SSM severity_zend.
 
 Shadow fills only. Refuses live_orders=true. Warehouse poll peers unchanged.
 """
 
-from __future__ import annotations
 
 import argparse
 import sys

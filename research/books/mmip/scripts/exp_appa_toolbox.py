@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Appendix A toolbox: extractable MM features from Market Microstructure in Practice.
 
@@ -13,7 +14,7 @@ Reusable feature functions are module-level so MM research can import them.
 Data: collector TOB + warehouse trade/marks (no ClickHouse MCP). Paper only.
 """
 
-from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -30,8 +31,8 @@ import pyarrow.parquet as pq
 BOOK_ROOT = Path(__file__).resolve().parents[1]
 ROOT = BOOK_ROOT.parents[2]  # repo root (mmip → books → research → repo)
 OUT_DIR = BOOK_ROOT / "out" / "appendix_quant"
-STARTARB = Path("/home/dev/srv/ares-startarb")
-DEFAULT_TOB = Path("/home/dev/srv/ares-startarb/results/xarb_md/tob")
+STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb'))
+DEFAULT_TOB = Path(str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "results/xarb_md/tob"))
 CH01_OUT = BOOK_ROOT / "out" / "ch01_fragmentation"
 
 # ---------------------------------------------------------------------------

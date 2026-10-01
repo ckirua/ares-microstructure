@@ -1,3 +1,4 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Class models lab — P(V) for soft fade sizing (not mid prediction).
 
@@ -9,7 +10,6 @@ after 4 bps RT. Promote only if soft-size OOS lift clears CI; else Hold.
 Honesty: research_sim · tape mo_5s economics · alpha_claim=False · no ClickHouse MCP.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

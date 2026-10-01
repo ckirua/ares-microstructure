@@ -1,10 +1,10 @@
+from __future__ import annotations
 #!/usr/bin/env python3
 """Build memo-grade notebooks/trade_ideas.ipynb from frozen cell template.
 
 Used by build_memo_notebooks.write_trade_ideas when the notebook is missing/stub.
 Does not soft-Promote Holds. ClickHouse MCP banned.
 """
-from __future__ import annotations
 
 import json
 import uuid
