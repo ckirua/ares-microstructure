@@ -26,9 +26,11 @@ Day-to-day research runs and experiment promote/hold/kill notes live in
 
 ### Added
 
-- **vpin_of** research book (Easley et al. VPIN / order-flow toxicity): chapter packages, desk memo, inventory, trading-applications map, panel + Pass 2 experiment scripts, desk-synthesis notebook, and shared `research/lib/vpin.py`.
+- **vpin_of** research book (Easley et al. VPIN / order-flow toxicity): chapter packages, desk memo, inventory, trading-applications map, panel + Pass 2–4 experiment scripts, desk-synthesis notebook, and shared `research/lib/vpin.py`.
 - **vpin_of Pass 1** (canonical boards `out/vpin_panel/decisions.json` + `decisions_panel_promote.json`): exploratory **n_ok=226**/315 (ETH/BTC/SOL × HL+Deribit+Kraken, complete UTC); promote-provenance HL+DB **n_ok=139**; med VPIN ≈**0.862** CI [0.845, 0.876]; gate table **5 Promote / 3 Hold** (constructed, bucket_mean, side_shuffle, time_split, pin_proxy Promote; xvenue / Kraken / HL-SOL Hold).
-- **vpin_of Pass 2** (`scripts/exp_pass2.py` → `out/pass2/decisions_pass2.json`): HL+Deribit TOB join panel **n=110**; merged board **6 Promote / 5 Hold**. New Promote: `info.vpin_markout` (36/48 day-cells; median day IC≈**0.022**, early≈**0.030**, late≈**0.015**). Hold: `risk.vpin_toxicity_flag` (n=73; ρ(vpin, spread)≈**−0.36**, inverted vs widen narrative), `cont.vpin_bucket_robust`, plus unchanged frag Holds (xvenue / Kraken / HL-SOL).
+- **vpin_of Pass 2** (`scripts/exp_pass2.py` → `out/pass2/decisions_pass2.json`): HL+Deribit TOB join panel **n=110**; merged board **6 Promote / 5 Hold** (later Pass 3 retest Hold on markout/toxicity/xvenue).
+- **vpin_of Pass 3** (`scripts/exp_pass3.py` → `out/pass3/`): HL SOL FNV probe; Kraken strict/tail; xvenue harmonization; dense L2 markout; toxicity residual; bucket grid — **`decisions_pass3.json`** (**5 Promote / 6 Hold**).
+- **vpin_of Pass 4 (FINAL)** (`scripts/exp_pass4.py` → `out/pass4/`): SOL DB+Kr arm; fresh xvenue calibration; promote-slice markout + holdout; Kraken futures TOB probe; intraday toxicity events — **`decisions_pass4.json`** (**5 Promote / 6 Hold**, `book_status=FINAL`).
 - **squeeze_metrics** research book (SqueezeMetrics / GEX Ed., *The Implied Order Book*): chapter packages, desk memo, APPLICATIONS map, certified-panel + Pass1/Pass2b experiment scripts, desk-synthesis / info-stats notebooks, and `applications/paper_shadow/` harness (`live_orders=false`).
 - Shared helpers `research/lib/squeeze.py` (GEX/VEX/GEX+, DDOI proxies, panel joins).
 - Certified primary panel `panel_gex_options` **n=9**; Pass **2b** falsifiers show paper-sign corr(GEX, HL RV)≈**−0.22** but CI/chrono/placebo/LOO fail Promote → **0 Promote** (honest Hold ceiling).
@@ -40,6 +42,7 @@ Day-to-day research runs and experiment promote/hold/kill notes live in
 
 - **mn_tuwrv** chapter index, desk memo, and desk-synthesis notebook extended for the new application surface.
 - Research loop / books index updated for the **cd_me**, **squeeze_metrics**, and **vpin_of** slugs.
+- **vpin_of** desk memo, `PLAN.md`, `TRADING_APPLICATIONS.md`, monitors, and notebooks through Pass 4 FINAL; SoT **`out/pass4/decisions_pass4.json`**.
 
 ## [2026-10-01]
 

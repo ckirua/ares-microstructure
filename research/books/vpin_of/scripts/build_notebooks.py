@@ -59,13 +59,16 @@ def show_fig(name, caption=None):
     else:
         display(Markdown(f'*missing* `{p}` — run `scripts/build_notebook_figs.py`'))
 
-dec = jload('pass2/decisions_pass2.json') or jload('vpin_panel/decisions.json')
+dec = jload('pass4/decisions_pass4.json') or jload('pass3/decisions_pass3.json') or jload('pass2/decisions_pass2.json') or jload('vpin_panel/decisions.json')
 dec_promote = jload('vpin_panel/decisions_panel_promote.json')
 rows = jlines('vpin_panel/rows.jsonl')
 panel_ext = jload('pass2/panel_hl_db_extended.json')
 ok_rows = panel_ext if isinstance(panel_ext, list) and panel_ext else [r for r in rows if r.get('ok')]
+p4 = jload('pass4/pass4_summary.json')
+p3 = jload('pass3/pass3_summary.json')
 p2 = jload('pass2/pass2_summary.json')
-print('pass2' if p2 else 'pass1', 'n_ok', dec.get('n_ok'), 'promote n_ok', dec_promote.get('n_ok'), 'counts', dec.get('decision_counts'))
+tag = 'pass4' if p4 else ('pass3' if p3 else ('pass2' if p2 else 'pass1'))
+print(tag, 'n_ok', dec.get('n_ok'), 'promote n_ok', dec_promote.get('n_ok'), 'counts', dec.get('decision_counts'), 'book', dec.get('book_status'))
 '''
 
 
@@ -75,9 +78,11 @@ def desk_synthesis() -> nbformat.NotebookNode:
             """
 # VPIN / order flow — desk synthesis
 
-**Pass 1 complete:** warehouse trade tape — **panel_exploratory** n_ok=226 (HL+DB+Kraken, complete UTC); **panel_promote** n_ok=139 (HL+DB only). Kraken: real tape, Hold arm. HL SOL empty on inventory probe.
+**Pass 1 complete:** warehouse trade tape — **panel_exploratory** n_ok=226 (HL+DB+Kraken, complete UTC); **panel_promote** n_ok=139 (HL+DB only). Kraken: real tape, Hold arm.
 
-**SoT:** [`DESK_MEMO.md`](../DESK_MEMO.md) · [`CHAPTER_INDEX.md`](../CHAPTER_INDEX.md) · [`TRADING_APPLICATIONS.md`](../TRADING_APPLICATIONS.md) · `out/vpin_panel/decisions.json` + `decisions_panel_promote.json`
+**Pass 4 (FINAL):** merged board in `out/pass4/decisions_pass4.json` — SOL DB+Kr arm, fresh xvenue calibration, promote-slice markout holdout, intraday toxicity events.
+
+**SoT:** [`DESK_MEMO.md`](../DESK_MEMO.md) · [`CHAPTER_INDEX.md`](../CHAPTER_INDEX.md) · [`TRADING_APPLICATIONS.md`](../TRADING_APPLICATIONS.md) · `decisions_pass4.json` (latest) · `decisions_panel_promote.json`
 """
         ),
         md("## 0. Setup"),
@@ -156,6 +161,62 @@ if tox.get('n_days'):
         f"CI=[{tox['spearman_vpin_spread']['lo']:.3f},{tox['spearman_vpin_spread']['hi']:.3f}] — "
         f"**Hold** (high VPIN ↔ tighter spread on HL+DB sample; monitor-only flag)"
     ))
+"""
+        ),
+        md("## 7. Pass 3 — Hold blocker retest"),
+        code(
+            """
+p3 = jload('pass3/pass3_summary.json')
+if p3:
+    display(Markdown(
+        f"**Pass 3** (`decisions_pass3.json`): {dec.get('decision_counts')} — "
+        f"HL SOL days w/trades={jload('pass3/hl_sol_probe.json').get('n_days_with_trades')}, "
+        f"markout **{p3.get('markout')}**, xvenue **{p3.get('xvenue')}**, "
+        f"toxicity **{p3.get('toxicity')}**, bucket **{p3.get('bucket_robust')}**"
+    ))
+mo3 = jload('pass3/markout.json')
+if mo3.get('n_days_ok'):
+    display(Markdown(
+        f"Pass 3 markout (dense L2, 120 q/min): n_ok={mo3['n_days_ok']} "
+        f"medIC={mo3.get('median_ic_by_day')} rankIC={mo3.get('median_rank_ic_30s')} "
+        f"early={mo3.get('median_ic_early')} late={mo3.get('median_ic_late')} "
+        f"gate={mo3.get('decision')}"
+    ))
+xv3 = jload('pass3/xvenue_harmonized.json')
+if xv3.get('methods'):
+    t50 = xv3['methods'].get('target_50_buckets', {}).get('spearman', {})
+    display(Markdown(
+        f"xvenue target50: ρ={t50.get('rho')} CI=[{t50.get('lo')},{t50.get('hi')}] "
+        f"rank={ (xv3.get('rank_day_concordance') or {}).get('rho') } "
+        f"decision={xv3.get('decision')}"
+    ))
+else:
+    display(Markdown('Run `scripts/exp_pass3.py` for Pass 3 artifacts.'))
+"""
+        ),
+        md("## 8. Pass 4 — FINAL close-out"),
+        code(
+            """
+p4 = jload('pass4/pass4_summary.json')
+dec4 = jload('pass4/decisions_pass4.json') or dec
+if p4:
+    display(Markdown(
+        f"**Pass 4 FINAL** (`decisions_pass4.json`): {dec4.get('decision_counts')} — "
+        f"book_status={p4.get('book_status')} promote_slice n={p4.get('n_promote_slice')} "
+        f"markout **{p4.get('markout')}** xvenue **{p4.get('xvenue_fresh')}** "
+        f"toxicity **{p4.get('toxicity_intraday')}** HL post-08-28 trades={p4.get('hl_sol_post_trades')}"
+    ))
+mo4 = jload('pass4/markout.json')
+if mo4.get('n_days_ok'):
+    display(Markdown(
+        f"Promote-slice markout: n_ok={mo4['n_days_ok']} medIC60={mo4.get('median_ic_60s')} "
+        f"rank60={mo4.get('median_rank_ic_60s')} holdout={mo4.get('venue_holdout')} gate={mo4.get('decision')}"
+    ))
+sol_arm = jload('pass4/sol_db_kraken_panel.json')
+if sol_arm:
+    display(Markdown(f"SOL formal arm: {sol_arm.get('formal_arm')}"))
+else:
+    display(Markdown('Run `scripts/exp_pass4.py` for Pass 4 artifacts.'))
 """
         ),
     ]

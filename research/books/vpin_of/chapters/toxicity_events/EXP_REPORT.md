@@ -1,7 +1,7 @@
-# toxicity_events — Pass 2
+# toxicity_events — Pass 4 (FINAL)
 
-Toxicity flag: **Hold** (spread/vol join on panel days).
+Intraday spike event study: **Hold**.
 
 | id | decision | evidence |
 |----|----------|----------|
-| `risk.vpin_toxicity_flag` | **Hold** | n=73 ρ_vpin,spread=-0.36403184005923733 |
+| `risk.vpin_toxicity_flag` | **Hold** | intraday events n=83 Δpost-pre=0.0000b |

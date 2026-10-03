@@ -1,9 +1,7 @@
-# predictiveness — Pass 2
+# predictiveness — Pass 4 (FINAL)
 
-Markout join: **Promote** — n_ok days=36, median IC=0.022426853431507.
+Promote-slice markout: **Hold** — n_ok=69, medIC60=0.005051467982144941.
 
 | id | decision | evidence |
 |----|----------|----------|
-| `info.vpin_markout` | **Promote** | n_ok=36 medIC=0.0224 early=0.0304 late=0.0147 |
-| `info.vpin_side_shuffle` | **Promote** | pass_rate=0.98 (p_exceed≤0.05); n_ok=226 |
-| `info.vpin_time_split_stable` | **Promote** | stable_rate=0.97 |Δearly-late|<0.12; n_ok=226 |
+| `info.vpin_markout` | **Hold** | promote-slice n_ok=69 medIC60=0.0051 rank60=0.0051 holdout HL=0.0100 DB=0.0252 |

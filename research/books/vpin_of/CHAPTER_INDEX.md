@@ -6,7 +6,7 @@ Data: [`../../DATA_PATHS.md`](../../DATA_PATHS.md). Desk: [`DESK_MEMO.md`](DESK_
 
 **Book:** VPIN / flow toxicity (Easley et al. line). Slug: `vpin_of`.
 
-**Program status:** **Pass 1 + Pass 2 complete** — Pass 1 **n_ok=226**/315 (exploratory) · HL+DB **n_ok=139** (promote) · med VPIN **0.862** CI [0.845,0.876]. **Boards:** `out/vpin_panel/decisions.json` (Pass 1) · `out/pass2/decisions_pass2.json` (**6 Promote / 5 Hold** after markout/toxicity merge).
+**Program status:** **Pass 1 + Pass 2 + Pass 3 complete** — Pass 1 **n_ok=226**/315 · HL+DB promote **n_ok=139**. **Latest board:** [`out/pass3/decisions_pass3.json`](out/pass3/decisions_pass3.json) (**5 Promote / 6 Hold** — Pass 3 retested all six Hold blockers; no flips).
 
 **Shared lib:** [`../../lib/vpin.py`](../../lib/vpin.py) · [`../../lib/continuous.py`](../../lib/continuous.py) (`vpin_bucket`) · [`../../lib/pin.py`](../../lib/pin.py) · loaders [`scripts/_data.py`](scripts/_data.py)
 
@@ -42,10 +42,10 @@ Data: [`../../DATA_PATHS.md`](../../DATA_PATHS.md). Desk: [`DESK_MEMO.md`](DESK_
 | `vpin_construction` | `pass1` | Smoke day + calibration grid |
 | `vpin_buckets` | `pass1` | Panel gates + falsifiers |
 | `pin_compare` | `pass1` | Proxy Spearman; MLE Hold |
-| `toxicity_events` | `pass2` | TOB spread/vol join — **Hold** (ρ spread negative) |
-| `predictiveness` | `pass2` | Markout **Promote** (early∧late IC>0) |
-| `cross_venue` | `pass1` | HL↔DB concordance Hold |
-| `robustness` | `pass1` | Smoke-day scale grid |
+| `toxicity_events` | `pass3` | Residual spread join — **Hold** (ρ_resid CI through 0) |
+| `predictiveness` | `pass3` | Dense L2 markout **Hold** (69/110; medIC≈0.011; gate failed) |
+| `cross_venue` | `pass3` | Harmonized target50 concordance **Hold** |
+| `robustness` | `pass3` | Extended bucket grid **Hold** (spread 0.725) |
 
 ---
 
@@ -69,7 +69,7 @@ Both modes share the same **5 Promote / 3 Hold** gate table below.
 | `disc.pin_proxy_vs_vpin` | **Promote** | day proxy ↔ mean_vpin rank (HL ETH CI_lo>0); not level match |
 | `frag.xvenue_vpin_concord` | **Hold** | HL↔DB ρ≈−0.32 (CI through 0) |
 | `frag.kraken_vpin` | **Hold** | real tape, incomplete UTC — label only |
-| `frag.hl_sol_empty` | **Hold** | HL SOL gaps |
+| `frag.hl_sol_empty` | **Hold** | HL SOL: 1/37 listing days (FNV 621827265); post-2026-08-28 empty |
 
 ---
 

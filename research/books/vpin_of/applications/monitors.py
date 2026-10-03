@@ -10,6 +10,8 @@ BOOK = Path(__file__).resolve().parents[1]
 OUT_DAY = BOOK / "out" / "vpin_day"
 OUT_PANEL = BOOK / "out" / "vpin_panel"
 OUT_PASS2 = BOOK / "out" / "pass2"
+OUT_PASS3 = BOOK / "out" / "pass3"
+OUT_PASS4 = BOOK / "out" / "pass4"
 
 
 def latest_vpin_day_snapshot() -> dict[str, Any]:
@@ -64,18 +66,48 @@ def pass2_decisions() -> dict[str, Any]:
     return out
 
 
+def pass3_decisions() -> dict[str, Any]:
+    p = OUT_PASS3 / "decisions_pass3.json"
+    out = _decisions_from(p)
+    if out.get("ok"):
+        summary_path = OUT_PASS3 / "pass3_summary.json"
+        if summary_path.is_file():
+            out["summary"] = json.loads(summary_path.read_text())
+        out["pass3_block"] = json.loads(p.read_text()).get("pass3")
+    return out
+
+
+def pass4_decisions() -> dict[str, Any]:
+    p = OUT_PASS4 / "decisions_pass4.json"
+    out = _decisions_from(p)
+    if out.get("ok"):
+        summary_path = OUT_PASS4 / "pass4_summary.json"
+        if summary_path.is_file():
+            out["summary"] = json.loads(summary_path.read_text())
+        out["pass4_block"] = json.loads(p.read_text()).get("pass4")
+        out["book_status"] = json.loads(p.read_text()).get("book_status")
+    return out
+
+
 def write_monitor_snapshot(dest: Path | None = None) -> Path:
     dest = dest or (BOOK / "applications" / "out" / "monitor_snapshot.json")
     dest.parent.mkdir(parents=True, exist_ok=True)
     p1 = panel_decisions()
     p2 = pass2_decisions()
+    p3 = pass3_decisions()
+    p4 = pass4_decisions()
     payload = {
         "vpin_day": latest_vpin_day_snapshot(),
         "panel": panel_summary(),
         "decisions_pass1": p1,
         "decisions_pass2": p2,
+        "decisions_pass3": p3,
+        "decisions_pass4": p4,
         "pass1_complete": p1.get("ok") and p1.get("n_ok", 0) >= 30,
         "pass2_complete": p2.get("ok") and bool(p2.get("pass2_block")),
+        "pass3_complete": p3.get("ok") and bool(p3.get("pass3_block")),
+        "pass4_complete": p4.get("ok") and p4.get("book_status") == "FINAL",
+        "book_status": p4.get("book_status") if p4.get("ok") else None,
     }
     dest.write_text(json.dumps(payload, indent=2) + "\n")
     return dest

@@ -31,7 +31,7 @@ TOB / mark joins for predictiveness use collector parquet or warehouse L2 (`load
 
 | Venue | S3 bucket (listing cache) | Calendar span (cached) | Symbols (core) | Grain | VPIN-ready? |
 |-------|---------------------------|-------------------------|----------------|-------|-------------|
-| Hyperliquid | `mercat-hyperliquid-md` | 2026-08-28 … 2026-10-03 (37d) | BTC, ETH (**SOL gap** on probe day) | `trade` tape, UTC clip | **Yes** ETH/BTC on complete days |
+| Hyperliquid | `mercat-hyperliquid-md` | 2026-08-28 … 2026-10-03 (37d) | BTC, ETH; **SOL 1/37d** (2026-08-28, FNV 621827265) | `trade` tape, UTC clip | **Yes** ETH/BTC; SOL **Hold arm** |
 | Deribit | `mercat-deribit-md` | 2026-08-28 … 2026-10-01 (35d) | BTC, ETH, SOL perps | `trade` tape | **Yes** (complete days) |
 | Kraken futures | `mercat-kraken-md` | 2026-08-28 … 2026-10-01 (35d) | PF_XBTUSD, PF_ETHUSD, PF_SOLUSD | `trade` (tail window) | **Partial** — low coverage / incomplete |
 | Lighter / RiseX | listing caches present | opportunistic | BTC, ETH, SOL | `trade` / `bbo` | Not wired in `_data.py` yet |

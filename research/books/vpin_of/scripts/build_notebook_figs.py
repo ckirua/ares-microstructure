@@ -39,7 +39,11 @@ def _savefig(name: str) -> Path:
 
 
 def decision_table() -> list[tuple[str, str, str]]:
-    dec = _load("pass2/decisions_pass2.json") or _load("vpin_panel/decisions.json")
+    dec = (
+        _load("pass3/decisions_pass3.json")
+        or _load("pass2/decisions_pass2.json")
+        or _load("vpin_panel/decisions.json")
+    )
     rows = []
     for t in dec.get("decision_table", []):
         rows.append((t["id"], t["decision"], t.get("evidence", "")[:100]))
@@ -65,8 +69,9 @@ def fig_signal_board() -> Path:
         )
     dec = _load("vpin_panel/decisions.json")
     n_ok = dec.get("n_ok", "?")
+    p3 = _load("pass3/pass3_summary.json")
     p2 = _load("pass2/pass2_summary.json")
-    tag = "Pass 2" if p2 else "Pass 1"
+    tag = "Pass 3" if p3 else ("Pass 2" if p2 else "Pass 1")
     ax.set_title(f"vpin_of {tag} board — n_ok={n_ok} (HL+Deribit warehouse tape)")
     ax.set_xlim(0, 1)
     ax.set_yticks([])
@@ -136,8 +141,16 @@ def fig_xvenue_scatter() -> Path | None:
     lo = min(min(xs), min(ys))
     hi = max(max(xs), max(ys))
     ax.plot([lo, hi], [lo, hi], "k--", alpha=0.25, lw=1)
-    dec = _load("pass2/decisions_pass2.json") or _load("vpin_panel/decisions.json")
-    xv = (dec.get("falsifiers") or {}).get("xvenue_spearman") or {}
+    dec = (
+        _load("pass3/decisions_pass3.json")
+        or _load("pass2/decisions_pass2.json")
+        or _load("vpin_panel/decisions.json")
+    )
+    xv = (dec.get("falsifiers") or {}).get("xvenue_spearman_pass3_target50") or {}
+    if not xv:
+        xv = (dec.get("falsifiers") or {}).get("xvenue_spearman") or {}
+    if not xv:
+        xv = (_load("pass3/xvenue_harmonized.json") or {}).get("methods", {}).get("target_50_buckets", {}).get("spearman") or {}
     if not xv:
         xv = (_load("pass2/xvenue_concord.json") or {}).get("spearman") or {}
     ax.set_xlabel("HL mean VPIN")

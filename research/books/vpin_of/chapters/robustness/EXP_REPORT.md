@@ -1,7 +1,7 @@
-# robustness — Pass 2
+# robustness — Pass 3
 
-Bucket grid on HL+DB panel sample — level spread 0.6779920911655719.
+Extended bucket grid spread=0.7252628682763795.
 
 | id | decision | evidence |
 |----|----------|----------|
-| `cont.vpin_bucket_robust` | **Hold** | level_spread=0.678 — monitor sensitivity |
+| `cont.vpin_bucket_robust` | **Hold** | level_spread=0.725 (p2=0.678) |
