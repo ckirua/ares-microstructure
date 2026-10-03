@@ -67,6 +67,15 @@ from research.lib.pin import (
     pin_from_params,
     pin_proxy_from_days,
 )
+from research.lib.vpin import (
+    cross_section_spearman,
+    default_bucket_volume,
+    falsify_side_shuffle,
+    rolling_vpin,
+    summarize_panel_vpin,
+    vpin_from_tape,
+    vpin_time_split,
+)
 from research.lib.epps import corr_vs_lag
 from research.lib.fei import entropy, fei
 from research.lib.markout import adverse_selection_table, trade_markouts
@@ -195,6 +204,26 @@ from research.lib.cdme import (
     vloop_cross_venue,
     vloop_pair,
 )
+from research.lib.squeeze import (
+    LABEL_TRADE_DDOI as SQUEEZE_PROXY_LABEL,
+    aggregate_gex,
+    aggregate_vex,
+    bs_delta,
+    bs_gamma,
+    bs_vanna,
+    chain_exposures,
+    dealer_sign_from_gex,
+    dealer_sign_proxy,
+    ddoi_from_trade_flow,
+    gamma_exposure_proxy,
+    gex_plus,
+    implied_book_levels,
+    implied_book_map,
+    regime_splits as squeeze_regime_splits,
+    squeeze_intensity,
+    unsigned_unit_ddoi,
+    vanna_exposure_proxy,
+)
 
 __all__ = [
     "adverse_selection_table",
@@ -203,6 +232,13 @@ __all__ = [
     "bootstrap_ci",
     "calendar_returns",
     "compare_pin_vpin",
+    "cross_section_spearman",
+    "default_bucket_volume",
+    "falsify_side_shuffle",
+    "rolling_vpin",
+    "summarize_panel_vpin",
+    "vpin_from_tape",
+    "vpin_time_split",
     "contemporaneous_lambda",
     "corr_vs_lag",
     "daily_buy_sell_counts",
@@ -359,4 +395,22 @@ __all__ = [
     "trade_imbalance",
     "vloop_cross_venue",
     "vloop_pair",
+    "SQUEEZE_PROXY_LABEL",
+    "aggregate_gex",
+    "aggregate_vex",
+    "bs_delta",
+    "bs_gamma",
+    "bs_vanna",
+    "chain_exposures",
+    "dealer_sign_from_gex",
+    "dealer_sign_proxy",
+    "ddoi_from_trade_flow",
+    "gamma_exposure_proxy",
+    "gex_plus",
+    "implied_book_levels",
+    "implied_book_map",
+    "squeeze_regime_splits",
+    "squeeze_intensity",
+    "unsigned_unit_ddoi",
+    "vanna_exposure_proxy",
 ]

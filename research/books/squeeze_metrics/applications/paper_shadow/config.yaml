@@ -1,0 +1,41 @@
+# squeeze_metrics paper_shadow — GEX / VEX / squeeze SHADOW (no exchange orders).
+#
+# All research gates Hold until Pass 2. Never soft-Promote.
+# Never mercat/gateway OE. ClickHouse MCP banned.
+# Wire Promote only (expect 0 Promote). Never soft-Promote TOB-cross as α.
+
+mode: paper
+class: risk_monitor_shadow
+live_orders: false
+alpha_claim: false
+
+# Primary cell (HL ETH); options/implied-book loaders when scripts land
+venue: hyperliquid
+symbol: ETH
+extra_venues: [deribit, kraken]
+
+# Poll loop — warehouse day recompute
+poll_interval_s: 120.0
+require_complete_day: false
+lookback_days: 21
+max_files: 48
+dt_s: 5.0
+max_lag_s: 30.0
+bucket_s: 3600.0
+
+# Gate stamp (hard-pinned honesty — Pass 1 Hold board; Promote count = 0)
+gates:
+  risk.gex_exposure: Hold
+  risk.vex_exposure: Hold
+  risk.squeeze_intensity: Hold
+  liq.implied_book_scarcity: Hold
+  alpha.tob_cross_arb: Kill
+
+# Outputs
+out_dir: out
+log_dir: logs
+log_file: shadow.log
+log_rotate: daily
+log_max_bytes: 10485760
+log_backup_count: 14
+events_jsonl: events.jsonl

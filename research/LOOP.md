@@ -7,6 +7,8 @@
 | **mmip** (Lehalle/Laruelle) | Desk expansion complete — see [`books/mmip/DESK_MEMO.md`](books/mmip/DESK_MEMO.md) |
 | **empirical_mm** (Hasbrouck notes) | Holds pass complete — OE public proxies + Sandas L1 + noise Kill — see [`books/empirical_mm/DESK_MEMO.md`](books/empirical_mm/DESK_MEMO.md) |
 | **cd_me** (Huang et al. constrained dealers) | Pass **2.5** info/stats — PIM 10/10 3-venue; `info.*` Holds (DCM after RV, elasticity after RV, stress split); **0 Promote**; see [`books/cd_me/DESK_MEMO.md`](books/cd_me/DESK_MEMO.md) · [`books/cd_me/APPLICATIONS.md`](books/cd_me/APPLICATIONS.md) · [`books/cd_me/notebooks/info_stats_board.ipynb`](books/cd_me/notebooks/info_stats_board.ipynb) |
+| **squeeze_metrics** (SqueezeMetrics / GEX Ed. implied order book) | Pass **2 / 2.5** — certified `panel_gex_options` **n=9**; GEX↔RV r≈−0.22 (paper sign) but chrono/CI fail Promote; **0 Promote**; see [`books/squeeze_metrics/DESK_MEMO.md`](books/squeeze_metrics/DESK_MEMO.md) · [`books/squeeze_metrics/APPLICATIONS.md`](books/squeeze_metrics/APPLICATIONS.md) · [`books/squeeze_metrics/notebooks/desk_synthesis.ipynb`](books/squeeze_metrics/notebooks/desk_synthesis.ipynb) |
+| **vpin_of** (Easley et al. VPIN / flow toxicity) | Pass **1+2** complete — Pass 1 exploratory **n_ok=226**/315 · HL+DB **139** · **5 Promote / 3 Hold**; Pass 2 merged board **6 Promote / 5 Hold** (`info.vpin_markout` Promote; toxicity Hold); see [`books/vpin_of/DESK_MEMO.md`](books/vpin_of/DESK_MEMO.md) · [`books/vpin_of/out/pass2/decisions_pass2.json`](books/vpin_of/out/pass2/decisions_pass2.json) |
 
 ## Quality bar (Jane Street / top-MM desk — multi-lens)
 
