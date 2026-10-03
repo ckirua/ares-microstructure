@@ -551,6 +551,111 @@ def compare_clocks_bootstrap(
     return out
 
 
+def signature_rv_curve(
+    log_px: NDArray[np.float64],
+    steps: tuple[int, ...] = (1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900),
+) -> dict[str, Any]:
+    """Classical signature plot: sparse RV vs sampling step (seconds on 1s grid).
+
+    Under microstructure noise, RV explodes as step→1; under pure diffusion it is
+    flat in expectation. Slope of log(RV) vs log(step) on the fine end proxies
+    noise dominance.
+    """
+    x = np.asarray(log_px, dtype=np.float64)
+    steps_u = sorted({max(int(s), 1) for s in steps})
+    rv: list[float] = []
+    used: list[int] = []
+    for s in steps_u:
+        if x.size < s + 1:
+            continue
+        v = fourth_best(x, s)
+        if np.isfinite(v):
+            rv.append(float(v))
+            used.append(int(s))
+    slope = float("nan")
+    if len(used) >= 3:
+        # fine-end slope: first half of steps (noise-dominated region)
+        n_half = max(3, len(used) // 2)
+        lx = np.log(np.asarray(used[:n_half], dtype=np.float64))
+        ly = np.log(np.maximum(np.asarray(rv[:n_half], dtype=np.float64), 1e-18))
+        if np.std(lx) > 0:
+            slope = float(np.polyfit(lx, ly, 1)[0])
+    return {
+        "steps": used,
+        "rv": rv,
+        "fine_log_slope": slope,
+        "rv_1s": float(rv[0]) if used and used[0] == 1 else float("nan"),
+        "rv_300s": float(rv[used.index(300)]) if 300 in used else float("nan"),
+    }
+
+
+def noise_return_acf(
+    log_px: NDArray[np.float64],
+    *,
+    max_lag: int = 20,
+) -> dict[str, Any]:
+    """ACF of 1-step log returns — MA(1)-like noise ⇒ large negative lag-1.
+
+    Under ZMA05 i.i.d. noise, Corr(ΔY_t, ΔY_{t+1}) ≈ −Eε² / (Eε² + …) < 0.
+    """
+    r = log_returns(log_px)
+    max_lag = max(int(max_lag), 1)
+    if r.size < max_lag + 5:
+        return {
+            "acf": [],
+            "lag1": float("nan"),
+            "ma1_compatible": False,
+            "n": float(r.size),
+        }
+    r = r - float(np.mean(r))
+    var = float(np.dot(r, r) / r.size)
+    if not np.isfinite(var) or var <= 0:
+        return {"acf": [], "lag1": float("nan"), "ma1_compatible": False, "n": float(r.size)}
+    acf: list[float] = []
+    for lag in range(1, max_lag + 1):
+        c = float(np.dot(r[:-lag], r[lag:]) / r.size)
+        acf.append(c / var)
+    lag1 = float(acf[0]) if acf else float("nan")
+    return {
+        "acf": acf,
+        "lag1": lag1,
+        "ma1_compatible": bool(np.isfinite(lag1) and lag1 < -0.05),
+        "n": float(r.size),
+    }
+
+
+def optimal_K_scan(
+    log_px: NDArray[np.float64],
+    *,
+    step: int = 300,
+    Ks: tuple[int, ...] = (30, 60, 120, 180, 300, 450, 600),
+) -> dict[str, Any]:
+    """TSRV first_adj vs K at fixed sparse step — bias/variance trade-off scan."""
+    x = np.asarray(log_px, dtype=np.float64)
+    step = max(int(step), 1)
+    rows: list[dict[str, float]] = []
+    for K in Ks:
+        if x.size < step + 2:
+            continue
+        est = all_estimators(x, K=int(K), step=step)
+        rows.append(
+            {
+                "K": float(K),
+                "first_adj": float(est["first_adj"]),
+                "second": float(est["second"]),
+                "fourth": float(est["fourth"]),
+            }
+        )
+    firsts = np.asarray([r["first_adj"] for r in rows if np.isfinite(r["first_adj"])], dtype=np.float64)
+    # pick K minimizing |first_adj - median(first_adj)| as stability proxy (no true IV)
+    best_K = float("nan")
+    if firsts.size and rows:
+        med = float(np.median(firsts))
+        best = min(rows, key=lambda r: abs(r["first_adj"] - med) if np.isfinite(r["first_adj"]) else 1e99)
+        best_K = float(best["K"])
+    return {"grid": rows, "best_K_stability": best_K, "step": float(step)}
+
+
 def k_step_ablation(
     log_px: NDArray[np.float64],
     *,

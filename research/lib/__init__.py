@@ -178,6 +178,23 @@ from research.lib.hftpat import (
     venue_fade_events,
     venue_fade_prob,
 )
+from research.lib.cdme import (
+    align_tob_panel,
+    asof_join_mid,
+    bucket_panel,
+    dcm_pc1,
+    dcm_proxies,
+    elasticity_corr,
+    logistic_G,
+    pim_from_components,
+    regime_split_corr,
+    relative_half_spread,
+    realized_vol,
+    tcost_from_spreads,
+    trade_imbalance,
+    vloop_cross_venue,
+    vloop_pair,
+)
 
 __all__ = [
     "adverse_selection_table",
@@ -327,4 +344,19 @@ __all__ = [
     "smoke_spoof_proxy",
     "venue_fade_events",
     "venue_fade_prob",
+    "align_tob_panel",
+    "asof_join_mid",
+    "bucket_panel",
+    "dcm_pc1",
+    "dcm_proxies",
+    "elasticity_corr",
+    "logistic_G",
+    "pim_from_components",
+    "regime_split_corr",
+    "relative_half_spread",
+    "realized_vol",
+    "tcost_from_spreads",
+    "trade_imbalance",
+    "vloop_cross_venue",
+    "vloop_pair",
 ]

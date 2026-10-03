@@ -32,6 +32,7 @@ def code(s: str):
 
 SETUP = r'''
 from pathlib import Path
+import os
 import json
 import math
 import sys
@@ -43,7 +44,7 @@ from IPython.display import Image, display, Markdown
 BOOK = (Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure')) / 'research' / 'books' / 'mn_tuwrv')
 OUT = BOOK / 'out'
 FIGS = OUT / 'desk_synthesis' / 'figs'
-sys.path.insert(0, str(BOOK.parents[2]))  # research/
+sys.path.insert(0, str(BOOK.parents[2]))  # ares-microstructure root
 
 def jload(rel):
     return json.loads((OUT / rel).read_text())
@@ -61,8 +62,11 @@ bc = jload('blocker_close/blocker_close.json')
 gc = jload('gap_close/gap_close.json')
 mc = jload('monte_carlo/mc_summary.json')
 p2 = jload('pass2/pass2_gates.json')
+ep = jload('expand_panel/expand_panel.json')
+dp = jload('depth_predict/depth_predict.json') if (OUT/'depth_predict'/'depth_predict.json').exists() else {}
 print('BOOK', BOOK)
 print('figs', sorted(p.name for p in FIGS.glob('*.png')))
+print('expand n_ok', ep['coverage']['n_ok'], 'depth keys', list(dp.keys())[:8])
 '''
 
 
@@ -74,36 +78,43 @@ def notebook_desk_synthesis() -> nbformat.NotebookNode:
 
 Romero (2016) / ZMA05 TSRV on crypto perps (**HL · Deribit · Kraken**).
 
-**Program status (Pass 2.7):** **0 Promote / 5 Hold / 4 Kill** · n_ok=**204** · n_mid=**122** · 34d ETH+BTC+SOL
+**Program status (Pass 2.8):** Pass 2.7 board **0 Promote / 5 Hold / 4 Kill** · predictive **0 Promote** after encompassing · n_ok=**204** · pairs=**180**
 
 Hard rule: sized claims only if a **Promote** clears the pre-registered gate. Holds are monitors / research debt — not soft-Promotes.
 
-**SoT:** [`DESK_MEMO.md`](../DESK_MEMO.md) · [`CHAPTER_INDEX.md`](../CHAPTER_INDEX.md)  
-**Artifacts:** `out/blocker_close/` · `out/gap_close/` · `out/monte_carlo/` · `out/desk_synthesis/figs/`
+**SoT:** [`DESK_MEMO.md`](../DESK_MEMO.md) · [`CHAPTER_INDEX.md`](../CHAPTER_INDEX.md) · [`TRADING_APPLICATIONS.md`](../TRADING_APPLICATIONS.md)  
+**Also:** [`uses_and_information.ipynb`](uses_and_information.ipynb) · [`predictive_power.ipynb`](predictive_power.ipynb)
 """
         ),
-        md("## 0. Setup — load Pass 2.6 artifacts (no multi-hour recompute)"),
+        md("## 0. Setup — load Pass 2.7/2.8 artifacts (no multi-hour recompute)"),
         code(SETUP),
         md("## 1. Signal board"),
         code(
             """
 show_fig('signal_board.png', 'Signal board')
 show_fig('fig_gate_counts.png', 'Gate counts')
+show_fig('fig_pred_board.png', 'Predictive board (Pass 2.8)')
 
 board = [
     ('cont.sparse_rv_only', 'Kill', 'MC first_adj RMSE ≈ 0.42× fourth'),
     ('cont.noise_dominates_1s_mid', 'Kill', 'calendar fifth/fourth med ≪ 1.5'),
     ('cont.noise_trade_clock_bounce', 'Kill', 'trade-clock med ≪ 1.5'),
     ('cont.noise_tick_bounce_clock', 'Kill', 'CI_lo ≰ 1.5'),
-    ('cont.noise_mid_clock', 'Hold', bc['mid_clock']['gate']['why']),
-    ('cont.tsrv_first_adj', 'Hold', bc['tsrv_oos']['gate']['why'][:160] + '…'),
+    ('cont.noise_mid_clock', 'Hold', ep['mid_clock']['gate']['why']),
+    ('cont.tsrv_first_adj', 'Hold', ep['tsrv_oos']['gate']['why'][:160] + '…'),
     ('cont.noise_var_fifth', 'Hold', 'liquidity proxy only'),
-    ('liq.noise_vs_spread', 'Hold', gc['spread_falsify']['gate']['why']),
+    ('liq.noise_vs_spread', 'Hold', ep['spread_falsify']['gate']['why']),
     ('frag.xvenue_noise_concord', 'Hold', 'level concordance ≠ edge'),
 ]
 df = pd.DataFrame(board, columns=['id', 'decision', 'evidence'])
 display(df)
-print('counts:', df.decision.value_counts().to_dict())
+if dp:
+    pred = pd.DataFrame([
+        {'id': k, 'decision': v['decision'], 'evidence': v['why'][:120]}
+        for k, v in dp.get('decisions_rollup', dp.get('predictive', {}).get('decisions', {})).items()
+    ])
+    display(pred)
+print('Pass2.7 counts:', df.decision.value_counts().to_dict())
 """
         ),
         md(
@@ -115,6 +126,7 @@ print('counts:', df.decision.value_counts().to_dict())
 | `cont.noise_mid_clock` | bootstrap CI_lo of median fifth/fourth **> 1.5** |
 | `cont.tsrv_first_adj` | fragile_rate=0 ∧ sparse−tsrv CI_lo>0 early **and** late ∧ n≥20 (**not** MC alone) |
 | `liq.noise_vs_spread` | ρ>0 ∧ shuffle p<0.05 ∧ early∧late same sign ∧ n≥20 ∧ CI_lo>0 |
+| `pred.*` | late OOS \|CI_lo\|>0.10 ∧ early same-sign; noise→RV also needs encompassing |
 | `cont.sparse_rv_only` | already **Kill** on MC |
 """
         ),
@@ -130,103 +142,247 @@ for k in ['fifth','fourth','third','second','first','first_adj']:
 display(pd.DataFrame(rows))
 ratio = est['first_adj']['rmse'] / est['fourth']['rmse']
 print(f"first_adj / fourth RMSE = {ratio:.3f}  -> Kill cont.sparse_rv_only (MC n={mc['n_sims']})")
-print('pass2 gate:', p2['cont.sparse_rv_only'])
 """
         ),
-        md(
-            """
-## 4. Mid-clock — denser TOB, still **Hold**
-
-Pass 2.5 had mid CI ≈ [0.83, 8.17] (n=46). Pass 2.6 expands dense quoted TOB (HL + Deribit + Kraken spot L2) → **n=73**, CI **[1.17, 5.23]**. Point elevated (med≈2.63) but **CI_lo=1.17 < 1.5 gate**.
-"""
-        ),
+        md("## 4. Mid-clock — Pass 2.7 expand, still **Hold**"),
         code(
             """
 show_fig('fig_clock_medians.png', 'Clock medians ± CI95')
 show_fig('fig_mid_venue_split.png', 'Venue split')
-show_fig('fig_ratio_hist.png', 'Ratio histograms')
-
-md_ci = bc['mid_clock']['mid_dense_ci']
+show_fig('fig_venue_mid_taxonomy.png', 'Venue mid taxonomy (2.8)')
+md_ci = ep['mid_clock']['mid_dense_ci']
 print('dense mid CI:', md_ci)
-print('gate:', bc['mid_clock']['gate'])
-print('coverage:', json.dumps(bc['mid_clock']['mid_coverage_by_venue'], indent=2))
-print('per_clock decisions:')
-for k,v in bc['mid_clock']['per_clock'].items():
-    print(f"  {v['decision']:7s}  {k:12s}  {v['why']}")
+print('gate:', ep['mid_clock']['gate'])
+print('coverage:', json.dumps(ep['mid_clock']['mid_coverage_by_venue'], indent=2))
 """
         ),
-        md(
-            """
-## 5. Tape-level TSRV vs sparse — **Hold** (MC Kill stands)
-
-MC already Kills sparse-only policy. Tape OOS must clear CI_lo>0 on early∧late to Promote `cont.tsrv_first_adj`. It does **not**.
-"""
-        ),
+        md("## 5. Tape-level TSRV vs sparse — **Hold** (MC Kill stands)"),
         code(
             """
 show_fig('fig_tsrv_oos.png', 'sparse − first_adj time-split')
-ts = bc['tsrv_oos']
+ts = ep['tsrv_oos']
 display(pd.DataFrame(ts['sparse_minus_tsrv']).T)
-display(pd.DataFrame(ts['tsrv_over_sparse']).T)
 print('fragile_rate', ts['fragile_rate'])
-print('rolling 5d frac CI_lo>0:', ts['rolling_5d']['frac_ci_lo_pos'])
 print('decision:', ts['gate'])
-print('MC sparse policy:', ts['mc_sparse_policy'])
 """
         ),
-        md("## 6. Noise vs spread — cross-venue ρ collapses"),
+        md("## 6. Noise vs spread + information content"),
         code(
             """
-show_fig('fig_noise_vs_spread.png', 'Pass 2.5/2.6 join')
-sf = gc['spread_falsify']
+show_fig('fig_noise_vs_spread.png', 'noise vs spread')
+show_fig('fig_info_heatmap.png', 'Information heatmap')
+sf = ep['spread_falsify']
 print('ρ_spread:', sf['rho_spread'])
 print('ρ_amihud:', sf['rho_amihud'])
-print('shuffle_p', sf['shuffle_p'], 'block_shuffle_p', sf['block_shuffle_p'])
-print('time_split:', sf['time_split'])
-print('coverage_by_venue:', sf['coverage_by_venue'])
 print('gate:', sf['gate'])
+if dp:
+    ns = dp['information']['matrix']['noise_std']
+    display(pd.DataFrame(ns).T)
 """
         ),
-        md(
+        md("## 7. Thesis empirics — signature / ACF / K"),
+        code(
             """
-## 7. Kraken TOB inventory (honest)
-
-| Stream | Status |
-|--------|--------|
-| Futures S3 MRCTCAP1 / public-md | trade/mark/index/funding/OI **only** — no BBO/L2 |
-| Spot S3 public-md L2 | **Wired** via `spot|ETH/USD` / `spot|BTC/USD` |
-| Futures live REST orderbook | ingest → `out/kraken_futures_tob/` |
-| ClickHouse `kraken_md` | unreachable from this host |
+show_fig('fig_signature.png', 'Signature plots')
+show_fig('fig_noise_acf_lag1.png', 'ACF lag-1')
+show_fig('fig_tod_acf.png', 'TOD ACF')
+if dp:
+    td = dp['tape_depth']
+    print('signature:', td.get('signature', {}).get('median_fine_log_slope'), 'frac_neg', td.get('signature', {}).get('frac_negative_slope'))
+    print('acf lag1:', td.get('noise_acf', {}).get('median_lag1'), 'ma1_frac', td.get('noise_acf', {}).get('frac_ma1_compatible'))
+    print('opt K:', td.get('optimal_K', {}).get('median_best_K'))
 """
         ),
+        md("## 8. Predictive OOS (see predictive_power notebook)"),
+        code(
+            """
+show_fig('fig_pred_ic_noise.png', 'noise_std OOS IC forest')
+if dp:
+    pred = dp['predictive']
+    print('n_pairs', pred.get('n_pairs'), 'split', pred.get('split_day'))
+    print('encompassing', pred.get('encompassing_noise_vs_sparse'))
+    print('DM late', pred.get('diebold_mariano', {}).get('next_fourth_persistence', {}).get('late_oos'))
+"""
+        ),
+        md("## 9. Kraken TOB inventory"),
         code(
             """
 show_fig('fig_tob_coverage.png', 'TOB coverage by venue')
-meta = json.loads((OUT/'kraken_futures_tob/20260930/tob_000000.meta.json').read_text())
-print('futures ingest sample meta:', meta)
-# spot L2 sources in blocker panel
 from collections import Counter
-srcs = Counter(str((r.get('spread') or {}).get('source')) for r in bc['rows'] if r.get('ok'))
-print('blocker spread sources:', dict(srcs))
-print('kraken_days in panel:', bc['meta'].get('kraken_days'))
+srcs = Counter(str((r.get('spread') or {}).get('source')) for r in ep['rows'] if r.get('ok'))
+print('expand spread sources:', dict(srcs))
 """
         ),
         md(
             """
-## 8. Desk takeaway
+## 10. Desk takeaway
 
 1. **Do not** run sparse-only RV for risk — MC Kill is decisive.  
-2. **Do not** Promote mid-clock bounce domination yet — CI_lo still below 1.5; Deribit elevates, HL does not.  
-3. **Do not** Promote tape TSRV first_adj on MC alone — OOS advantage CI includes 0.  
-4. Noise↔spread is thesis-signed but **not** Promote-grade cross-venue.  
-5. Kraken futures historical quoted TOB remains a data-plane gap; spot L2 + live REST ingest are the honest paths.
+2. Mid-clock / tape TSRV / noise↔spread remain **Hold** (Pass 2.7).  
+3. Predictive: noise→next RV raw IC looks real but is **encompassed by sparse RV persistence** → Hold.  
+4. DM does **not** favor TSRV over sparse for next-day fourth persistence on late OOS.  
+5. Uses: prefer TSRV for risk σ; mid-clock for quoting trust; no auto-widen on noise_std.
 
-See chapter notebooks under `chapters/*/`.
+See [`uses_and_information.ipynb`](uses_and_information.ipynb) · [`predictive_power.ipynb`](predictive_power.ipynb).
 """
         ),
     ]
     nb = new_notebook(cells=cells, metadata={"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}})
     return nb
+
+
+def notebook_uses_and_information() -> nbformat.NotebookNode:
+    cells = [
+        md(
+            """
+# Uses & information content — MN/TSRV
+
+What Êε² / noise_std / fifth–fourth / TSRV−sparse co-move with, and how the desk should use clocks & monitors.
+
+**SoT:** [`../TRADING_APPLICATIONS.md`](../TRADING_APPLICATIONS.md) · [`../DESK_MEMO.md`](../DESK_MEMO.md) · `out/depth_predict/`
+"""
+        ),
+        code(SETUP),
+        md("## 1. Information matrix"),
+        code(
+            """
+show_fig('fig_info_heatmap.png', 'Spearman information heatmap')
+info = dp['information']
+print('n', info['n'])
+for pred, tgts in info['matrix'].items():
+    print('\\n==', pred)
+    display(pd.DataFrame(tgts).T[['n','rho','lo','hi','shuffle_p']])
+print('\\ninterpretation:', info['interpretation']['read'])
+display(pd.DataFrame(info['interpretation']['observed']).T)
+"""
+        ),
+        md("## 2. Regime splits"),
+        code(
+            """
+info = dp['information']
+for name, reg in info['regimes'].items():
+    print(name, json.dumps(reg, indent=2)[:500])
+"""
+        ),
+        md("## 3. Venue / symbol taxonomy"),
+        code(
+            """
+show_fig('fig_venue_mid_taxonomy.png', 'Mid-clock by venue')
+tax = dp['taxonomy']
+display(pd.DataFrame(tax['venue_mid']).T)
+display(pd.DataFrame(tax['cells']).T.sort_values('noise_std_med', ascending=False).head(12))
+"""
+        ),
+        md("## 4. Thesis diagnostics"),
+        code(
+            """
+show_fig('fig_signature.png', 'Signature')
+show_fig('fig_noise_acf_lag1.png', 'Noise ACF')
+show_fig('fig_tod_acf.png', 'TOD')
+td = dp['tape_depth']
+print(json.dumps({k: {kk: vv for kk, vv in td.get(k, {}).items() if kk != 'rows'} for k in ('signature','noise_acf','optimal_K')}, indent=2))
+"""
+        ),
+        md("## 5. Trading applications / monitors"),
+        code(
+            """
+uses = dp['uses']
+print('TSRV vs sparse:', uses['when_prefer_tsrv_vs_sparse'])
+print('mid-clock:', uses['when_mid_clock_noise_matters']['quoting'])
+print('clock trust:', uses['clock_trust'])
+display(pd.DataFrame(uses['monitors']))
+ideas = jload('depth_predict/trade_ideas.json')
+display(pd.DataFrame(ideas['ideas']))
+# thin monitor snapshot
+import importlib.util
+spec = importlib.util.spec_from_file_location('mon', BOOK/'applications'/'monitors.py')
+mon = importlib.util.module_from_spec(spec); spec.loader.exec_module(mon)
+snap = mon.run_latest_snapshot()
+print('monitor alerts', snap.get('n_alerts'), 'path', snap.get('path'))
+"""
+        ),
+    ]
+    return new_notebook(cells=cells, metadata={"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}})
+
+
+def notebook_predictive_power() -> nbformat.NotebookNode:
+    cells = [
+        md(
+            """
+# Predictive power — MN/TSRV noise stack
+
+OOS chronological split on Pass 2.7 panel: features_t → targets_{t+1}.
+
+**Gates:** late \|CI_lo\| > 0.10 · n≥30 · early same-sign; noise→RV needs encompassing vs sparse persistence.
+
+**SoT:** `out/depth_predict/depth_predict.json` · Desk [`../DESK_MEMO.md`](../DESK_MEMO.md)
+"""
+        ),
+        code(SETUP),
+        md("## 1. Protocol"),
+        code(
+            """
+pred = dp['predictive']
+print('n_pairs', pred['n_pairs'], 'early', pred['n_early'], 'late', pred['n_late'], 'split', pred['split_day'])
+print('horizons', pred['horizons'])
+print('crash/V:', pred.get('crash_v_note'))
+"""
+        ),
+        md("## 2. Decision board"),
+        code(
+            """
+show_fig('fig_pred_board.png', 'Predictive decisions')
+rows = [{'id': k, **{kk: vv for kk, vv in v.items() if kk in ('decision','why')}} for k, v in pred['decisions'].items()]
+display(pd.DataFrame(rows))
+print(pd.Series([r['decision'] for r in rows]).value_counts().to_dict())
+"""
+        ),
+        md("## 3. OOS IC — noise_std → next-day targets"),
+        code(
+            """
+show_fig('fig_pred_ic_noise.png', 'IC forest')
+late = pred['ic_late_oos']['x_noise_std']
+early = pred['ic_early']['x_noise_std']
+df = pd.DataFrame({
+    'target': list(late.keys()),
+    'late_rho': [late[k]['rho'] for k in late],
+    'late_lo': [late[k]['lo'] for k in late],
+    'late_hi': [late[k]['hi'] for k in late],
+    'early_rho': [early[k]['rho'] for k in early],
+    'early_lo': [early[k]['lo'] for k in early],
+    'early_hi': [early[k]['hi'] for k in early],
+    'n_late': [late[k]['n'] for k in late],
+})
+display(df)
+"""
+        ),
+        md("## 4. Encompassing — noise vs sparse RV persistence"),
+        code(
+            """
+enc = pred.get('encompassing_noise_vs_sparse', {})
+display(pd.DataFrame(enc).T)
+print('Hold rationale: noise⊥fourth partial IC ≈ 0 on late → vol clustering, not Êε alpha')
+"""
+        ),
+        md("## 5. Diebold–Mariano — sparse vs TSRV persistence"),
+        code(
+            """
+dm = pred['diebold_mariano']
+display(pd.DataFrame(dm['next_fourth_persistence']).T)
+display(pd.DataFrame(dm['next_first_adj_persistence']).T)
+print('decision:', pred['decisions']['pred.tsrv_beats_sparse_rv_forecast'])
+"""
+        ),
+        md("## 6. Multi-feature score (early signs → late)"),
+        code(
+            """
+ms = pred['model_score_oos']
+display(pd.DataFrame(ms).T)
+print('pred.model_score_next_rv:', pred['decisions']['pred.model_score_next_rv']['why'])
+"""
+        ),
+    ]
+    return new_notebook(cells=cells, metadata={"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}})
 
 
 def notebook_ch00() -> nbformat.NotebookNode:
@@ -522,6 +678,8 @@ def main() -> None:
     subprocess.check_call([sys_executable(), str(BOOK / "scripts" / "build_notebook_figs.py")])
     targets = [
         (BOOK / "notebooks" / "desk_synthesis.ipynb", notebook_desk_synthesis()),
+        (BOOK / "notebooks" / "uses_and_information.ipynb", notebook_uses_and_information()),
+        (BOOK / "notebooks" / "predictive_power.ipynb", notebook_predictive_power()),
         (BOOK / "chapters" / "ch00_overview" / "ch00_overview.ipynb", notebook_ch00()),
         (BOOK / "chapters" / "monte_carlo" / "monte_carlo.ipynb", notebook_monte_carlo()),
         (BOOK / "chapters" / "estimators" / "estimators.ipynb", notebook_estimators()),

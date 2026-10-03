@@ -6,6 +6,7 @@
 |---------|--------|
 | **mmip** (Lehalle/Laruelle) | Desk expansion complete — see [`books/mmip/DESK_MEMO.md`](books/mmip/DESK_MEMO.md) |
 | **empirical_mm** (Hasbrouck notes) | Holds pass complete — OE public proxies + Sandas L1 + noise Kill — see [`books/empirical_mm/DESK_MEMO.md`](books/empirical_mm/DESK_MEMO.md) |
+| **cd_me** (Huang et al. constrained dealers) | Pass **2.5** info/stats — PIM 10/10 3-venue; `info.*` Holds (DCM after RV, elasticity after RV, stress split); **0 Promote**; see [`books/cd_me/DESK_MEMO.md`](books/cd_me/DESK_MEMO.md) · [`books/cd_me/APPLICATIONS.md`](books/cd_me/APPLICATIONS.md) · [`books/cd_me/notebooks/info_stats_board.ipynb`](books/cd_me/notebooks/info_stats_board.ipynb) |
 
 ## Quality bar (Jane Street / top-MM desk — multi-lens)
 

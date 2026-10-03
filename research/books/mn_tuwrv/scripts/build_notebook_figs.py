@@ -30,6 +30,14 @@ def _savefig(name: str) -> Path:
     return path
 
 
+def _load_panel():
+    """Prefer Pass 2.7 expand_panel; fall back to blocker_close."""
+    ep = OUT / "expand_panel" / "expand_panel.json"
+    if ep.is_file():
+        return json.loads(ep.read_text())
+    return _load("blocker_close/blocker_close.json")
+
+
 def fig_signal_board() -> Path:
     decisions = [
         ("cont.sparse_rv_only", "Kill"),
@@ -51,7 +59,7 @@ def fig_signal_board() -> Path:
     ax.set_xlim(0, 1)
     ax.set_yticks([])
     ax.set_xticks([])
-    ax.set_title("MN/TSRV Pass 2.7 — signal board (0 Promote / 5 Hold / 4 Kill)")
+    ax.set_title("MN/TSRV Pass 2.7/2.8 — core board (0 Promote)")
     for spine in ax.spines.values():
         spine.set_visible(False)
     return _savefig("signal_board.png")
@@ -93,7 +101,7 @@ def fig_mc_rmse_ladder() -> Path:
 
 
 def fig_clock_medians() -> Path:
-    bc = _load("blocker_close/blocker_close.json")
+    bc = _load_panel()
     clocks = bc["mid_clock"]["bootstrap_all_clocks"]["clocks"]
     names = ["calendar", "trade", "tick_bounce", "mid"]
     med = []
@@ -114,7 +122,7 @@ def fig_clock_medians() -> Path:
     ax.errorbar(
         x,
         med,
-        yerr=[np.asarray(med) - np.asarray(lo), np.asarray(hi) - np.asarray(med)],
+        yerr=[np.clip(np.asarray(med) - np.asarray(lo), 0, None), np.clip(np.asarray(hi) - np.asarray(med), 0, None)],
         fmt="o",
         color="#2c3e50",
         ecolor="#7f8c8d",
@@ -132,7 +140,7 @@ def fig_clock_medians() -> Path:
 
 
 def fig_mid_venue_split() -> Path:
-    bc = _load("blocker_close/blocker_close.json")
+    bc = _load_panel()
     cov = bc["mid_clock"]["mid_coverage_by_venue"]
     venues = ["hyperliquid", "deribit", "kraken"]
     meds = [cov[v]["median"] for v in venues]
@@ -148,7 +156,7 @@ def fig_mid_venue_split() -> Path:
 
 
 def fig_tsrv_oos() -> Path:
-    bc = _load("blocker_close/blocker_close.json")
+    bc = _load_panel()
     t = bc["tsrv_oos"]["sparse_minus_tsrv"]
     labels = ["overall", "early", "late"]
     med = [t[k]["median"] for k in labels]
@@ -159,7 +167,7 @@ def fig_tsrv_oos() -> Path:
     ax.errorbar(
         x,
         med,
-        yerr=[np.asarray(med) - np.asarray(lo), np.asarray(hi) - np.asarray(med)],
+        yerr=[np.clip(np.asarray(med) - np.asarray(lo), 0, None), np.clip(np.asarray(hi) - np.asarray(med), 0, None)],
         fmt="s",
         color="#2c3e50",
         ecolor="#7f8c8d",
@@ -176,9 +184,15 @@ def fig_tsrv_oos() -> Path:
 
 
 def fig_noise_vs_spread() -> Path:
-    # Prefer existing PNG if present; also rebuild from gap_close rows for notebook consistency
-    gc = _load("gap_close/gap_close.json")
-    rows = [r for r in gc["rows"] if r.get("ok") and (r.get("spread") or {}).get("ok")]
+    # Prefer expand_panel spread falsify rows
+    try:
+        gc = _load_panel()
+        rows = [r for r in gc["rows"] if r.get("ok") and (r.get("spread") or {}).get("ok")]
+        sf = gc["spread_falsify"]["rho_spread"]
+    except Exception:  # noqa: BLE001
+        gc = _load("gap_close/gap_close.json")
+        rows = [r for r in gc["rows"] if r.get("ok") and (r.get("spread") or {}).get("ok")]
+        sf = gc["spread_falsify"]["rho_spread"]
     noise = np.asarray([r["noise_std"] for r in rows], dtype=float)
     spread = np.asarray([r["spread"]["spread_bps_mean"] for r in rows], dtype=float)
     venues = [r["venue"] for r in rows]
@@ -187,7 +201,6 @@ def fig_noise_vs_spread() -> Path:
     for v in sorted(set(venues)):
         m = np.asarray([x == v for x in venues])
         ax.scatter(spread[m], noise[m], s=36, alpha=0.75, label=v, color=cmap.get(v, "#333"))
-    sf = gc["spread_falsify"]["rho_spread"]
     ax.set_xlabel("spread_bps_mean (quoted or proxy)")
     ax.set_ylabel("noise_std (Êε)")
     ax.set_title(
@@ -199,7 +212,7 @@ def fig_noise_vs_spread() -> Path:
 
 
 def fig_tob_coverage() -> Path:
-    bc = _load("blocker_close/blocker_close.json")
+    bc = _load_panel()
     rows = [r for r in bc["rows"] if r.get("ok")]
     # count quoted by venue
     venues = ["hyperliquid", "deribit", "kraken"]
@@ -233,7 +246,7 @@ def fig_tob_coverage() -> Path:
 
 
 def fig_fifth_hist() -> Path:
-    bc = _load("blocker_close/blocker_close.json")
+    bc = _load_panel()
     rows = [r for r in bc["rows"] if r.get("ok")]
     fig, axes = plt.subplots(1, 2, figsize=(9.5, 3.6), sharey=False)
     cal = np.asarray([r["fifth_over_fourth_cal"] for r in rows], dtype=float)
