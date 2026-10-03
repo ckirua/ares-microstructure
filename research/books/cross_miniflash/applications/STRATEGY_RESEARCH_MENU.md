@@ -2,7 +2,8 @@
 
 **Date:** 2026-09-30  
 **Parent playbook:** [`HOW_WE_TRADE.md`](HOW_WE_TRADE.md)  
-**Session catalog:** [`../../TODAY_EXPERIMENTS.md`](../../TODAY_EXPERIMENTS.md)  
+**Session catalog:** [`../../EXPERIMENTS.md`](../../EXPERIMENTS.md#2026-09-30)  
+
 **Executable earn:** [`edge_lab/V_FADE_STRATEGY_SPEC.md`](edge_lab/V_FADE_STRATEGY_SPEC.md)  
 **Executable save:** [`RISK_GATE_STACK.md`](RISK_GATE_STACK.md)  
 **Class-model surface:** [`feature_models/`](feature_models/) · join [`mm_quoting/out/panel_cache.json`](mm_quoting/out/panel_cache.json) + [`out/event_panel/`](out/event_panel/)  
@@ -102,7 +103,7 @@ Everything below is justification. Kill list stays hard: causal cont-ride@5s, al
 | Severity \|ΔP\| Ridge | **Hold** | OOS R² **&lt;0** — do not size from predicted hole depth | same |
 | VPIN×logN interact | Promote (med) **feature** | boot CI [−0.137,−0.032] | same |
 | H^v / FEI | Promote dashboard / schedule Hold | H^v≈0.48 · FEI≈0.75; child schedule exposure CI∋0 | [`hv_fei_capacity/`](hv_fei_capacity/) · [`../../research/lib/fei.py`](../../../lib/fei.py) |
-| Tick-constrained regime | Taxonomy Promote; numeric Hold | Native KR spot ~85% 2-tick constrained; HL frac_c≈0.99 | mm_confr / TODAY_EXPERIMENTS §6 |
+| Tick-constrained regime | Taxonomy Promote; numeric Hold | Native KR spot ~85% 2-tick constrained; HL frac_c≈0.99 | mm_confr / [`EXPERIMENTS.md`](../../EXPERIMENTS.md#2026-09-30) §6 |
 | paper_harness Δeq | Risk shadow | pooled +296 bps; day 09-08 dominates | [`paper_harness/out/RISK_ROLLUP.md`](paper_harness/out/RISK_ROLLUP.md) |
 | Beta–Binomial V-rate | Monitor | Day/venue posterior P(V) for size prior | [`signal_boards/`](signal_boards/) |
 
@@ -257,7 +258,7 @@ Paper path: `paper_harness` (risk shadow) + `edge_lab/v_fade_paper/` (taker scor
 
 | Topic | Path |
 |-------|------|
-| Session scoreboard | [`../../TODAY_EXPERIMENTS.md`](../../TODAY_EXPERIMENTS.md) |
+| Session scoreboard | [`../../EXPERIMENTS.md`](../../EXPERIMENTS.md#2026-09-30) |
 | Money map | [`HOW_WE_TRADE.md`](HOW_WE_TRADE.md) |
 | V-fade spec | [`edge_lab/V_FADE_STRATEGY_SPEC.md`](edge_lab/V_FADE_STRATEGY_SPEC.md) |
 | Risk throttle | [`RISK_GATE_STACK.md`](RISK_GATE_STACK.md) |

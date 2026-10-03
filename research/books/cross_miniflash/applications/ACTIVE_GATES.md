@@ -3,7 +3,7 @@
 Session Promote / Hold / Kill to **keep working**, **keep researching**, or **stop**.  
 Honesty: `research_sim_on_real_tape` · `live_orders=False` · `alpha_claim=False` · RT ≈ **4 bps** · ClickHouse MCP banned.
 
-**Parents:** [`../../TODAY_EXPERIMENTS.md`](../../TODAY_EXPERIMENTS.md) · [`HOW_WE_TRADE.md`](HOW_WE_TRADE.md) · [`STRATEGY_RESEARCH_MENU.md`](STRATEGY_RESEARCH_MENU.md) · [`RISK_GATE_STACK.md`](RISK_GATE_STACK.md)
+**Parents:** [`../../EXPERIMENTS.md`](../../EXPERIMENTS.md#2026-09-30) · [`HOW_WE_TRADE.md`](HOW_WE_TRADE.md) · [`STRATEGY_RESEARCH_MENU.md`](STRATEGY_RESEARCH_MENU.md) · [`RISK_GATE_STACK.md`](RISK_GATE_STACK.md)
 
 **Counts (desk-active, deduped):** **Promote / Promote_shadow = 7** · **Hold = 18** · **Kill = 14**
 
@@ -165,7 +165,7 @@ No gated SSM → stack **no-op** (2026-09-30 HL ETH: gated 0 · fires 0 · Δeq 
 
 | Topic | Path |
 |-------|------|
-| Session catalog | [`../../TODAY_EXPERIMENTS.md`](../../TODAY_EXPERIMENTS.md) |
+| Session catalog | [`../../EXPERIMENTS.md`](../../EXPERIMENTS.md#2026-09-30) |
 | Money map | [`HOW_WE_TRADE.md`](HOW_WE_TRADE.md) |
 | Research menu | [`STRATEGY_RESEARCH_MENU.md`](STRATEGY_RESEARCH_MENU.md) |
 | Risk stack | [`RISK_GATE_STACK.md`](RISK_GATE_STACK.md) |

@@ -6,6 +6,7 @@
 # Book PDFs + verbatim extracts
 *.pdf
 **/_raw/
+**/_pdf_extract.txt
 
 # Experiment / live artifacts (keep .gitkeep placeholders)
 # Use /** so the directory itself is not excluded (negations can apply).

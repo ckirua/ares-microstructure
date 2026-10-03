@@ -4,7 +4,7 @@
 
 **Honesty default:** `research_sim_on_real_tape` · `live_orders=False` · `alpha_claim=False` · fills = synthetic size × signed tape mo · RT friction typically **4 bps**. These are **not** live fill PnL, **not** Sharpes, **not** capacity-scaled account equity. Paper_harness Δeq is a **risk-policy shadow**, not alpha.
 
-**Sources:** [`TODAY_EXPERIMENTS.md`](../../TODAY_EXPERIMENTS.md) · [`TRADE_IDEAS.md`](TRADE_IDEAS.md) · edge_lab / nanex_nest / xvenue_lag / friction / long_range / mm_quoting / paper_harness outs.
+**Sources:** [`EXPERIMENTS.md`](../../EXPERIMENTS.md#2026-09-30) · [`TRADE_IDEAS.md`](TRADE_IDEAS.md) · edge_lab / nanex_nest / xvenue_lag / friction / long_range / mm_quoting / paper_harness outs.
 
 ---
 
@@ -195,7 +195,7 @@ Same economics (V vs cont · nest · intensity); richer estimators only if they 
 
 ## Pointers
 
-- Catalog: [`../../TODAY_EXPERIMENTS.md`](../../TODAY_EXPERIMENTS.md)
+- Catalog: [`../../EXPERIMENTS.md`](../../EXPERIMENTS.md#2026-09-30)
 - Hypotheses: [`TRADE_IDEAS.md`](TRADE_IDEAS.md)
 - App map: [`../TRADING_APPLICATIONS.md`](../TRADING_APPLICATIONS.md)
 - Labs: `edge_lab/` · `edge_lab/nanex_nest/` · `edge_lab/xvenue_lag/` · `edge_lab/friction/` · `long_range_lab/out/long_edges/` · `mm_quoting/` · `paper_harness/out/RISK_ROLLUP.md`

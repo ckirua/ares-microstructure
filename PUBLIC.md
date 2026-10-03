@@ -12,13 +12,14 @@ This repository is prepared for a **public** GitHub visibility flip. Visibility 
 - Shared helpers in `research/lib/`
 - Shadow / paper harness source and example systemd user units
 - Data path documentation (`research/DATA_PATHS.md`)
+- Repo changelog (`CHANGELOG.md`)
 
 ## What is gitignored (local only)
 
 | Class | Pattern / note |
 |-------|----------------|
 | Secrets | `.env`, `.env.*`, credentials, keys, `.aws/`, `.netrc` |
-| Book PDFs + extracts | `*.pdf`, `**/_raw/` |
+| Book PDFs + extracts | `*.pdf`, `**/_raw/`, `**/_pdf_extract.txt` |
 | Experiment artifacts | `**/out/**` (`.gitkeep` placeholders kept) |
 | Logs | `**/logs/**`, `*.log`, named poller logs |
 | Heavy caches | `*.parquet`, `*.pkl`, `*.npy`, `fig_cache/`, checkpoints |

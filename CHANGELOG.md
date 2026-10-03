@@ -16,7 +16,9 @@ Day-to-day research runs and experiment promote/hold/kill notes live in
 
 ### Changed
 
-- _(none yet)_
+- Gitignore: treat ad-hoc book PDF text dumps (`**/_pdf_extract.txt`) like `_raw/` extracts (local-only; e.g. squeeze_metrics scratch extract).
+- README / [`PUBLIC.md`](PUBLIC.md): surface [`CHANGELOG.md`](CHANGELOG.md) and the books experiment scoreboard [`research/books/EXPERIMENTS.md`](research/books/EXPERIMENTS.md).
+- cross_miniflash application docs: session catalog links → [`EXPERIMENTS.md`](research/books/EXPERIMENTS.md#2026-09-30) (replacing removed `TODAY_EXPERIMENTS.md`).
 
 ### Fixed
 

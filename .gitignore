@@ -40,6 +40,7 @@ htmlcov/
 # Copyrighted book PDF + verbatim extracts — keep local only
 *.pdf
 **/_raw/
+**/_pdf_extract.txt
 
 # Experiment artifacts, fig caches, logs (placeholders kept)
 **/out/**

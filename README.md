@@ -11,6 +11,8 @@ of [`ares-startarb`](../ares-startarb) (sibling checkout; override with `ARES_ST
 
 | Artifact | Path |
 |----------|------|
+| Changelog (product/repo) | [`CHANGELOG.md`](CHANGELOG.md) |
+| Experiments changelog | [`research/books/EXPERIMENTS.md`](research/books/EXPERIMENTS.md) |
 | Public notes | [`PUBLIC.md`](PUBLIC.md) |
 | Desk memo (MMIP map) | [`research/books/mmip/DESK_MEMO.md`](research/books/mmip/DESK_MEMO.md) |
 | Living chapter index | [`research/books/mmip/CHAPTER_INDEX.md`](research/books/mmip/CHAPTER_INDEX.md) |
