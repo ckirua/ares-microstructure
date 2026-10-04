@@ -5,7 +5,7 @@ Honesty
 - All research gates pinned **Hold** (or Kill for TOB-cross α).
 - Wire **Promote only** — Promote count expected **0** until Pass 2.
 - Never soft-Promote TOB-cross as α. live_orders=False always.
-- Imports `research.lib.squeeze` when present; does not own/edit that module.
+- Imports `ares_micro.flow.squeeze` when present; does not own/edit that module.
 - ClickHouse MCP banned.
 """
 
@@ -88,7 +88,7 @@ def squeeze_lib_status() -> dict[str, Any]:
             "note": "research/lib/squeeze.py not present — owned by sibling agent; import when ready",
         }
     try:
-        mod = importlib.import_module("research.lib.squeeze")
+        mod = importlib.import_module("ares_micro.flow.squeeze")
         return {
             "ok": True,
             "path": str(path),
@@ -136,7 +136,7 @@ def _compute_from_lib(
     cfg: dict[str, Any],
     tape: dict[str, Any] | None,
 ) -> dict[str, Any]:
-    """Best-effort call into research.lib.squeeze when API is available."""
+    """Best-effort call into ares_micro.flow.squeeze when API is available."""
     gex = _call_lib(mod, ("gex_day", "compute_gex", "gex"), day=day, venue=venue, symbol=symbol, cfg=cfg, tape=tape)
     if gex is None and tape is not None:
         gex = _call_lib(mod, ("gex_from_tape", "gex_panel"), tape)
@@ -198,7 +198,7 @@ def _compute_from_lib(
         "vex": _normalize(vex, "risk.vex_exposure", "lib_no_vex_export"),
         "squeeze": _normalize(squeeze, "risk.squeeze_intensity", "lib_no_squeeze_export"),
         "scarcity": _normalize(scarcity, "liq.implied_book_scarcity", "lib_no_scarcity_export"),
-        "source": "research.lib.squeeze",
+        "source": "ares_micro.flow.squeeze",
     }
 
 
@@ -288,7 +288,7 @@ def _compute_from_loaders(*, day: str, symbol: str) -> dict[str, Any] | None:
             load_eth_option_iv_day,
             load_eth_option_trades_day,
         )
-        from research.lib.squeeze import (
+        from ares_micro.flow.squeeze import (
             LABEL_TRADE_DDOI,
             LABEL_UNIT_OI,
             accumulate_ddoi_by_instrument,

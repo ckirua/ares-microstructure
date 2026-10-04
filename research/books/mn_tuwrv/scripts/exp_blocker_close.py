@@ -37,7 +37,7 @@ from _data import (  # noqa: E402
     load_tob_day,
     resolve_days,
 )
-from research.lib.tsrv import (  # noqa: E402
+from ares_micro.vol.tsrv import (  # noqa: E402
     compare_clocks_bootstrap,
     estimators_on_log_px,
     estimators_trade_clock,
@@ -84,7 +84,7 @@ def _spread_tob(venue: str, symbol: str, day: str, tape: dict, *, max_files: int
     """Prefer real quoted TOB (incl. Kraken spot L2 / futures ingest); else proxy."""
     try:
         tob = load_tob_day(venue, symbol, day, max_files=max_files)
-        from research.lib.spreads import quoted_spread_bps
+        from ares_micro.book.spreads import quoted_spread_bps
 
         sp = quoted_spread_bps(tob["bid"], tob["ask"], mid=tob["mid"])
         return {

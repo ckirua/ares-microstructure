@@ -49,7 +49,7 @@ from _stats_bayes import (  # noqa: E402
     posterior_predictive_beta,
     prior_sensitivity_beta,
 )
-from research.lib.hftpat import (  # noqa: E402
+from ares_micro.flow.hftpat import (  # noqa: E402
     event_window_markout,
     ignition_bar_timestamps,
     ignition_events,

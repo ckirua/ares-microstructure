@@ -22,8 +22,9 @@ sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 's
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import ensure_env, load_hl_tob, load_trades, overlap_trades_with_mids, resolve_days  # noqa: E402
-from research.lib.continuous import trade_intensity, vpin_bucket, volume_clock_returns  # noqa: E402
-from research.lib.lob import qty_moment_ceiling  # noqa: E402
+from ares_micro.flow.continuous import trade_intensity, volume_clock_returns  # noqa: E402  # noqa: E402
+from ares_micro.flow.vpin import vpin_bucket  # noqa: E402
+from ares_micro.book.lob import qty_moment_ceiling  # noqa: E402
 
 OUT = BOOK / "out" / "ch10_trades"
 CHAP = BOOK / "chapters" / "ch10_trades"

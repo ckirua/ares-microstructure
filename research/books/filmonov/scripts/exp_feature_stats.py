@@ -49,7 +49,7 @@ from _stats_bayes import (  # noqa: E402
     two_sided_p_from_ci,
     univariate_moments,
 )
-from research.lib.hftpat import (  # noqa: E402
+from ares_micro.flow.hftpat import (  # noqa: E402
     clock_cluster_excess,
     clock_cluster_scores,
     event_window_markout,

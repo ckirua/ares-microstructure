@@ -35,9 +35,9 @@ from _data import (  # noqa: E402
     load_tob_any,
     resolve_days,
 )
-from research.lib.continuous import trade_intensity  # noqa: E402
-from research.lib.spreads import quoted_spread_bps  # noqa: E402
-from research.lib.ticksize import (  # noqa: E402
+from ares_micro.flow.continuous import trade_intensity  # noqa: E402
+from ares_micro.book.spreads import quoted_spread_bps  # noqa: E402
+from ares_micro.book.ticksize import (  # noqa: E402
     relative_tick,
     spread_in_ticks,
     tick_constrained,
@@ -343,7 +343,7 @@ def load_slice(days: list[str]) -> list[dict[str, Any]]:
             # crude markout: mid move 1s after trade
             markout = float("nan")
             try:
-                from research.lib.markout import trade_markouts
+                from ares_micro.flow.markout import trade_markouts
 
                 side = np.asarray(tape["side"], dtype=np.float64)
                 mo = trade_markouts(ts_tr, px, side, tob["ts"], tob["mid"], horizons_ms=(1000,))

@@ -37,7 +37,7 @@ from _common import (  # noqa: E402
     rolling_gated_intensity,
 )
 from _data import ensure_env, load_day_trades  # noqa: E402
-from research.lib.crash import recovery_fraction  # noqa: E402
+from ares_micro.vol.crash import recovery_fraction  # noqa: E402
 
 
 def load_tape(venue: str, symbol: str, day: str, *, quiet: bool = True) -> dict[str, Any]:

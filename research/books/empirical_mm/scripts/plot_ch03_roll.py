@@ -32,13 +32,7 @@ from _data import (  # noqa: E402
     overlap_trades_with_mids,
     resolve_days,
 )
-from research.lib import (  # noqa: E402
-    calendar_returns,
-    noise_robust_rv,
-    roll_on_mid_bps,
-    time_split_mask,
-    volume_clock_returns,
-)
+from ares_micro import noise_robust_rv, roll_on_mid_bps, time_split_mask, volume_clock_returns
 
 OUT = BOOK / "out" / "ch03_roll"
 OUT8 = BOOK / "out" / "ch08_noise"

@@ -39,9 +39,10 @@ from _data import (  # noqa: E402
     load_tob_any,
     normalize_side,
 )
-from research.lib.continuous import ofi_continuous, trade_intensity, vpin_bucket  # noqa: E402
-from research.lib.crash import nanex_detect, vshape_events  # noqa: E402
-from research.lib.hftpat import (  # noqa: E402
+from ares_micro.flow.continuous import ofi_continuous, trade_intensity, vpin_bucket  # noqa: E402  # noqa: E402
+from ares_micro.flow.vpin import vpin_bucket  # noqa: E402
+from ares_micro.vol.crash import nanex_detect, vshape_events  # noqa: E402
+from ares_micro.flow.hftpat import (  # noqa: E402
     clock_vs_funding_windows,
     event_window_markout,
     ignition_bar_timestamps,
@@ -53,8 +54,8 @@ from research.lib.hftpat import (  # noqa: E402
     spread_irf_after_events,
     xvenue_fade_info_share,
 )
-from research.lib.spreads import quoted_spread_bps  # noqa: E402
-from research.lib.stats import bootstrap_ci  # noqa: E402
+from ares_micro.book.spreads import quoted_spread_bps  # noqa: E402
+from ares_micro.stats import bootstrap_ci  # noqa: E402
 
 OUT = BOOK / "out" / "pass2_expand"
 FIGS = OUT / "figs"

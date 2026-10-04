@@ -31,9 +31,9 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(SCRIPTS))
 
 from _data import CORE_VENUES, ensure_env, load_day_trades, load_tob_any  # noqa: E402
-from research.lib.spreads import quoted_spread_bps  # noqa: E402
-from research.lib.stats import spearman_r  # noqa: E402
-from research.lib.ticksize import (  # noqa: E402
+from ares_micro.book.spreads import quoted_spread_bps  # noqa: E402
+from ares_micro.stats import spearman_r  # noqa: E402
+from ares_micro.book.ticksize import (  # noqa: E402
     liquid_book_classifier,
     relative_tick,
     spread_in_ticks,

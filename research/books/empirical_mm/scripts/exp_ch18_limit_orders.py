@@ -33,21 +33,7 @@ from _data import (  # noqa: E402
     overlap_trades_with_mids,
     resolve_days,
 )
-from research.lib import (  # noqa: E402
-    depth_imbalance,
-    improve_adverse_markout,
-    lob_event_clocks,
-    parlour_depth_aggressor,
-    qty_moment_ceiling,
-    same_side_refill,
-    sandas_depth_moments,
-    size_at_touch_survival,
-    time_split_mask,
-    time_to_touch,
-    tob_depletion_cancel_proxy,
-    tob_resilience,
-    trade_markouts,
-)
+from ares_micro import improve_adverse_markout, lob_event_clocks, parlour_depth_aggressor, qty_moment_ceiling, same_side_refill, sandas_depth_moments, size_at_touch_survival, time_split_mask, time_to_touch, tob_depletion_cancel_proxy, tob_resilience, trade_markouts
 
 OUT = BOOK / "out" / "ch18_limit_orders"
 CHAP = BOOK / "chapters" / "ch18_limit_orders"

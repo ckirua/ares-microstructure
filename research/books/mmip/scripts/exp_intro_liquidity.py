@@ -22,15 +22,9 @@ BOOK_ROOT = Path(__file__).resolve().parents[1]
 ROOT = BOOK_ROOT.parents[2]  # repo root (mmip → books → research → repo)
 sys.path.insert(0, str(ROOT))
 
-from research.lib import (  # noqa: E402
-    bootstrap_ci,
-    depth_imbalance,
-    fei,
-    infer_tick,
-    mid_price,
-    quoted_spread_bps,
-    time_split_mask,
-)
+from ares_micro.flow import fei
+
+from ares_micro import depth_imbalance, infer_tick, mid_price, quoted_spread_bps, time_split_mask
 
 DEFAULT_TOB = Path(str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "results/xarb_md/tob"))
 OUT_DIR = BOOK_ROOT / "out" / "intro_liquidity"

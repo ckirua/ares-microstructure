@@ -27,7 +27,7 @@ BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
 sys.path.insert(0, str(ROOT))
 
-from research.lib.stats import bootstrap_ci, spearman_r  # noqa: E402
+from ares_micro.stats import bootstrap_ci, spearman_r  # noqa: E402
 
 OUT = BOOK / "out" / "phase4_hardening"
 FIG = OUT / "figs"

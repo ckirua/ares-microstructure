@@ -66,7 +66,7 @@ from IPython.display import Image, display, Markdown
 BOOK = Path(os.environ.get("ARES_MICROSTRUCTURE") or (Path.home() / "srv" / "ares-microstructure")) / "research" / "books" / "cd_me"
 OUT = BOOK / "out"
 SCRIPTS = BOOK / "scripts"
-ROOT = BOOK.parents[2]  # ares-microstructure repo root (research.lib absolute imports)
+ROOT = BOOK.parents[2]  # ares-microstructure repo root (ares_micro absolute imports)
 sys.path.insert(0, str(SCRIPTS))
 sys.path.insert(0, str(ROOT))
 from _nb_common import (
@@ -74,7 +74,7 @@ from _nb_common import (
     load_kraken_inventory, kraken_mode_for_day,
 )
 from certified_panel import load_certified, primary_days, spot_l2_days
-from research.lib import cdme  # noqa: E402
+from ares_micro.flow import cdme  # noqa: E402
 
 plt.rcParams.update({"figure.dpi": 110, "axes.grid": True, "grid.alpha": 0.25})
 
@@ -228,7 +228,7 @@ def pim_nb() -> list[dict]:
             """# PIM / VLOOP / TCOST — cross-venue LOP gap
 
 **Paper:** §2 Eqs 1–3 (PDF pp. 8–12) · **NOTES:** [`NOTES.md`](NOTES.md) · **EXP:** [`EXP_REPORT.md`](EXP_REPORT.md)  
-**Artifacts:** `out/pim_vloop_tcost/` · **Lib:** `research.lib.cdme`
+**Artifacts:** `out/pim_vloop_tcost/` · **Lib:** `ares_micro.flow.cdme`
 
 $$\\mathrm{PIM}_t = \\mathbb{E}_t[\\mathrm{VLOOP}_t + |\\mathrm{TCOST}_t| \\mid \\mathrm{VLOOP}_t > 0]$$
 
@@ -803,7 +803,7 @@ def desk() -> list[dict]:
 
 Huang–Ranaldo–Schrimpf–Somogyi (2021) *Constrained Dealers and Market Efficiency*.
 
-Lib: `research.lib.cdme` · Data: **HL + Deribit** real quotes (+ Kraken **spot_l2** when dense) · **No ClickHouse MCP**.
+Lib: `ares_micro.flow.cdme` · Data: **HL + Deribit** real quotes (+ Kraken **spot_l2** when dense) · **No ClickHouse MCP**.
 
 **Board:** PIM / DCM̂ / elasticity = **Hold Monitor** · TOB-cross α = **Kill** · LSTAR/model = **Park** · `live_orders=false` · **0 Promote**.
 

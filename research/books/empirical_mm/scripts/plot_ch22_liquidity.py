@@ -22,8 +22,8 @@ sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 's
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import ensure_env, load_hl_tob, load_trades, overlap_trades_with_mids, resolve_days  # noqa: E402
-from research.lib import amihud_illiquidity, bootstrap_ci, quoted_spread_bps, vpin_bucket  # noqa: E402
-from research.lib.spreads import effective_spread_bps  # noqa: E402
+from ares_micro import amihud_illiquidity, bootstrap_ci, quoted_spread_bps, vpin_bucket  # noqa: E402
+from ares_micro.book.spreads import effective_spread_bps  # noqa: E402
 
 OUT = BOOK / "out" / "ch22_liquidity"
 CHAP = BOOK / "chapters" / "ch22_liquidity"

@@ -33,7 +33,7 @@ for _p in (str(WAREHOUSE_SRC), str(STARTARB / "src"), str(ROOT), str(SCRIPTS)):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from research.lib.cdme import elasticity_corr, regime_split_corr  # noqa: E402
+from ares_micro.flow.cdme import elasticity_corr, regime_split_corr  # noqa: E402
 
 PIM_OUT = BOOK / "out" / "pim_vloop_tcost"
 DCM_OUT = BOOK / "out" / "dcm_proxies"

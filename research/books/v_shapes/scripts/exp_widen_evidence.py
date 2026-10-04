@@ -35,7 +35,7 @@ from _data import (  # noqa: E402
     load_day_trades,
     load_venue_tob,
 )
-from research.lib.vstat import (  # noqa: E402
+from ares_micro.vol.vstat import (  # noqa: E402
     bootstrap_minv_ci,
     grid_1s,
     min_v,

@@ -55,7 +55,7 @@ from _data import (  # noqa: E402
     ensure_env,
     load_day_trades,
 )
-from research.lib.vstat import (  # noqa: E402
+from ares_micro.vol.vstat import (  # noqa: E402
     grid_1s,
     returns_from_log_px,
     t_stat_side,

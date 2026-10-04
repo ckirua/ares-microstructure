@@ -93,7 +93,7 @@ def _boot_mean(arr: np.ndarray, *, seed: int = 0, n_boot: int = 800) -> dict[str
     if a.size == 0:
         return {"n": 0, "mean": float("nan"), "lo": float("nan"), "hi": float("nan"), "sd": float("nan")}
     ci = mean_ci(a, n_boot=n_boot, seed=seed)
-    # research.lib.stats.bootstrap_ci → point/lo/hi
+    # ares_micro.stats.bootstrap_ci → point/lo/hi
     return {
         "n": int(ci.get("n", a.size)),
         "mean": float(ci.get("point", np.nanmean(a))),

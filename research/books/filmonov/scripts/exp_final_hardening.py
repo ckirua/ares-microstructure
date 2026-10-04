@@ -36,8 +36,8 @@ from _data import (  # noqa: E402
     load_tob_any,
     normalize_side,
 )
-from research.lib.crash import nanex_detect, vshape_events  # noqa: E402
-from research.lib.hftpat import (  # noqa: E402
+from ares_micro.vol.crash import nanex_detect, vshape_events  # noqa: E402
+from ares_micro.flow.hftpat import (  # noqa: E402
     ignition_bar_timestamps,
     ignition_events,
     overlap_vs_crash,
@@ -47,7 +47,7 @@ from research.lib.hftpat import (  # noqa: E402
     rename_gate,
     size_latency_panel,
 )
-from research.lib.stats import bootstrap_ci  # noqa: E402
+from ares_micro.stats import bootstrap_ci  # noqa: E402
 
 OUT = BOOK / "out" / "hardening"
 FIGS = OUT / "figs"

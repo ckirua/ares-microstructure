@@ -33,7 +33,7 @@ from _data import (  # noqa: E402
     load_kraken_spot_tob_day,
     load_warehouse_tob,
 )
-from research.lib.ticksize import (  # noqa: E402
+from ares_micro.book.ticksize import (  # noqa: E402
     spread_in_ticks,
     tick_constrained,
     venue_tick,

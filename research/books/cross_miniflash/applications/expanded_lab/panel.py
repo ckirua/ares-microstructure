@@ -50,8 +50,8 @@ from _common import (  # noqa: E402
     tape_notional,
 )
 from _data import ensure_env, load_core_venues_day, load_day_trades  # noqa: E402
-from research.lib.crash import volume_herfindahl  # noqa: E402
-from research.lib.fei import fei  # noqa: E402
+from ares_micro.vol.crash import volume_herfindahl  # noqa: E402
+from ares_micro.flow.fei import fei  # noqa: E402
 
 CORE_DAYS = list(DEFAULT_DAYS)
 EXTEND_DAYS = ["2026-09-01", "2026-09-02", "2026-09-03"]

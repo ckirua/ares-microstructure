@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 's
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import ensure_env, load_trades  # noqa: E402
-from research.lib import vpin_bucket  # noqa: E402
+from ares_micro import vpin_bucket  # noqa: E402
 
 OUT = BOOK / "out" / "ch15_pin"
 OUT13 = BOOK / "out" / "ch13_var_impact"

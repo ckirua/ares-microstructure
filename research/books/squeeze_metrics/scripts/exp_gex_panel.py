@@ -42,7 +42,7 @@ from certified_panel import (  # noqa: E402
     gex_panel_days,
     primary_days,
 )
-from research.lib.squeeze import (  # noqa: E402
+from ares_micro.flow.squeeze import (  # noqa: E402
     LABEL_TRADE_DDOI,
     LABEL_UNIT_OI,
     accumulate_ddoi_by_instrument,

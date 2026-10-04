@@ -1,6 +1,6 @@
 """Build gated SSM event panels for MM / feature applications.
 
-Reuses ``research.lib.crash`` + book ``scripts/_data`` loaders.
+Reuses ``ares_micro.vol.crash`` + book ``scripts/_data`` loaders.
 ClickHouse MCP banned — warehouse/tape only.
 """
 
@@ -33,12 +33,9 @@ from _data import (  # noqa: E402
     normalize_side,
     venue_instrument,
 )
-from research.lib.continuous import (  # noqa: E402
-    amihud_illiquidity,
-    trade_intensity,
-    vpin_bucket,
-)
-from research.lib.crash import (  # noqa: E402
+from ares_micro.flow.continuous import amihud_illiquidity, trade_intensity  # noqa: E402
+from ares_micro.flow.vpin import rolling_vpin_series, vpin_bucket  # noqa: E402
+from ares_micro.vol.crash import (  # noqa: E402
     classify_recovery,
     detect_ssm_events,
     kalman_ssm_filter,
@@ -49,7 +46,7 @@ from research.lib.crash import (  # noqa: E402
     sigma_process_meas,
     volume_herfindahl,
 )
-from research.lib.stats import bootstrap_ci  # noqa: E402
+from ares_micro.stats import bootstrap_ci  # noqa: E402
 
 DEFAULT_DAYS = [
     "2026-09-04",
@@ -167,47 +164,6 @@ def asof_lookup(query_ts: np.ndarray, ref_ts: np.ndarray, values: np.ndarray) ->
     valid = (i0 >= 0) & (i0 < ref_ts.size)
     out[valid] = values[i0[valid]]
     return out
-
-
-def rolling_vpin_series(
-    side: np.ndarray,
-    qty: np.ndarray,
-    ts: np.ndarray,
-    *,
-    bucket_volume: float,
-    n_buckets_window: int = 30,
-) -> tuple[np.ndarray, np.ndarray]:
-    """Return (bucket_end_ts, rolling_vpin) for ex-ante lookup."""
-    s = np.asarray(side, dtype=np.float64)
-    q = np.asarray(qty, dtype=np.float64)
-    t = np.asarray(ts, dtype=np.int64)
-    m = np.isfinite(s) & np.isfinite(q) & (q > 0) & (s != 0)
-    s, q, t = s[m], q[m], t[m]
-    if s.size < 50 or bucket_volume <= 0:
-        return np.zeros(0, dtype=np.int64), np.zeros(0, dtype=np.float64)
-    buy_acc = sell_acc = vol_acc = 0.0
-    end_ts: list[int] = []
-    imb: list[float] = []
-    for i in range(s.size):
-        if s[i] > 0:
-            buy_acc += q[i]
-        else:
-            sell_acc += q[i]
-        vol_acc += q[i]
-        if vol_acc >= bucket_volume:
-            imb.append(abs(buy_acc - sell_acc) / vol_acc)
-            end_ts.append(int(t[i]))
-            buy_acc = sell_acc = vol_acc = 0.0
-    imb_a = np.asarray(imb, dtype=np.float64)
-    if imb_a.size < 5:
-        return np.asarray(end_ts, dtype=np.int64), np.full(len(end_ts), np.nan)
-    w = min(n_buckets_window, imb_a.size)
-    roll = np.full(imb_a.size, np.nan, dtype=np.float64)
-    csum = np.cumsum(imb_a)
-    for i in range(w - 1, imb_a.size):
-        lo = i - w
-        roll[i] = (csum[i] - (csum[lo] if lo >= 0 else 0.0)) / w
-    return np.asarray(end_ts, dtype=np.int64), roll
 
 
 def prewindow_features(

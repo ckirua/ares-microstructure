@@ -2,7 +2,7 @@ from __future__ import annotations
 #!/usr/bin/env python3
 """Pass-1 empirics: spoof_smoke_clock (Filimonov slides 29–30, 35–37, 41–43).
 
-ETH on HL + Deribit + Kraken. Detectors from research.lib.hftpat:
+ETH on HL + Deribit + Kraken. Detectors from ares_micro.flow.hftpat:
   smoke_spoof_proxy · clock_cluster_scores/excess · otr_aggregate
   (+ quote_storm_intensity cancel proxy feeding OTR)
 
@@ -41,7 +41,7 @@ from _data import (  # noqa: E402
     normalize_side,
     resolve_days,
 )
-from research.lib.hftpat import (  # noqa: E402
+from ares_micro.flow.hftpat import (  # noqa: E402
     clock_cluster_excess,
     clock_cluster_scores,
     otr_aggregate,

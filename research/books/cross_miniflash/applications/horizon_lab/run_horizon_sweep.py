@@ -91,8 +91,8 @@ from _common import (  # noqa: E402
     save_json,
 )
 from _data import ensure_env, load_day_trades  # noqa: E402
-from research.lib.continuous import amihud_illiquidity  # noqa: E402
-from research.lib.crash import (  # noqa: E402
+from ares_micro.flow.continuous import amihud_illiquidity  # noqa: E402
+from ares_micro.vol.crash import (  # noqa: E402
     classify_recovery,
     detect_ssm_events,
     kalman_ssm_filter,
@@ -102,7 +102,7 @@ from research.lib.crash import (  # noqa: E402
     severity_gate,
     sigma_process_meas,
 )
-from research.lib.stats import bootstrap_ci, spearman_r  # noqa: E402
+from ares_micro.stats import bootstrap_ci, spearman_r  # noqa: E402
 
 NS = 1_000_000_000
 FIRE = frozenset({"widen", "size_cap", "halt"})

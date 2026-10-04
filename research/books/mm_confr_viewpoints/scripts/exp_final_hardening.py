@@ -21,8 +21,8 @@ ROOT = BOOK.parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from research.lib.stats import bootstrap_ci, spearman_r  # noqa: E402
-from research.lib.ticksize import fama_macbeth_slope  # noqa: E402
+from ares_micro.stats import bootstrap_ci, spearman_r  # noqa: E402
+from ares_micro.book.ticksize import fama_macbeth_slope  # noqa: E402
 
 OUT = BOOK / "out" / "pass2"
 

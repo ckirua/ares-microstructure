@@ -39,8 +39,8 @@ from _data import (  # noqa: E402
     normalize_side,
     resolve_days,
 )
-from research.lib.continuous import ofi_continuous, trade_intensity  # noqa: E402
-from research.lib.crash import (  # noqa: E402
+from ares_micro.flow.continuous import ofi_continuous, trade_intensity  # noqa: E402
+from ares_micro.vol.crash import (  # noqa: E402
     detect_ssm_events,
     kalman_ssm_filter,
     mc_garch_bar_vol,
@@ -48,7 +48,7 @@ from research.lib.crash import (  # noqa: E402
     sigma_process_meas,
     vshape_events,
 )
-from research.lib.hftpat import (  # noqa: E402
+from ares_micro.flow.hftpat import (  # noqa: E402
     ignition_bar_timestamps,
     ignition_events,
     overlap_vs_crash,
@@ -58,9 +58,9 @@ from research.lib.hftpat import (  # noqa: E402
     quote_storm_intensity,
     rename_gate,
 )
-from research.lib.markout import trade_markouts  # noqa: E402
-from research.lib.spreads import quoted_spread_bps  # noqa: E402
-from research.lib.stats import bootstrap_ci, spearman_r  # noqa: E402
+from ares_micro.flow.markout import trade_markouts  # noqa: E402
+from ares_micro.book.spreads import quoted_spread_bps  # noqa: E402
+from ares_micro.stats import bootstrap_ci, spearman_r  # noqa: E402
 
 OUT = BOOK / "out" / "pass2"
 FIGS = OUT / "figs"

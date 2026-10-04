@@ -36,13 +36,13 @@ for _p in (str(WAREHOUSE_SRC), str(STARTARB / "src"), str(ROOT), str(SCRIPTS)):
         sys.path.insert(0, _p)
 
 from _data import (  # noqa: E402
-    asof_mid,
+    asof_join,
     ensure_env,
     funding_proxy_from_marks,
     load_cross_venue_marks,
     resolve_days,
 )
-from research.lib.cdme import (  # noqa: E402
+from ares_micro.flow.cdme import (  # noqa: E402
     dcm_pc1,
     dcm_proxies,
     elasticity_corr,
@@ -130,7 +130,7 @@ def _day_dcm_elasticity(symbol: str, day: str, pim_row: dict[str, Any] | None) -
         rec = venues.get(bv)
         if not isinstance(rec, dict) or rec.get("n", 0) < 10 or "error" in rec:
             continue
-        far = asof_mid(h_ts, np.asarray(rec["ts"], dtype=np.int64), np.asarray(rec["mid"], dtype=np.float64))
+        far = asof_join(h_ts, np.asarray(rec["ts"], dtype=np.int64), np.asarray(rec["mid"], dtype=np.float64))
         ok = np.isfinite(far) & (far > 0) & np.isfinite(h_mid) & (h_mid > 0)
         basis[ok] = np.log(far[ok] / h_mid[ok])
         basis_venue = bv
@@ -166,9 +166,9 @@ def _day_dcm_elasticity(symbol: str, day: str, pim_row: dict[str, Any] | None) -
         hpim = _hour_arr("pim")
         hnot = _hour_arr("notional")
         if n_h:
-            imb = asof_mid(h_ts, hts, himb)
-            pim_on_mark = asof_mid(h_ts, hts, hpim)
-            notional_on_mark = asof_mid(h_ts, hts, hnot)
+            imb = asof_join(h_ts, hts, himb)
+            pim_on_mark = asof_join(h_ts, hts, hpim)
+            notional_on_mark = asof_join(h_ts, hts, hnot)
 
     prox = dcm_proxies(funding=fund, basis=basis, rv=rv, imbalance=imb)
     pc = dcm_pc1(prox)
@@ -197,7 +197,7 @@ def _day_dcm_elasticity(symbol: str, day: str, pim_row: dict[str, Any] | None) -
 
         hpim = _hour_arr2("pim")
         hnot = _hour_arr2("notional")
-        dcm_h = asof_mid(hts, h_ts, pc["pc1"]) if n_h else np.zeros(0)
+        dcm_h = asof_join(hts, h_ts, pc["pc1"]) if n_h else np.zeros(0)
         el_hourly = regime_split_corr(hnot, hpim, dcm_h, min_n=MIN_N_EXPLORATORY)
         el_all = elasticity_corr(hnot, hpim, min_n=MIN_N_EXPLORATORY)
         hourly_pool = {

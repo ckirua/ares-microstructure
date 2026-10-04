@@ -27,7 +27,7 @@ for _p in (
 import exp_gex_panel as gex  # noqa: E402
 from _data import ensure_env  # noqa: E402
 from certified_panel import gex_panel_days, primary_days  # noqa: E402
-from research.lib.squeeze import regime_split_corr, squeeze_intensity  # noqa: E402
+from ares_micro.flow.squeeze import regime_split_corr, squeeze_intensity  # noqa: E402
 
 OUT = BOOK / "out" / "squeeze_regimes"
 

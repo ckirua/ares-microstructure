@@ -29,7 +29,7 @@ for _p in (
 
 from _data import ensure_env, load_eth_option_trades_day  # noqa: E402
 from certified_panel import DDOI_LABEL, gex_panel_days, primary_days  # noqa: E402
-from research.lib.squeeze import accumulate_ddoi_by_instrument, ddoi_from_trade_flow  # noqa: E402
+from ares_micro.flow.squeeze import accumulate_ddoi_by_instrument, ddoi_from_trade_flow  # noqa: E402
 
 OUT = BOOK / "out" / "ddoi_positions"
 

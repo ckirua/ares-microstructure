@@ -649,7 +649,7 @@ def main() -> int:
                 "source": [
                     "# V-shapes — desk synthesis\n",
                     "\n",
-                    "Flora & Renò (2020) program rollup. Lib: `research.lib.vstat` "
+                    "Flora & Renò (2020) program rollup. Lib: `ares_micro.vol.vstat` "
                     "(not `crash.vshape_events`).\n",
                     "\n",
                     "## Signal board\n",

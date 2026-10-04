@@ -33,10 +33,10 @@ from _data import (  # noqa: E402
     normalize_underlying,
     resolve_days,
 )
-from research.lib.continuous import ofi_continuous, trade_intensity  # noqa: E402
-from research.lib.markout import trade_markouts  # noqa: E402
-from research.lib.stats import spearman_r  # noqa: E402
-from research.lib.ticksize import (  # noqa: E402
+from ares_micro.flow.continuous import ofi_continuous, trade_intensity  # noqa: E402
+from ares_micro.flow.markout import trade_markouts  # noqa: E402
+from ares_micro.stats import spearman_r  # noqa: E402
+from ares_micro.book.ticksize import (  # noqa: E402
     cross_venue_tau_gap,
     expected_sign_matrix,
     fama_macbeth_slope,
@@ -174,8 +174,8 @@ def build_day_row(symbol: str, day: str, venue: str, *, max_files: int) -> dict[
             if "1000" in by_h:
                 markout_bps = float(by_h["1000"].get("mean_bps", float("nan")))
             # hourly panel for FM
-            from research.lib.spreads import quoted_spread_bps as qsb
-            from research.lib.ticksize import panel_hour_buckets
+            from ares_micro.book.spreads import quoted_spread_bps as qsb
+            from ares_micro.book.ticksize import panel_hour_buckets
 
             qs = qsb(tob["bid"], tob["ask"], mid=tob["mid"])
             rt = relative_tick(tau, tob["mid"], as_bps=False)
@@ -394,7 +394,7 @@ def write_overview_preds(matrix: dict, scorecard: dict, rows: list[dict]) -> Non
                 "# emp_predictions — EXP_REPORT",
                 "",
                 "## Pass 1",
-                "- Expected-sign matrix from deck pp. 20–29 in `research.lib.ticksize`.",
+                "- Expected-sign matrix from deck pp. 20–29 in `ares_micro.book.ticksize`.",
                 f"- Matrix regimes: {list(matrix['matrix'].keys())}",
                 f"- Kill metrics: {matrix.get('kill_metrics')}",
                 f"- Sign scorecard (rel_tick_up vs MQ Spearman): hits={scorecard.get('hits')} misses={scorecard.get('misses')} skips={scorecard.get('skips')} hit_rate={hit}",

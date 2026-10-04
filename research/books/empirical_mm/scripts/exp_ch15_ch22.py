@@ -25,13 +25,7 @@ sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 's
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import ensure_env, load_hl_tob, load_trades, overlap_trades_with_mids, resolve_days  # noqa: E402
-from research.lib import (  # noqa: E402
-    amihud_illiquidity,
-    bootstrap_ci,
-    calendar_returns,
-    trade_intensity,
-    vpin_bucket,
-)
+from ares_micro import bootstrap_ci, calendar_returns, trade_intensity, vpin_bucket
 
 OUT15 = BOOK / "out" / "ch15_pin"
 OUT22 = BOOK / "out" / "ch22_liquidity"
@@ -117,7 +111,7 @@ def main() -> int:
     amihud = amihud_illiquidity(np.asarray(rets), np.asarray(dvol))
 
     # quoted spread mean as liquidity companion
-    from research.lib import quoted_spread_bps, bootstrap_ci
+    from ares_micro import quoted_spread_bps, bootstrap_ci
 
     qs = quoted_spread_bps(tob["bid"], tob["ask"], mid=tob["mid"])
     qs_ci = bootstrap_ci(qs, n_boot=300, seed=55)

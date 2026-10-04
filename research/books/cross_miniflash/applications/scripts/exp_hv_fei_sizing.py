@@ -4,7 +4,7 @@ from __future__ import annotations
 
 Map rolling (day) H^v / FEI quartiles to participation / size multipliers;
 simulate POV impact severity conditional on capacity regime (tape POV, no
-self-impact fantasy beyond stated assumptions in research.lib.pov).
+self-impact fantasy beyond stated assumptions in ares_micro.flow.pov).
 
 ClickHouse MCP banned.
 """
@@ -34,8 +34,8 @@ from _common import (  # noqa: E402
     save_json,
 )
 from _data import ensure_env, load_core_venues_day  # noqa: E402
-from research.lib.pov import simulate_pov_child  # noqa: E402
-from research.lib.stats import spearman_r  # noqa: E402
+from ares_micro.flow.pov import simulate_pov_child  # noqa: E402
+from ares_micro.stats import spearman_r  # noqa: E402
 
 FIG = OUT / "hv_fei_capacity" / "figs"
 CH = APP / "hv_fei_capacity"
@@ -491,7 +491,7 @@ def _write_report(s: dict[str, Any]) -> None:
         "",
         "- Capacity: day×symbol complete-leg H^v / FEI (3 venues).",
         "- Map H^v quartiles → POV π schedule; compare crash severity by quartile.",
-        "- POV sim: `research.lib.pov.simulate_pov_child` on HL crash windows (instant fill @ trade px).",
+        "- POV sim: `ares_micro.flow.pov.simulate_pov_child` on HL crash windows (instant fill @ trade px).",
         "",
         "## Headline",
         "",

@@ -19,10 +19,10 @@ sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 's
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import CORE_VENUES, ensure_env, load_day_trades, resolve_days  # noqa: E402
-from research.lib.vstat import bootstrap_minv_ci, grid_1s, min_v, returns_from_log_px  # noqa: E402
+from ares_micro.vol.vstat import bootstrap_minv_ci, grid_1s, min_v, returns_from_log_px  # noqa: E402
 
 try:
-    from research.lib.crash import nanex_detect, vshape_events  # noqa: E402
+    from ares_micro.vol.crash import nanex_detect, vshape_events  # noqa: E402
 except Exception:  # noqa: BLE001
     nanex_detect = vshape_events = None  # type: ignore
 

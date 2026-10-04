@@ -37,7 +37,7 @@ from _data import (  # noqa: E402
     load_tob_any,
     normalize_side,
 )
-from research.lib.hftpat import (  # noqa: E402
+from ares_micro.flow.hftpat import (  # noqa: E402
     fade_tau_sensitivity,
     ignition_bar_timestamps,
     ignition_events,
@@ -48,7 +48,7 @@ from research.lib.hftpat import (  # noqa: E402
     size_storm_interaction,
     tod_event_heatmap,
 )
-from research.lib.stats import bootstrap_ci  # noqa: E402
+from ares_micro.stats import bootstrap_ci  # noqa: E402
 
 OUT = BOOK / "out" / "pass2_expand"
 FIGS = OUT / "figs"

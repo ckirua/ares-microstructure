@@ -21,7 +21,7 @@ BOOK_ROOT = Path(__file__).resolve().parents[1]
 ROOT = BOOK_ROOT.parents[2]  # repo root (mmip → books → research → repo)
 sys.path.insert(0, str(ROOT))
 
-from research.lib import bootstrap_ci, spearman_r  # noqa: E402
+from ares_micro import bootstrap_ci, spearman_r  # noqa: E402
 
 OUT_DIR = BOOK_ROOT / "out" / "promote_hardening"
 OUT_ROOT = BOOK_ROOT / "out"

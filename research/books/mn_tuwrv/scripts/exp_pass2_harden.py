@@ -25,7 +25,7 @@ sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 's
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import CORE_VENUES, ensure_env, load_day_trades, resolve_days  # noqa: E402
-from research.lib.tsrv import (  # noqa: E402
+from ares_micro.vol.tsrv import (  # noqa: E402
     all_estimators,
     estimators_trade_clock,
     grid_log_price_from_tape,

@@ -49,7 +49,7 @@ from common.event_panel import (  # noqa: E402
     jsonable,
     summarize,
 )
-from research.lib.stats import nw_ols, spearman_r, time_split_mask  # noqa: E402
+from ares_micro.stats import nw_ols, spearman_r, time_split_mask  # noqa: E402
 
 OUT = APP / "feature_models" / "out"
 FIG = OUT / "figs"

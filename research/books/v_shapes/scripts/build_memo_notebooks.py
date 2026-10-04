@@ -298,7 +298,7 @@ def write_ch00(rollup: dict) -> None:
         _md(
             """# Ch.00 Overview — V-shapes
 
-Flora & Renò (2020), SSRN 3554122. Core claim: market inefficiency = sudden **sign change of drift** (V / Λ), detected by the econometric V-statistic — **not** a volatility spike and **not** the geometric Dugast–Foucault detector in `research.lib.crash.vshape_events`.
+Flora & Renò (2020), SSRN 3554122. Core claim: market inefficiency = sudden **sign change of drift** (V / Λ), detected by the econometric V-statistic — **not** a volatility spike and **not** the geometric Dugast–Foucault detector in `ares_micro.vol.crash.vshape_events`.
 
 $$V_{\\tau,n}=\\sqrt{h_n}\\,T^+_{\\tau,n}\\,T^-_{\\tau,n}$$
 
@@ -352,7 +352,7 @@ def write_vstat(panel: dict, daily: dict) -> None:
         _md(
             """# V-statistic — continuous path + MinV
 
-Pass 1 implements §3 kernels / \(T^\\pm\) / \(V\) in `research.lib.vstat`. Pass 2 treats continuous \(V_t\) as an **info feature** (lead-lag vs future \(r^2\)), not only the MinV binary.
+Pass 1 implements §3 kernels / \(T^\\pm\) / \(V\) in `ares_micro.vol.vstat`. Pass 2 treats continuous \(V_t\) as an **info feature** (lead-lag vs future \(r^2\)), not only the MinV binary.
 
 Grid: **5s** last-print (desk speed; paper 1s). Bandwidth \(h_n \\in \\{1,5,30\\}\) minutes. EGARCH bootstrap CIs — asymptotic 2.18/3.60 **Kill**.
 """
@@ -629,7 +629,7 @@ def write_desk(rollup: dict) -> None:
         _md(
             """# V-shapes — desk synthesis
 
-Program rollup for Flora & Renò (2020). Lib: `research.lib.vstat` (**not** `crash.vshape_events`). Data: HL + Deribit + Kraken warehouse trades + warehouse/collector TOB. No ClickHouse MCP.
+Program rollup for Flora & Renò (2020). Lib: `ares_micro.vol.vstat` (**not** `crash.vshape_events`). Data: HL + Deribit + Kraken warehouse trades + warehouse/collector TOB. No ClickHouse MCP.
 """
         ),
         _code(

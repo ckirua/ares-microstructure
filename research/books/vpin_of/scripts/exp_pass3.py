@@ -21,9 +21,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import (  # noqa: E402
-    asof_mid,
     load_day_trades,
-    load_warehouse_tob_day,
+    load_warehouse_tob,
     normalize_side,
     normalize_venue,
     resolve_bucket_volume,
@@ -39,8 +38,8 @@ from exp_pass2 import (  # noqa: E402
     kraken_probe,
     merge_decisions as merge_pass2_style,
 )
-from research.lib.stats import bootstrap_ci, spearman_r  # noqa: E402
-from research.lib.vpin import cross_section_spearman, vpin_from_tape  # noqa: E402
+from ares_micro.stats import bootstrap_ci, spearman_r  # noqa: E402
+from ares_micro.flow.vpin import cross_section_spearman, vpin_from_tape  # noqa: E402
 
 OUT = BOOK / "out" / "pass3"
 PASS2_DEC = OUT2 / "decisions_pass2.json"
@@ -364,7 +363,7 @@ def markout_day_pass3(
     if not feat.get("completeness", {}).get("complete"):
         return {"ok": False, "reason": "incomplete_day", "day": day, "venue": venue, "symbol": symbol}
     try:
-        tob = load_warehouse_tob_day(venue, symbol, day, max_files=max_files, quotes_per_minute=quotes_per_minute)
+        tob = load_warehouse_tob(venue, symbol, day, max_files=max_files, quotes_per_minute=quotes_per_minute)
     except Exception as exc:  # noqa: BLE001
         return {"ok": False, "reason": f"tob:{type(exc).__name__}", "day": day, "venue": venue}
 
@@ -544,7 +543,7 @@ def toxicity_pass3(panel_ok: list[dict[str, Any]]) -> dict[str, Any]:
         if i % 8 == 0:
             print(f"toxicity_p3 {i}/{len(todo)}", flush=True)
         try:
-            tob = load_warehouse_tob_day(r["venue"], r["symbol"], r["day"], quotes_per_minute=60)
+            tob = load_warehouse_tob(r["venue"], r["symbol"], r["day"], quotes_per_minute=60)
         except Exception as exc:  # noqa: BLE001
             continue
         mid = np.asarray(tob["mid"], dtype=np.float64)

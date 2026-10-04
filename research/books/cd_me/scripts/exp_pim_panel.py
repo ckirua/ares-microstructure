@@ -46,7 +46,7 @@ from certified_panel import (  # noqa: E402
     annotate_title,
     primary_days as certified_primary_days,
 )
-from research.lib.cdme import (  # noqa: E402
+from ares_micro.flow.cdme import (  # noqa: E402
     align_tob_panel,
     bucket_panel,
     pim_from_components,

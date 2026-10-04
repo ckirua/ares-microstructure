@@ -41,18 +41,8 @@ from _data import (  # noqa: E402
     overlap_trades_with_mids,
     resolve_days,
 )
-from research.lib import (  # noqa: E402
-    dealer_inventory_proxy_ols,
-    huang_stoll_basic_ols,
-    huang_stoll_gmm_split,
-    huang_stoll_restricted_split,
-    huang_stoll_spread_decomp,
-    mrr_ols,
-    quote_aligned_delta_mid,
-    quoted_spread_bps,
-    volume_bucket_hs_panel,
-)
-from research.lib.stats import time_split_mask  # noqa: E402
+from ares_micro import huang_stoll_basic_ols, huang_stoll_gmm_split, huang_stoll_restricted_split, huang_stoll_spread_decomp, mrr_ols, quote_aligned_delta_mid, quoted_spread_bps, volume_bucket_hs_panel
+from ares_micro.stats import time_split_mask  # noqa: E402
 
 OUT14 = BOOK / "out" / "ch14_structural"
 CH14 = BOOK / "chapters" / "ch14_structural"

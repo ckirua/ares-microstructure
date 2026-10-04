@@ -14,7 +14,7 @@ def _boot_mean(arr: np.ndarray, *, seed: int = 0, n_boot: int = 800) -> dict[str
     a = a[np.isfinite(a)]
     if a.size == 0:
         return {"n": 0, "mean": float("nan"), "lo": float("nan"), "hi": float("nan"), "sd": float("nan")}
-    # Prefer research.lib / _common if importable
+    # Prefer ares_micro / _common if importable
     try:
         import sys
         from pathlib import Path

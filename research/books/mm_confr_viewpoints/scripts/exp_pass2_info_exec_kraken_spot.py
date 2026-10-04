@@ -36,10 +36,10 @@ from _data import (  # noqa: E402
     ensure_env,
     load_kraken_spot_tob_day,
 )
-from research.lib.markout import trade_markouts  # noqa: E402
-from research.lib.spreads import quoted_spread_bps  # noqa: E402
-from research.lib.stats import bootstrap_ci, spearman_r  # noqa: E402
-from research.lib.ticksize import (  # noqa: E402
+from ares_micro.flow.markout import trade_markouts  # noqa: E402
+from ares_micro.book.spreads import quoted_spread_bps  # noqa: E402
+from ares_micro.stats import bootstrap_ci, spearman_r  # noqa: E402
+from ares_micro.book.ticksize import (  # noqa: E402
     markout_by_rel_tick_quartile,
     relative_tick,
     spread_in_ticks,

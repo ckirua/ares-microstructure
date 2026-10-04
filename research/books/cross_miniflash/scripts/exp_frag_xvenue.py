@@ -6,7 +6,7 @@ Pass 1: volume Herfindahl + SSM/Nanex crash venue share on HL+Deribit+Kraken.
 Pass 2: thin-venue concentration, x-venue concordance, FEI / crossed-book / Epps
         around severity-gated crash windows (reuse mmip/empirical_mm libs).
 
-Severity gate lives in research.lib.crash.severity_gate so micro-outlier SSM
+Severity gate lives in ares_micro.vol.crash.severity_gate so micro-outlier SSM
 floods do not dominate frag counts (sibling crash_stats may reuse the same gate).
 
 ClickHouse MCP banned.
@@ -39,7 +39,7 @@ from _data import (  # noqa: E402
     load_venue_tob,
     venue_instrument,
 )
-from research.lib.crash import (  # noqa: E402
+from ares_micro.vol.crash import (  # noqa: E402
     detect_ssm_events,
     kalman_ssm_filter,
     mc_garch_bar_vol,
@@ -49,8 +49,8 @@ from research.lib.crash import (  # noqa: E402
     volume_herfindahl,
     xvenue_event_concordance,
 )
-from research.lib.epps import corr_vs_lag  # noqa: E402
-from research.lib.fei import fei  # noqa: E402
+from ares_micro.flow.epps import corr_vs_lag  # noqa: E402
+from ares_micro.flow.fei import fei  # noqa: E402
 
 OUT = BOOK / "out" / "frag_xvenue"
 FIG = OUT / "figs"
@@ -842,7 +842,7 @@ $$
 
 1. **Thin-venue concentration:** excess = crash_share − vol_share on the lowest-volume venue.  
 2. **Concordance:** Kraken ↔ HL ↔ Deribit event match by absolute time (±1/5/30/60s); placebo circular-shift of event times.  
-3. **FEI** on volume shares (`research.lib.fei`); **crossed-book** when ≥2 venues have TOB (mmip gate).  
+3. **FEI** on volume shares (`ares_micro.flow.fei`); **crossed-book** when ≥2 venues have TOB (mmip gate).  
 4. **Epps** day vs ±60s crash windows (`corr_vs_lag`).  
 5. **Falsifiers:** time-split H^v early/late; concordance placebo p; severity ablation 5→30bps.
 
@@ -984,7 +984,7 @@ Sample: ETH+BTC · UTC 2026-09-04…10 · HL+Deribit+Kraken · complete-all-3 da
 
 ## Decisions
 
-See CANDIDATES. Severity gate is shared in `research.lib.crash.severity_gate` for crash_stats sibling.
+See CANDIDATES. Severity gate is shared in `ares_micro.vol.crash.severity_gate` for crash_stats sibling.
 
 ## Blockers
 

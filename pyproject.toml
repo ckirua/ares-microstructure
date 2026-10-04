@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling", "numpy>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ares-micro"
+version = "0.1.0"
+description = "Market-microstructure research helpers (ares-microstructure)"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "pyarrow>=14",
+    "matplotlib>=3.8",
+    "pyyaml>=6",
+    "startarb @ file:///home/dev/srv/ares-startarb",
+    "warehouse @ file:///home/dev/lab/lab-n2070/warehouse",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ares_micro"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/ares_micro", "README.md", "pyproject.toml"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.uv.sources]
+startarb = { path = "/home/dev/srv/ares-startarb", editable = true }
+warehouse = { path = "/home/dev/lab/lab-n2070/warehouse", editable = true }

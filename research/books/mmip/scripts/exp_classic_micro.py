@@ -23,18 +23,7 @@ STARTARB = Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(STARTARB / "src"))
 
-from research.lib import (  # noqa: E402
-    adverse_selection_table,
-    bootstrap_ci,
-    effective_spread_bps,
-    mid_price,
-    quoted_spread_bps,
-    realized_spread_bps,
-    roll_implied_spread,
-    time_split_mask,
-    tob_resilience,
-    trade_markouts,
-)
+from ares_micro import bootstrap_ci, effective_spread_bps, mid_price, quoted_spread_bps, realized_spread_bps, roll_implied_spread, time_split_mask, tob_resilience, trade_markouts
 
 OUT_DIR = BOOK_ROOT / "out" / "classic_micro"
 DEFAULT_TOB = STARTARB / "results" / "xarb_md" / "tob"
@@ -117,7 +106,7 @@ def session_effects(ts_ns: np.ndarray, notional: np.ndarray, spread_bps: np.ndar
     out["hourly_notional_share"] = share.tolist()
     out["peak_hour_utc"] = int(np.argmax(share)) if tot > 0 else -1
     out["fei_hourly"] = float(
-        __import__("research.lib.fei", fromlist=["fei"]).fei(share)
+        __import__("ares_micro.flow.fei", fromlist=["fei"]).fei(share)
     )
     for name, mask in sessions.items():
         n = float(notional[mask].sum())

@@ -45,7 +45,7 @@ from common.event_panel import (  # noqa: E402
     boot_mean,
     jsonable,
 )
-from research.lib.stats import bootstrap_ci, time_split_mask  # noqa: E402
+from ares_micro.stats import bootstrap_ci, time_split_mask  # noqa: E402
 
 # Import occurrence row builder from feature_models (no leakage schema)
 sys.path.insert(0, str(APP / "feature_models"))

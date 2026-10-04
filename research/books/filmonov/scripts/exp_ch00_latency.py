@@ -41,7 +41,7 @@ from _data import (  # noqa: E402
     load_tob_any,
     resolve_days,
 )
-from research.lib import hftpat  # noqa: E402
+from ares_micro.flow import hftpat  # noqa: E402
 
 OUT = BOOK / "out"
 VENUE_COLORS = {
@@ -656,7 +656,7 @@ def write_notebooks() -> None:
                 "# Ch.00 — Overview: HFT taxonomy\n\n"
                 "Filimonov, *High-Frequency Trading* (Perm Winter School 2013).  \n"
                 "Slice: **ETH** on **Hyperliquid + Deribit + Kraken**, artifacts in `out/ch00_overview/`.  \n"
-                "Lib: `research.lib.hftpat` (framing only here). Kill: co-lo / Hibernia vanity.",
+                "Lib: `ares_micro.flow.hftpat` (framing only here). Kill: co-lo / Hibernia vanity.",
             ),
             (
                 "code",

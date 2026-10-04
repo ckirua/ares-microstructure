@@ -30,20 +30,20 @@ from _data import (  # noqa: E402
     overlap_trades_with_mids,
     resolve_days,
 )
-from research.lib.continuous import (  # noqa: E402
+from ares_micro.flow.continuous import (  # noqa: E402
     calendar_returns,
     noise_robust_rv,
     noise_rv_ratio_bootstrap,
 )
-from research.lib.discrete import (  # noqa: E402
+from ares_micro.flow.discrete import (  # noqa: E402
     ar_ols,
     impact_multipliers_from_ar,
     ma1_from_acov,
     roll_on_mid_bps,
     rw_variance_from_ar,
 )
-from research.lib.spreads import quoted_spread_bps  # noqa: E402
-from research.lib.stats import bootstrap_ci, time_split_mask  # noqa: E402
+from ares_micro.book.spreads import quoted_spread_bps  # noqa: E402
+from ares_micro.stats import bootstrap_ci, time_split_mask  # noqa: E402
 
 OUT = BOOK / "out" / "ch09_estimation"
 

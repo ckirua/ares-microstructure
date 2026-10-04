@@ -25,7 +25,6 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import (  # noqa: E402
-    asof_mid,
     load_day_trades,
     load_tob_day,
     normalize_side,
@@ -35,15 +34,15 @@ from _data import (  # noqa: E402
     rolling_vpin_series,
     vpin_day_features,
 )
-from research.lib.markout import trade_markouts  # noqa: E402
-from research.lib.pin import (  # noqa: E402
+from ares_micro.flow.markout import trade_markouts  # noqa: E402
+from ares_micro.flow.pin import (  # noqa: E402
     compare_pin_vpin,
     daily_buy_sell_counts,
     eho_pin_mle,
     pin_proxy_from_days,
 )
-from research.lib.stats import bootstrap_ci, spearman_r  # noqa: E402
-from research.lib.vpin import (  # noqa: E402
+from ares_micro.stats import bootstrap_ci, spearman_r  # noqa: E402
+from ares_micro.flow.vpin import (  # noqa: E402
     cross_section_spearman,
     falsify_side_shuffle,
     summarize_panel_vpin,

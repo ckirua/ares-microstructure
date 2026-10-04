@@ -6,7 +6,7 @@ from typing import Any
 
 import numpy as np
 
-from research.lib.stats import bootstrap_ci
+from ares_micro.stats import bootstrap_ci
 
 
 def equity_stats(equity_bps: np.ndarray) -> dict[str, Any]:

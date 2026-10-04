@@ -74,7 +74,7 @@ from _nb_common import (
     load_json, gex_day_table, safe_corr, partial_corr_vs_rv, lead_lag_day, SIGNAL_BOARD,
 )
 from certified_panel import load_certified, primary_days, spot_l2_days, gex_panel_days, DDOI_LABEL, GEX_PROXY_LABEL
-from research.lib import squeeze  # noqa: E402
+from ares_micro.flow import squeeze  # noqa: E402
 
 plt.rcParams.update({"figure.dpi": 110, "axes.grid": True, "grid.alpha": 0.25})
 
@@ -204,7 +204,7 @@ def ddoi_nb() -> list[dict]:
             """# DDOI positions — PROXY_trade_flow_DDOI
 
 **Paper:** Dealer Directional OI (PDF p. 3) · **NOTES:** [`NOTES.md`](NOTES.md) · **EXP:** [`EXP_REPORT.md`](EXP_REPORT.md)  
-**Artifacts:** `out/ddoi_positions/` · **Lib:** `research.lib.squeeze`
+**Artifacts:** `out/ddoi_positions/` · **Lib:** `ares_micro.flow.squeeze`
 
 Paper DDOI uses trade direction **and** verified ΔOI. Desk warehouse `open_interest` is **futures-only** → option inventory is **PROXY_trade_flow_DDOI** (aggressor × qty by instrument). Never treat futures OI as option DDOI. Decision: **Hold**.
 """
@@ -657,7 +657,7 @@ def desk() -> list[dict]:
 
 SqueezeMetrics / GEX Ed. (2020) *The Implied Order Book*.
 
-Lib: `research.lib.squeeze` · Data: Deribit ETH options IV + **PROXY_trade_flow_DDOI** · HL+Deribit TOB · Kraken **spot_l2** when dense · **No ClickHouse MCP**.
+Lib: `ares_micro.flow.squeeze` · Data: Deribit ETH options IV + **PROXY_trade_flow_DDOI** · HL+Deribit TOB · Kraken **spot_l2** when dense · **No ClickHouse MCP**.
 
 **Board:** GEX / VEX / GEX+ / scarcity = **Hold Monitor** · TOB-cross α = **Kill** · `trade_synth` = **Kill** · `live_orders=false` · **0 Promote**.
 

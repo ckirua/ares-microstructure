@@ -25,7 +25,7 @@ from _data import (  # noqa: E402
     load_day_trades,
     load_kraken_futures_tob_day,
     load_tob_day,
-    load_warehouse_tob_day,
+    load_warehouse_tob,
     normalize_side,
     normalize_venue,
     resolve_days,
@@ -41,8 +41,8 @@ from exp_pass3 import (  # noqa: E402
     kraken_pass3,
     markout_day_pass3,
 )
-from research.lib.stats import bootstrap_ci, spearman_r  # noqa: E402
-from research.lib.vpin import cross_section_spearman  # noqa: E402
+from ares_micro.stats import bootstrap_ci, spearman_r  # noqa: E402
+from ares_micro.flow.vpin import cross_section_spearman  # noqa: E402
 
 OUT = BOOK / "out" / "pass4"
 PANEL = BOOK / "out" / "vpin_panel"
@@ -387,7 +387,7 @@ def toxicity_intraday_events(promote_rows: list[dict[str, Any]], *, max_days_per
             print(f"tox_event {ci} {venue} {sym} {day}", flush=True)
             try:
                 feat = vpin_day_features(venue, sym, day, max_files=24)
-                tob = load_warehouse_tob_day(venue, sym, day, max_files=24, quotes_per_minute=60)
+                tob = load_warehouse_tob(venue, sym, day, max_files=24, quotes_per_minute=60)
             except Exception:
                 continue
             if not feat.get("completeness", {}).get("complete"):

@@ -34,10 +34,10 @@ from _data import (  # noqa: E402
     load_venue_tob,
     resolve_days,
 )
-from research.lib.continuous import amihud_illiquidity, trade_intensity  # noqa: E402
-from research.lib.spreads import quoted_spread_bps  # noqa: E402
-from research.lib.stats import spearman_r  # noqa: E402
-from research.lib.tsrv import (  # noqa: E402
+from ares_micro.flow.continuous import amihud_illiquidity, trade_intensity  # noqa: E402
+from ares_micro.book.spreads import quoted_spread_bps  # noqa: E402
+from ares_micro.stats import spearman_r  # noqa: E402
+from ares_micro.vol.tsrv import (  # noqa: E402
     all_estimators,
     grid_log_price_from_tape,
     log_returns,

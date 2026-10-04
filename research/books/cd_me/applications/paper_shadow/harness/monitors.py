@@ -25,9 +25,8 @@ for _p in (str(WAREHOUSE_SRC), str(STARTARB / "src"), str(ROOT), str(SCRIPTS)):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from research.lib.cdme import (  # noqa: E402
+from ares_micro.flow.cdme import (  # noqa: E402
     align_tob_panel,
-    asof_join_mid,
     dcm_pc1,
     dcm_proxies,
     elasticity_corr,
@@ -38,6 +37,7 @@ from research.lib.cdme import (  # noqa: E402
     tcost_from_spreads,
     vloop_cross_venue,
 )
+from research.md import asof_join  # noqa: E402
 
 GATE_LABELS = {
     "risk.pim_cross_venue": "Hold",
@@ -89,7 +89,7 @@ def _elasticity_from_artifacts_or_proxy(
                 hpim = _hour_arr(h, "pim", n_h)
                 hnot = _hour_arr(h, "notional", n_h)
                 if mark_ts is not None and np.asarray(mark_ts).size and np.isfinite(pc1).any():
-                    dcm_h = asof_join_mid(hts, np.asarray(mark_ts, dtype=np.int64), pc1)
+                    dcm_h = asof_join(hts, np.asarray(mark_ts, dtype=np.int64), pc1)
                 else:
                     dcm_h = np.full(n_h, np.nan, dtype=np.float64)
                 el = regime_split_corr(hnot, hpim, dcm_h, min_n=5)
@@ -258,7 +258,7 @@ def compute_day_monitors(*, cfg: dict[str, Any], day: str | None = None) -> dict
             rec = mark_venues.get(bv)
             if not isinstance(rec, dict) or rec.get("n", 0) < 10 or "error" in rec:
                 continue
-            far = asof_join_mid(
+            far = asof_join(
                 h_ts,
                 np.asarray(rec["ts"], dtype=np.int64),
                 np.asarray(rec["mid"], dtype=np.float64),
@@ -273,8 +273,8 @@ def compute_day_monitors(*, cfg: dict[str, Any], day: str | None = None) -> dict
         if isinstance(home_trade, dict) and "tape" in home_trade:
             vb = trade_volume_buckets(home_trade["tape"], bucket_s=bucket_s, day=day)
             if vb["ts"].size:
-                imb = asof_join_mid(h_ts, vb["ts"], vb["imbalance"])
-                notional_h = asof_join_mid(h_ts, vb["ts"], vb["notional"])
+                imb = asof_join(h_ts, vb["ts"], vb["imbalance"])
+                notional_h = asof_join(h_ts, vb["ts"], vb["notional"])
         prox_kwargs: dict[str, Any] = {}
         if np.isfinite(fund).any():
             prox_kwargs["funding"] = fund

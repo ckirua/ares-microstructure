@@ -109,7 +109,7 @@ from _common import (  # noqa: E402
     save_json,
 )
 from harness.detect import detect_day  # noqa: E402
-from research.lib.crash import classify_recovery, recovery_fraction  # noqa: E402
+from ares_micro.vol.crash import classify_recovery, recovery_fraction  # noqa: E402
 
 HONESTY = {
     "slice": "research_sim_on_real_tape_long_holds",

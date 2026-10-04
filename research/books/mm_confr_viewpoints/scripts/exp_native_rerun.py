@@ -39,8 +39,8 @@ from _data import (  # noqa: E402
     load_day_trades,
     load_warehouse_tob,
 )
-from research.lib.stats import spearman_r  # noqa: E402
-from research.lib.ticksize import (  # noqa: E402
+from ares_micro.stats import spearman_r  # noqa: E402
+from ares_micro.book.ticksize import (  # noqa: E402
     cross_venue_tau_gap,
     expected_sign_matrix,
     fama_macbeth_slope,

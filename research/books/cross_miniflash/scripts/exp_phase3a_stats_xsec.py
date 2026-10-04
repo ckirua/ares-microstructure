@@ -41,8 +41,9 @@ from _data import (  # noqa: E402
     normalize_side,
     venue_instrument,
 )
-from research.lib.continuous import amihud_illiquidity, vpin_bucket  # noqa: E402
-from research.lib.crash import (  # noqa: E402
+from ares_micro.flow.continuous import amihud_illiquidity, vpin_bucket  # noqa: E402  # noqa: E402
+from ares_micro.flow.vpin import vpin_bucket  # noqa: E402
+from ares_micro.vol.crash import (  # noqa: E402
     classify_recovery,
     detect_ssm_events,
     kalman_ssm_filter,
@@ -53,8 +54,8 @@ from research.lib.crash import (  # noqa: E402
     severity_gate,
     sigma_process_meas,
 )
-from research.lib.stats import bootstrap_ci, nw_ols, spearman_r, time_split_mask  # noqa: E402
-from research.lib.tob import tob_resilience  # noqa: E402
+from ares_micro.stats import bootstrap_ci, nw_ols, spearman_r, time_split_mask  # noqa: E402
+from ares_micro.book.tob import tob_resilience  # noqa: E402
 
 OUT = BOOK / "out" / "phase3a_stats_xsec"
 FIG = OUT / "figs"

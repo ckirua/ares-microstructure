@@ -60,7 +60,7 @@ from _common import (  # noqa: E402
     save_json,
 )
 from _data import ensure_env, load_day_trades, normalize_side  # noqa: E402
-from research.lib.crash import recovery_fraction  # noqa: E402
+from ares_micro.vol.crash import recovery_fraction  # noqa: E402
 from sim.book import book_meta, load_best_book  # noqa: E402
 from sim.engine import SimConfig, run_tick_sim  # noqa: E402
 from sim.metrics import early_late_metrics, equity_stats, max_drawdown  # noqa: E402
@@ -428,7 +428,7 @@ def _delta_vs_baseline(cells: list[dict], strat: str) -> dict[str, Any]:
     a = np.asarray(deltas, dtype=np.float64)
     if a.size == 0:
         return {"n": 0, "delta_mean": float("nan"), "lo": float("nan"), "hi": float("nan")}
-    from research.lib.stats import bootstrap_ci
+    from ares_micro.stats import bootstrap_ci
 
     boot = bootstrap_ci(a, n_boot=800, seed=42)
     return {

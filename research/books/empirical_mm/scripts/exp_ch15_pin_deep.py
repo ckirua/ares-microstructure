@@ -33,14 +33,7 @@ from _data import (  # noqa: E402
     load_trades,
     resolve_days,
 )
-from research.lib import (  # noqa: E402
-    compare_pin_vpin,
-    daily_buy_sell_counts,
-    eho_pin_mle,
-    pin_proxy_from_days,
-    trade_intensity,
-    vpin_bucket,
-)
+from ares_micro import daily_buy_sell_counts, eho_pin_mle, pin_proxy_from_days, trade_intensity, vpin_bucket
 
 OUT15 = BOOK / "out" / "ch15_pin"
 CH15 = BOOK / "chapters" / "ch15_pin"

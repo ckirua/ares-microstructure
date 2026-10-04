@@ -32,7 +32,7 @@ sys.path.insert(0, str(Path(os.environ.get('WAREHOUSE_SRC') or ((Path(os.environ
 sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 'srv' / 'ares-startarb')) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from research.lib.ticksize import (  # noqa: E402
+from ares_micro.book.ticksize import (  # noqa: E402
     constraint_flip_windows,
     expected_sign_matrix,
     fama_macbeth_slope,
@@ -355,7 +355,7 @@ def fig_time_split(flat: list[dict], gates: dict | None) -> Path:
                 ys.append(y)
         if len(xs) < 3:
             return float("nan")
-        from research.lib.stats import spearman_r
+        from ares_micro.stats import spearman_r
 
         return spearman_r(np.asarray(xs), np.asarray(ys))
 
@@ -587,7 +587,7 @@ def fig_tercile_interaction(flat: list[dict], liq_art: dict | None) -> Path:
 
 
 def fig_placebo(flat: list[dict], liq_art: dict | None) -> Path:
-    from research.lib.stats import spearman_r
+    from ares_micro.stats import spearman_r
 
     tob = [r for r in flat if r.get("tob_ok")]
     # true channel

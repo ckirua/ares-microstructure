@@ -9,7 +9,7 @@ This repository is prepared for a **public** GitHub visibility flip. Visibility 
 ## What is published
 
 - Research book trees under `research/books/` (NOTES, CANDIDATES, EXP_REPORT, DESK_MEMO, scripts, notebooks)
-- Shared helpers in `research/lib/`
+- Canonical package `src/ares_micro/` (estimators + data loaders); `research/lib/` is a notebook compat shim
 - Shadow / paper harness source and example systemd user units
 - Data path documentation (`research/DATA_PATHS.md`)
 - Repo changelog (`CHANGELOG.md`)
@@ -37,9 +37,15 @@ export ARES_MICROSTRUCTURE="${ARES_MICROSTRUCTURE:-$HOME/srv/ares-microstructure
 
 # S3 / warehouse credentials (same keys as startarb)
 set -a && source ~/.env && set +a
+
+# Installable package (hatchling): canonical ares_micro under src/
+cd "$ARES_MICROSTRUCTURE" && uv sync
 ```
 
-Python helpers: `research/lib/paths.py`. systemd user units use `%h/...` and `EnvironmentFile=-%h/.env`.
+Prefer `from ares_micro…` for estimators and `from research.md…` for loaders
+(repo root on `PYTHONPATH`; `research.md` is not in the wheel).
+`research.lib` remains a thin re-export shim for older notebooks.
+Python helpers: `research.md.paths`. systemd user units use `%h/...` and `EnvironmentFile=-%h/.env`.
 
 See [README.md](README.md) and [research/DATA_PATHS.md](research/DATA_PATHS.md).
 

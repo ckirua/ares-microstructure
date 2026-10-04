@@ -57,9 +57,10 @@ from _data import (  # noqa: E402
     ensure_env,
     load_day_trades,
 )
-from research.lib.continuous import trade_intensity, volume_clock_returns, vpin_bucket  # noqa: E402
-from research.lib.crash import vshape_events  # noqa: E402
-from research.lib.vstat import (  # noqa: E402
+from ares_micro.flow.continuous import trade_intensity, volume_clock_returns, vpin_bucket  # noqa: E402  # noqa: E402
+from ares_micro.flow.vpin import vpin_bucket  # noqa: E402
+from ares_micro.vol.crash import vshape_events  # noqa: E402
+from ares_micro.vol.vstat import (  # noqa: E402
     grid_1s,
     min_v,
     returns_from_log_px,

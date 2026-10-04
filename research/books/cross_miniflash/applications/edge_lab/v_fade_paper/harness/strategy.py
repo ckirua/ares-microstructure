@@ -34,7 +34,7 @@ def _overlay_confirm_recovery(
     if confirm_s <= 0 or abs(confirm_s - 2.0) < 1e-9:
         return cell
     try:
-        from research.lib.crash import recovery_fraction
+        from ares_micro.vol.crash import recovery_fraction
     except Exception:  # noqa: BLE001
         return cell
 

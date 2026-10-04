@@ -26,12 +26,12 @@ REPO = MICRO.parent
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(BOOK / "scripts"))
 
-from research.lib.ticksize import (  # noqa: E402
+from ares_micro.book.ticksize import (  # noqa: E402
     cross_venue_tau_gap,
     grid_pressure_feature,
 )
-from research.lib.epps import corr_vs_lag  # noqa: E402
-from research.lib.fei import fei  # noqa: E402
+from ares_micro.flow.epps import corr_vs_lag  # noqa: E402
+from ares_micro.flow.fei import fei  # noqa: E402
 
 import _data as D  # noqa: E402
 
@@ -631,7 +631,7 @@ def try_btc_slice(days: list[str]) -> list[dict]:
     except Exception as exc:  # noqa: BLE001
         print(f"BTC skip ensure_env: {exc}", flush=True)
         return rows
-    from research.lib.ticksize import (  # local import to keep top light
+    from ares_micro.book.ticksize import (  # local import to keep top light
         mq_vector,
         relative_tick,
         venue_tick,
@@ -667,8 +667,8 @@ def try_btc_slice(days: list[str]) -> list[dict]:
                 )
                 grid = gpf(tob["mid"], tau) if np.isfinite(tau) else {}
                 # hour buckets
-                from research.lib.spreads import quoted_spread_bps as qsb
-                from research.lib.ticksize import panel_hour_buckets
+                from ares_micro.book.spreads import quoted_spread_bps as qsb
+                from ares_micro.book.ticksize import panel_hour_buckets
 
                 qs = qsb(tob["bid"], tob["ask"], mid=tob["mid"])
                 rt = relative_tick(tau, tob["mid"], as_bps=False)

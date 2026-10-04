@@ -57,9 +57,9 @@ from _common import (  # noqa: E402
     save_json,
 )
 from _data import CORE_VENUES, ensure_env, load_core_venues_day  # noqa: E402
-from research.lib.crash import xvenue_event_concordance  # noqa: E402
-from research.lib.epps import corr_vs_lag  # noqa: E402
-from research.lib.fei import fei  # noqa: E402
+from ares_micro.vol.crash import xvenue_event_concordance  # noqa: E402
+from ares_micro.flow.epps import corr_vs_lag  # noqa: E402
+from ares_micro.flow.fei import fei  # noqa: E402
 
 NS = 1_000_000_000
 RT_FRICTION = 2.0 * FRICTION_BPS

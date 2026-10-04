@@ -26,12 +26,12 @@ from _data import (  # noqa: E402
     load_venue_tob,
     resolve_days,
 )
-from research.lib.vstat import bootstrap_minv_ci, grid_1s, min_v, returns_from_log_px  # noqa: E402
+from ares_micro.vol.vstat import bootstrap_minv_ci, grid_1s, min_v, returns_from_log_px  # noqa: E402
 
 try:
-    from research.lib.crash import nanex_detect, vshape_events  # noqa: E402
-    from research.lib.spreads import quoted_spread_bps  # noqa: E402
-    from research.lib.tob import tob_resilience  # noqa: E402
+    from ares_micro.vol.crash import nanex_detect, vshape_events  # noqa: E402
+    from ares_micro.book.spreads import quoted_spread_bps  # noqa: E402
+    from ares_micro.book.tob import tob_resilience  # noqa: E402
 except Exception:  # noqa: BLE001
     nanex_detect = vshape_events = quoted_spread_bps = tob_resilience = None  # type: ignore
 

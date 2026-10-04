@@ -31,9 +31,9 @@ sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 's
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import CORE_VENUES, ensure_env, resolve_days  # noqa: E402
-from research.lib.continuous import amihud_illiquidity, trade_intensity  # noqa: E402
-from research.lib.stats import spearman_r  # noqa: E402
-from research.lib.tsrv import compare_clocks_bootstrap  # noqa: E402
+from ares_micro.flow.continuous import amihud_illiquidity, trade_intensity  # noqa: E402
+from ares_micro.stats import spearman_r  # noqa: E402
+from ares_micro.vol.tsrv import compare_clocks_bootstrap  # noqa: E402
 
 # Reuse day-row builder from blocker_close
 from exp_blocker_close import (  # noqa: E402

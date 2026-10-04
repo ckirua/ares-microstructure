@@ -1,6 +1,6 @@
 """Incremental scalar Kalman SSM + online crash-run detector.
 
-Mirrors ``research.lib.crash.kalman_ssm_filter`` recursion one print at a time.
+Mirrors ``ares_micro.vol.crash.kalman_ssm_filter`` recursion one print at a time.
 Noise is a documented online Δ vs offline MC-GARCH day harness (see ARCHITECTURE).
 """
 

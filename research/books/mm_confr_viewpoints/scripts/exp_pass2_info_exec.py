@@ -30,10 +30,10 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(SCRIPTS))
 
 from _data import ensure_env, load_day_trades, load_tob_any  # noqa: E402
-from research.lib.markout import trade_markouts  # noqa: E402
-from research.lib.spreads import quoted_spread_bps  # noqa: E402
-from research.lib.stats import bootstrap_ci, spearman_r  # noqa: E402
-from research.lib.ticksize import (  # noqa: E402
+from ares_micro.flow.markout import trade_markouts  # noqa: E402
+from ares_micro.book.spreads import quoted_spread_bps  # noqa: E402
+from ares_micro.stats import bootstrap_ci, spearman_r  # noqa: E402
+from ares_micro.book.ticksize import (  # noqa: E402
     markout_by_rel_tick_quartile,
     relative_tick,
     spread_in_ticks,
@@ -88,7 +88,7 @@ def per_trade_markout_bps(
     *,
     horizon_ms: int = 1000,
 ) -> np.ndarray:
-    """Signed per-trade markout (bps); same convention as research.lib.markout."""
+    """Signed per-trade markout (bps); same convention as ares_micro.flow.markout."""
     tt = np.asarray(trade_ts, dtype=np.int64)
     s = np.asarray(side, dtype=np.float64)
     s = np.where(s == 0, np.nan, s)

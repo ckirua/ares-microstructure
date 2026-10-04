@@ -41,7 +41,7 @@ from _data import (  # noqa: E402
 
 # re-export for application scripts
 __all_reexport = ("CORE_VENUES",)
-from research.lib.crash import (  # noqa: E402
+from ares_micro.vol.crash import (  # noqa: E402
     classify_recovery,
     detect_ssm_events,
     event_overlap,
@@ -54,8 +54,8 @@ from research.lib.crash import (  # noqa: E402
     sigma_process_meas,
     volume_herfindahl,
 )
-from research.lib.fei import fei  # noqa: E402
-from research.lib.stats import bootstrap_ci, time_split_mask  # noqa: E402
+from ares_micro.flow.fei import fei  # noqa: E402
+from ares_micro.stats import bootstrap_ci, time_split_mask  # noqa: E402
 
 DEFAULT_DAYS = [
     "2026-09-04",

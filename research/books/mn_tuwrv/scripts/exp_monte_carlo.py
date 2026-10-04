@@ -16,7 +16,7 @@ BOOK = Path(__file__).resolve().parents[1]
 ROOT = BOOK.parents[2]
 sys.path.insert(0, str(ROOT))
 
-from research.lib.tsrv import monte_carlo_estimators  # noqa: E402
+from ares_micro.vol.tsrv import monte_carlo_estimators  # noqa: E402
 
 OUT = BOOK / "out" / "monte_carlo"
 CH_MC = BOOK / "chapters" / "monte_carlo"

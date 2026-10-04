@@ -29,7 +29,7 @@ from _data import (  # noqa: E402
     load_day_trades,
     resolve_days,
 )
-from research.lib.vstat import (  # noqa: E402
+from ares_micro.vol.vstat import (  # noqa: E402
     ASYMPTOTIC_BAND_95,
     ASYMPTOTIC_BAND_99,
     bootstrap_minv_ci,
@@ -300,7 +300,7 @@ def _write_notebooks() -> None:
                     "source": [
                         f"# {title}\n",
                         "\n",
-                        "Imports `research.lib.vstat`. Artifacts under `out/`.\n",
+                        "Imports `ares_micro.vol.vstat`. Artifacts under `out/`.\n",
                         "Geometric Dugast–Foucault lives in `crash.vshape_events` — do not merge.\n",
                     ],
                 },
@@ -314,7 +314,7 @@ def _write_notebooks() -> None:
                         "from pathlib import Path\n",
                         "ROOT = Path('../..').resolve().parents[1] if False else Path(os.environ.get('ARES_MICROSTRUCTURE') or (Path.home() / 'srv' / 'ares-microstructure'))\n",
                         "sys.path.insert(0, str(ROOT))\n",
-                        "from research.lib.vstat import min_v, bootstrap_minv_ci, ASYMPTOTIC_BAND_95\n",
+                        "from ares_micro.vol.vstat import min_v, bootstrap_minv_ci, ASYMPTOTIC_BAND_95\n",
                         f"print('bands kill', ASYMPTOTIC_BAND_95)\n",
                         f"p = ROOT / 'research/books/v_shapes/out/{pkg}'\n",
                         "print('out', p, 'exists', p.exists())\n",

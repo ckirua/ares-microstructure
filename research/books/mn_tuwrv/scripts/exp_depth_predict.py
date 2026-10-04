@@ -34,8 +34,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(os.environ.get("ARES_STARTARB") or (Path.home() / "srv" / "ares-startarb")) / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from research.lib.stats import spearman_r  # noqa: E402
-from research.lib.tsrv import (  # noqa: E402
+from ares_micro.stats import spearman_r  # noqa: E402
+from ares_micro.vol.tsrv import (  # noqa: E402
     grid_log_price_from_tape,
     noise_return_acf,
     optimal_K_scan,

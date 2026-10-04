@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(os.environ.get('ARES_STARTARB') or (Path.home() / 's
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import align_mids_calendar, ensure_env, load_venue_tob  # noqa: E402
-from research.lib import corr_vs_lag, hasbrouck_info_share_2  # noqa: E402
+from ares_micro import corr_vs_lag, hasbrouck_info_share_2  # noqa: E402
 
 OUT = BOOK / "out" / "ch17_discovery"
 

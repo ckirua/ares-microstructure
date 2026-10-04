@@ -6,7 +6,7 @@ Packages: quote_storms · book_fade · momentum_ignition
 Venues: HL + Deribit + Kraken via ``_data.py``. ETH first.
 Outputs: ``out/{quote_storms,book_fade,momentum_ignition}/`` JSON + ≥3 figs each.
 
-ClickHouse MCP banned. Detectors: ``research.lib.hftpat``.
+ClickHouse MCP banned. Detectors: ``ares_micro.flow.hftpat``.
 Kraken ``trade_synth`` TOB is labeled and **excluded** from native TOB fade tests.
 """
 
@@ -39,7 +39,7 @@ from _data import (  # noqa: E402
     normalize_side,
     resolve_days,
 )
-from research.lib.crash import (  # noqa: E402
+from ares_micro.vol.crash import (  # noqa: E402
     detect_ssm_events,
     kalman_ssm_filter,
     mc_garch_bar_vol,
@@ -47,7 +47,7 @@ from research.lib.crash import (  # noqa: E402
     sigma_process_meas,
     vshape_events,
 )
-from research.lib.hftpat import (  # noqa: E402
+from ares_micro.flow.hftpat import (  # noqa: E402
     ignition_bar_timestamps,
     ignition_events,
     overlap_vs_crash,
@@ -522,7 +522,7 @@ def run_book_fade(
             ev, pr = primary
             ct = _cancel_proxy_ts(tob, tape["ts"], tape["side"], tape["qty"])
             fade_ts = tt[np.asarray(ev["trade_i"], dtype=np.int64)] if ev["n_trades"] else np.zeros(0, dtype=np.int64)
-            from research.lib.hftpat import overlap_vs_lob_cancel
+            from ares_micro.flow.hftpat import overlap_vs_lob_cancel
 
             ov = overlap_vs_lob_cancel(fade_ts, ev["fade"], ct, slack_ms=250.0)
             gate = rename_gate(ov, frac_key="frac_fade_in_cancel", kill_frac=0.85)

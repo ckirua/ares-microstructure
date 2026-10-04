@@ -31,18 +31,7 @@ from _data import (  # noqa: E402
     overlap_trades_with_mids,
     resolve_days,
 )
-from research.lib import (  # noqa: E402
-    glosten_harris_ols,
-    huang_stoll_basic_ols,
-    impulse_response_trade,
-    lambda_time_split_bootstrap,
-    mrr_ols,
-    ofi_continuous,
-    quote_aligned_delta_mid,
-    signed_trade_var,
-    trade_markouts,
-    trade_sign_acf,
-)
+from ares_micro import huang_stoll_basic_ols, impulse_response_trade, lambda_time_split_bootstrap, mrr_ols, ofi_continuous, quote_aligned_delta_mid, signed_trade_var, trade_markouts, trade_sign_acf
 
 OUT13 = BOOK / "out" / "ch13_var_impact"
 OUT14 = BOOK / "out" / "ch14_structural"

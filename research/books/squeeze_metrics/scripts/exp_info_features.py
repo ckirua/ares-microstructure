@@ -53,7 +53,7 @@ from _stats_info import (  # noqa: E402
     univariate_moments,
 )
 from certified_panel import gex_panel_days, load_certified, spot_l2_days  # noqa: E402
-from research.lib.squeeze import mid_range, realized_vol  # noqa: E402
+from ares_micro.flow.squeeze import mid_range, realized_vol  # noqa: E402
 
 OUT = BOOK / "out" / "info_features"
 FIGS = OUT / "figs"

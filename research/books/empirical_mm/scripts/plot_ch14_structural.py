@@ -28,7 +28,7 @@ from _data import (  # noqa: E402
     overlap_trades_with_mids,
     resolve_days,
 )
-from research.lib import glosten_harris_ols, quote_aligned_delta_mid  # noqa: E402
+from ares_micro import glosten_harris_ols, quote_aligned_delta_mid  # noqa: E402
 
 OUT = BOOK / "out" / "ch14_structural"
 OUT13 = BOOK / "out" / "ch13_var_impact"

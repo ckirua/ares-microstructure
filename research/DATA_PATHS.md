@@ -212,8 +212,8 @@ q = hub.get("hyperliquid", "ETH")
 
 **Integration checklist for ares-microstructure:**
 
-1. Depend on `startarb` + `warehouse`; `source ~/.env` (S3 keys). Set `ARES_STARTARB` / `WAREHOUSE_ROOT` if not under `$HOME/srv` / `$HOME/lab/...`.
-2. Prefer `load_quote_stream` / `load_trade_tape` over re-parsing S3 keys.
+1. From this repo: `uv sync` (installs `ares-micro` + editable `startarb` / `warehouse` path deps). `source ~/.env` (S3 keys). Set `ARES_STARTARB` / `WAREHOUSE_ROOT` if not under `$HOME/srv` / `$HOME/lab/...`.
+2. Prefer `from research.md import …` (or book `from _data import …` thin wrappers) over re-parsing S3 keys. Under the hood: `load_quote_stream` / `load_trade_tape`. (`research.lib.data` is a compat shim.)
 3. Treat warehouse TOB as **research-grade**, not HFT; use `xarb_collector` or live WS for ms work.
 4. Do not use ClickHouse MCP; optional CH via native driver only where your ops docs say it works.
 

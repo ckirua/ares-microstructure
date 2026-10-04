@@ -39,7 +39,7 @@ for p in (str(PKG), str(STRATEGY_LAB), str(ROOT)):
 from harness.causal import asof_trade_px, causal_class, jsonable, write_jsonl  # noqa: E402
 from harness.config import load_config  # noqa: E402
 from harness.pipeline import _detect_cfg, _load_paper_detect  # noqa: E402
-from research.lib.crash import recovery_fraction  # noqa: E402
+from ares_micro.vol.crash import recovery_fraction  # noqa: E402
 from sim.book import book_meta, load_best_book  # noqa: E402
 
 NS = 1_000_000_000

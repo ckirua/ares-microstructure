@@ -36,7 +36,7 @@ for _p in (str(WAREHOUSE_SRC), str(STARTARB / "src"), str(ROOT), str(SCRIPTS)):
         sys.path.insert(0, _p)
 
 from _data import (  # noqa: E402
-    asof_mid,
+    asof_join,
     ensure_env,
     funding_proxy_from_marks,
     load_cross_venue_marks,
@@ -53,7 +53,7 @@ from _stats_info import (  # noqa: E402
     tod_profile,
     univariate_moments,
 )
-from research.lib.cdme import realized_vol  # noqa: E402
+from ares_micro.flow.cdme import realized_vol  # noqa: E402
 
 OUT = BOOK / "out" / "info_features"
 FIGS = OUT / "figs"
@@ -160,15 +160,15 @@ def _enrich_marks(symbol: str, day: str, ts_h: np.ndarray) -> dict[str, np.ndarr
             continue
         if bv == home_name:
             continue
-        far = asof_mid(h_ts, np.asarray(rec["ts"], dtype=np.int64), np.asarray(rec["mid"], dtype=np.float64))
+        far = asof_join(h_ts, np.asarray(rec["ts"], dtype=np.int64), np.asarray(rec["mid"], dtype=np.float64))
         ok = np.isfinite(far) & (far > 0) & np.isfinite(h_mid) & (h_mid > 0)
         basis[ok] = np.log(far[ok] / h_mid[ok])
         break
 
-    mid_h = asof_mid(ts_h, h_ts, h_mid)
-    rv_h = asof_mid(ts_h, h_ts, rv)
-    fund_h = asof_mid(ts_h, h_ts, fund)
-    basis_h = asof_mid(ts_h, h_ts, basis)
+    mid_h = asof_join(ts_h, h_ts, h_mid)
+    rv_h = asof_join(ts_h, h_ts, rv)
+    fund_h = asof_join(ts_h, h_ts, fund)
+    basis_h = asof_join(ts_h, h_ts, basis)
     # concurrent hourly log-return of mid
     mid_ret = np.full(n, np.nan, dtype=np.float64)
     for i in range(1, n):
@@ -207,7 +207,7 @@ def build_joined_panel(symbol: str) -> tuple[list[dict[str, Any]], dict[str, Any
         if hp.get("ts") and len(hp["ts"]) != n:
             dts = np.asarray(hp["ts"], dtype=np.int64)
             dcm_raw = _farr(hp.get("dcm"), len(dts))
-            dcm_arr = asof_mid(ts, dts, dcm_raw)
+            dcm_arr = asof_join(ts, dts, dcm_raw)
 
         marks = _enrich_marks(symbol, day, ts)
         # Prefer PIM row label (post real-quote fix); never invent trade_synth as 3v

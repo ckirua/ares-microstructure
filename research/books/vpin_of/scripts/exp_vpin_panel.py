@@ -34,15 +34,16 @@ from _data import (  # noqa: E402
     resolve_bucket_volume,
     resolve_days,
 )
-from research.lib.continuous import trade_intensity, vpin_bucket  # noqa: E402
-from research.lib.pin import (  # noqa: E402
+from ares_micro.flow.continuous import trade_intensity, vpin_bucket  # noqa: E402  # noqa: E402
+from ares_micro.flow.vpin import vpin_bucket  # noqa: E402
+from ares_micro.flow.pin import (  # noqa: E402
     compare_pin_vpin,
     daily_buy_sell_counts,
     eho_pin_mle,
     pin_proxy_from_days,
 )
-from research.lib.stats import bootstrap_ci  # noqa: E402
-from research.lib.vpin import (  # noqa: E402
+from ares_micro.stats import bootstrap_ci  # noqa: E402
+from ares_micro.flow.vpin import (  # noqa: E402
     falsify_side_shuffle,
     rolling_vpin,
     vpin_from_tape,

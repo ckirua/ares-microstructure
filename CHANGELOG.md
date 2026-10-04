@@ -12,10 +12,18 @@ Day-to-day research runs and experiment promote/hold/kill notes live in
 
 ### Added
 
-- _(none yet)_
+- Installable package via root [`pyproject.toml`](pyproject.toml) (hatchling): canonical [`src/ares_micro/`](src/ares_micro/) (estimators + `core/` helpers).
+- Shared data loaders consolidating the nine book `scripts/_data.py` clones under [`research/md/`](research/md/).
+- VPIN desk helpers `resolve_bucket_volume`, `rolling_vpin_series` in `ares_micro.flow.vpin`; day loader `vpin_day_features` in `research.md`.
 
 ### Changed
 
+- Removed Cython `_speed` extension and hatch-cython build hooks; `ares_micro.core` is pure NumPy (`asof_join` / `asof_idx` / day bounds / RV helpers only — no `TradeCols` / `TobCols` / `HAS_CYTHON`).
+- Dropped `pandas` from installable package dependencies; `src/ares_micro` stays vectorized NumPy (+ scipy). Research books may still use pandas.
+- **Canonical lib is `ares_micro`** under `src/ares_micro/` (quant only: `book/`, `flow/`, `vol/`, `stats`, `paths`, `core/`). Proprietary I/O lives in [`research/md/`](research/md/) (`research.md`, not in the wheel).
+- [`research/lib/`](research/lib/) is a thin backward-compat re-export shim for notebook-era imports.
+- Book `scripts/_data.py` files are thin re-exports of `research.md` (empirical_mm keeps `align_mids_calendar` / `load_hl_l2_levels`; vpin_of / mn_tuwrv re-export VPIN helpers + local `KRAKEN_FUT_TOB`).
+- README / [`PUBLIC.md`](PUBLIC.md) / [`research/DATA_PATHS.md`](research/DATA_PATHS.md): install via `uv sync`; prefer `from ares_micro…` + `from research.md…`.
 - Gitignore: treat ad-hoc book PDF text dumps (`**/_pdf_extract.txt`) like `_raw/` extracts (local-only; e.g. squeeze_metrics scratch extract).
 - README / [`PUBLIC.md`](PUBLIC.md): surface [`CHANGELOG.md`](CHANGELOG.md) and the books experiment scoreboard [`research/books/EXPERIMENTS.md`](research/books/EXPERIMENTS.md).
 - cross_miniflash application docs: session catalog links → [`EXPERIMENTS.md`](research/books/EXPERIMENTS.md#2026-09-30) (replacing removed `TODAY_EXPERIMENTS.md`).

@@ -30,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _data import (  # noqa: E402
     CORE_VENUES,
-    asof_mid,
+    asof_join,
     day_bounds_ns,
     ensure_env,
     load_day_trades,
@@ -38,8 +38,9 @@ from _data import (  # noqa: E402
     normalize_side,
     venue_instrument,
 )
-from research.lib.continuous import ofi_continuous, trade_intensity, vpin_bucket  # noqa: E402
-from research.lib.crash import (  # noqa: E402
+from ares_micro.flow.continuous import ofi_continuous, trade_intensity, vpin_bucket  # noqa: E402  # noqa: E402
+from ares_micro.flow.vpin import vpin_bucket  # noqa: E402
+from ares_micro.vol.crash import (  # noqa: E402
     detect_ssm_events,
     diurnal_sj,
     event_overlap,
@@ -52,7 +53,7 @@ from research.lib.crash import (  # noqa: E402
     vshape_events,
     zstar_scan,
 )
-from research.lib.markout import trade_markouts  # noqa: E402
+from ares_micro.flow.markout import trade_markouts  # noqa: E402
 
 OUT = BOOK / "out" / "phase2_baselines_ssm"
 FIG = OUT / "figs"
@@ -478,7 +479,7 @@ def run_one(
 
     mid_asof = None
     if tob and tob.get("n", 0):
-        mid_asof = asof_mid(ts, tob["ts"], tob["mid"])
+        mid_asof = asof_join(ts, tob["ts"], tob["mid"])
     leadlag = _lead_lag_innov(ts, filt["innov"], px, mid_asof)
     placebo = _z_placebo(filt["z_score"], Z_STAR_DEFAULT)
 
